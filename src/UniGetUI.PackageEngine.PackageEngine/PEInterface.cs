@@ -1,27 +1,25 @@
 using System.Diagnostics.CodeAnalysis;
 using UniGetUI.Core.Logging;
 using UniGetUI.PackageEngine.Interfaces;
-using UniGetUI.PackageEngine.Managers.BunManager;
-using UniGetUI.PackageEngine.Managers.CargoManager;
-using UniGetUI.PackageEngine.Managers.DotNetManager;
-using UniGetUI.PackageEngine.Managers.NpmManager;
-using UniGetUI.PackageEngine.Managers.PipManager;
 using UniGetUI.PackageEngine.Managers.PowerShell7Manager;
-using UniGetUI.PackageEngine.Managers.VcpkgManager;
 using UniGetUI.PackageEngine.PackageClasses;
 using UniGetUI.PackageEngine.PackageLoader;
 #if WINDOWS
-using UniGetUI.PackageEngine.Managers.ChocolateyManager;
 using UniGetUI.PackageEngine.Managers.PowerShellManager;
-using UniGetUI.PackageEngine.Managers.ScoopManager;
 using UniGetUI.PackageEngine.Managers.WingetManager;
 #else
 using UniGetUI.PackageEngine.Managers.AptManager;
+using UniGetUI.PackageEngine.Managers.BunManager;
+using UniGetUI.PackageEngine.Managers.CargoManager;
 using UniGetUI.PackageEngine.Managers.DnfManager;
+using UniGetUI.PackageEngine.Managers.DotNetManager;
 using UniGetUI.PackageEngine.Managers.HomebrewManager;
+using UniGetUI.PackageEngine.Managers.NpmManager;
 using UniGetUI.PackageEngine.Managers.PacmanManager;
+using UniGetUI.PackageEngine.Managers.PipManager;
 using UniGetUI.PackageEngine.Managers.SnapManager;
 using UniGetUI.PackageEngine.Managers.FlatpakManager;
+using UniGetUI.PackageEngine.Managers.VcpkgManager;
 #endif
 
 namespace UniGetUI.PackageEngine
@@ -34,20 +32,16 @@ namespace UniGetUI.PackageEngine
         private const int ManagerLoadTimeout = 60; // 60 seconds timeout for Package Manager initialization (in seconds)
 #if WINDOWS
         public static readonly WinGet? WinGet = Create(() => new WinGet());
-        public static readonly Scoop? Scoop = Create(() => new Scoop());
-        public static readonly Chocolatey? Chocolatey = Create(() => new Chocolatey());
-#endif
+        public static readonly PowerShell7? PowerShell7 = Create(() => new PowerShell7());
+        public static readonly PowerShell? PowerShell = Create(() => new PowerShell());
+#else
         public static readonly Npm? Npm = Create(() => new Npm());
         public static readonly Bun? Bun = Create(() => new Bun());
         public static readonly Pip? Pip = Create(() => new Pip());
         public static readonly DotNet? DotNet = Create(() => new DotNet());
         public static readonly PowerShell7? PowerShell7 = Create(() => new PowerShell7());
-#if WINDOWS
-        public static readonly PowerShell? PowerShell = Create(() => new PowerShell());
-#endif
         public static readonly Cargo? Cargo = Create(() => new Cargo());
         public static readonly Vcpkg? Vcpkg = Create(() => new Vcpkg());
-#if !WINDOWS
         public static readonly Apt? Apt = Create(() => new Apt());
         public static readonly Dnf? Dnf = Create(() => new Dnf());
         public static readonly Pacman? Pacman = Create(() => new Pacman());
@@ -84,11 +78,14 @@ namespace UniGetUI.PackageEngine
 
         private static IPackageManager[] CreateManagers()
         {
-            List<IPackageManager?> candidates = [Npm, Bun, Pip, Cargo, Vcpkg, DotNet, PowerShell7];
 #if WINDOWS
-            candidates.InsertRange(0, [WinGet, Scoop, Chocolatey]);
-            candidates.Add(PowerShell);
+            // The Evergreen Endpoint product profile is deliberately limited to the Windows
+            // software channels used by managed organizations. Microsoft Store packages are
+            // exposed by WinGet through its msstore source, so they do not require a separate
+            // package-manager implementation.
+            List<IPackageManager?> candidates = [WinGet, PowerShell7, PowerShell];
 #else
+            List<IPackageManager?> candidates = [Npm, Bun, Pip, Cargo, Vcpkg, DotNet, PowerShell7];
             candidates.Insert(0, Homebrew);
             if (OperatingSystem.IsLinux())
             {

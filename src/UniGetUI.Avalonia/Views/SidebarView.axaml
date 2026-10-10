@@ -198,8 +198,11 @@
                     </Grid>
                 </ListBoxItem>
 
-                <!-- Package Managers -->
+                <!-- Retained as a named compatibility target while manager configuration moves to
+                     administrator-owned Group Policy / JSON. It is never shown to end users. -->
                 <ListBoxItem x:Name="ManagersNavBtn" Tag="Managers" Classes="nav-item" Padding="4,2" CornerRadius="6"
+                             IsVisible="False"
+                             IsEnabled="False"
                              automation:AutomationProperties.Name="{t:Translate Package Managers}"
                              automation:AutomationProperties.AcceleratorKey="Ctrl+6"
                              ToolTip.Tip="{t:Translate Package Managers}">

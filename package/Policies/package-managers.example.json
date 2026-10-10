@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "managers": {
+    "WinGet": {
+      "enabled": true,
+      "allowedSources": [
+        "winget",
+        "msstore"
+      ]
+    },
+    "PowerShell": {
+      "enabled": true,
+      "allowedSources": [
+        "PSGallery"
+      ]
+    },
+    "PowerShell7": {
+      "enabled": true,
+      "allowedSources": [
+        "PSGallery"
+      ]
+    }
+  }
+}

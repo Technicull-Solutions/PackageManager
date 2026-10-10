@@ -92,6 +92,8 @@ public static class IpcManagerSettingsApi
     private static readonly HashSet<Settings.K> HiddenSettings =
     [
         Settings.K.CurrentSessionToken,
+        Settings.K.DisabledManagers,
+        Settings.K.ManagerPaths,
         Settings.K.TelemetryClientToken,
     ];
 
@@ -112,31 +114,21 @@ public static class IpcManagerSettingsApi
             .ToArray();
     }
 
-    public static async Task<IpcSourceOperationResult> AddSourceAsync(
+    public static Task<IpcSourceOperationResult> AddSourceAsync(
         IpcSourceRequest request
-    )
-    {
-        var manager = ResolveManager(request.ManagerName);
-        var source = ResolveSourceForAdd(manager, request);
+    ) => Task.FromException<IpcSourceOperationResult>(
+        new InvalidOperationException(
+            "Package sources are administrator-managed through Group Policy or machine JSON."
+        )
+    );
 
-        using var operation = new AddSourceOperation(source);
-        await operation.MainThread();
-
-        return ToSourceOperationResult("add-source", operation, source);
-    }
-
-    public static async Task<IpcSourceOperationResult> RemoveSourceAsync(
+    public static Task<IpcSourceOperationResult> RemoveSourceAsync(
         IpcSourceRequest request
-    )
-    {
-        var manager = ResolveManager(request.ManagerName);
-        var source = ResolveSourceForRemove(manager, request);
-
-        using var operation = new RemoveSourceOperation(source);
-        await operation.MainThread();
-
-        return ToSourceOperationResult("remove-source", operation, source);
-    }
+    ) => Task.FromException<IpcSourceOperationResult>(
+        new InvalidOperationException(
+            "Package sources are administrator-managed through Group Policy or machine JSON."
+        )
+    );
 
     public static IReadOnlyList<IpcSettingInfo> ListSettings()
     {
@@ -191,16 +183,13 @@ public static class IpcManagerSettingsApi
         Settings.ResetSettings();
     }
 
-    public static async Task<IpcManagerInfo> SetManagerEnabledAsync(
+    public static Task<IpcManagerInfo> SetManagerEnabledAsync(
         IpcManagerToggleRequest request
-    )
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        var manager = ResolveManager(request.ManagerName);
-        Settings.SetDictionaryItem(Settings.K.DisabledManagers, manager.Name, !request.Enabled);
-        await Task.Run(manager.Initialize);
-        return ToManagerInfo(manager);
-    }
+    ) => Task.FromException<IpcManagerInfo>(
+        new InvalidOperationException(
+            "Package managers are administrator-managed through Group Policy or machine JSON."
+        )
+    );
 
     public static IpcManagerInfo SetManagerNotifications(
         IpcManagerToggleRequest request

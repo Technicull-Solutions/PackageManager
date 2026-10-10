@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions revision="1.0" schemaVersion="1.0"
+  xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <policyNamespaces>
+    <target prefix="evergreenApps" namespace="TechnicullSolutions.Policies.EvergreenEndpointApps" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
+  </policyNamespaces>
+  <resources minRequiredRevision="1.0" />
+  <supportedOn>
+    <definitions>
+      <definition name="SUPPORTED_Windows10OrLater" displayName="$(string.SUPPORTED_Windows10OrLater)" />
+    </definitions>
+  </supportedOn>
+  <categories>
+    <category name="TechnicullSolutions" displayName="$(string.TechnicullSolutions)" />
+    <category name="EvergreenEndpointApps" displayName="$(string.EvergreenEndpointApps)">
+      <parentCategory ref="TechnicullSolutions" />
+    </category>
+    <category name="PackageManagers" displayName="$(string.PackageManagers)">
+      <parentCategory ref="EvergreenEndpointApps" />
+    </category>
+  </categories>
+  <policies>
+    <policy name="PackageManagerConfigurationFile" class="Machine"
+      displayName="$(string.PackageManagerConfigurationFile)"
+      explainText="$(string.PackageManagerConfigurationFile_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.PackageManagerConfigurationFile)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements>
+        <text id="ConfigurationFile" valueName="ConfigurationFile" required="true" />
+      </elements>
+    </policy>
+
+    <policy name="EnableWinGet" class="Machine" displayName="$(string.EnableWinGet)"
+      explainText="$(string.EnableWinGet_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      valueName="EnableWinGet">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+    <policy name="WinGetExecutablePath" class="Machine" displayName="$(string.WinGetExecutablePath)"
+      explainText="$(string.ExecutablePath_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.WinGetExecutablePath)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements><text id="WinGetExecutablePath" valueName="WinGetExecutablePath" required="true" /></elements>
+    </policy>
+    <policy name="AllowedWinGetSources" class="Machine" displayName="$(string.AllowedWinGetSources)"
+      explainText="$(string.AllowedSources_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.AllowedWinGetSources)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements><multiText id="AllowedWinGetSources" valueName="AllowedWinGetSources" required="true" /></elements>
+    </policy>
+
+    <policy name="EnablePowerShell" class="Machine" displayName="$(string.EnablePowerShell)"
+      explainText="$(string.EnablePowerShell_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      valueName="EnablePowerShell">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+    <policy name="PowerShellExecutablePath" class="Machine" displayName="$(string.PowerShellExecutablePath)"
+      explainText="$(string.ExecutablePath_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.PowerShellExecutablePath)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements><text id="PowerShellExecutablePath" valueName="PowerShellExecutablePath" required="true" /></elements>
+    </policy>
+    <policy name="AllowedPowerShellSources" class="Machine" displayName="$(string.AllowedPowerShellSources)"
+      explainText="$(string.AllowedSources_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.AllowedPowerShellSources)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements><multiText id="AllowedPowerShellSources" valueName="AllowedPowerShellSources" required="true" /></elements>
+    </policy>
+
+    <policy name="EnablePowerShell7" class="Machine" displayName="$(string.EnablePowerShell7)"
+      explainText="$(string.EnablePowerShell7_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      valueName="EnablePowerShell7">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+    <policy name="PowerShell7ExecutablePath" class="Machine" displayName="$(string.PowerShell7ExecutablePath)"
+      explainText="$(string.ExecutablePath_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.PowerShell7ExecutablePath)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements><text id="PowerShell7ExecutablePath" valueName="PowerShell7ExecutablePath" required="true" /></elements>
+    </policy>
+    <policy name="AllowedPowerShell7Sources" class="Machine" displayName="$(string.AllowedPowerShell7Sources)"
+      explainText="$(string.AllowedSources_Help)"
+      key="Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers"
+      presentation="$(presentation.AllowedPowerShell7Sources)">
+      <parentCategory ref="PackageManagers" />
+      <supportedOn ref="SUPPORTED_Windows10OrLater" />
+      <elements><multiText id="AllowedPowerShell7Sources" valueName="AllowedPowerShell7Sources" required="true" /></elements>
+    </policy>
+  </policies>
+</policyDefinitions>

@@ -19,6 +19,10 @@ namespace UniGetUI.PackageEngine.Operations
             : base(false, preOps)
         {
             Source = source;
+            if (ManagedPackageManagerConfiguration.IsAdministratorManagedManager(source.Manager.Name))
+                throw new InvalidOperationException(
+                    $"Sources for {source.Manager.DisplayName} are administrator-managed through Group Policy or the machine configuration file."
+                );
             Initialize();
         }
 

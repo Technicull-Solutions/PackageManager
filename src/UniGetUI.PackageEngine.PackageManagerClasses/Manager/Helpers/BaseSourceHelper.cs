@@ -102,7 +102,12 @@ namespace UniGetUI.PackageEngine.Classes.Manager.Providers
                     task.Wait();
                 }
 
-                var sources = task.Result;
+                var sources = task.Result
+                    .Where(source => ManagedPackageManagerConfiguration.IsSourceAllowed(
+                        Manager.Name,
+                        source.Name
+                    ))
+                    .ToArray();
                 Factory.Reset();
 
                 foreach (IManagerSource source in sources)

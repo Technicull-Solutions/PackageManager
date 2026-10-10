@@ -229,6 +229,25 @@ namespace UniGetUI.PackageEngine.ManagerClasses.Manager
         public Tuple<bool, string> GetExecutableFile()
         {
             var candidates = FindCandidateExecutableFiles();
+            string? managedPath = ManagedPackageManagerConfiguration.GetExecutablePath(Name);
+            if (!string.IsNullOrWhiteSpace(managedPath))
+            {
+                if (!Path.IsPathFullyQualified(managedPath))
+                {
+                    Logger.Error(
+                        $"The administrator-configured executable path for manager {Name} is not absolute"
+                    );
+                    return new(false, "");
+                }
+
+                if (File.Exists(managedPath))
+                    return new(true, managedPath);
+
+                Logger.Error(
+                    $"The administrator-configured executable path {managedPath} for manager {Name} does not exist"
+                );
+                return new(false, "");
+            }
 
             // If custom package manager paths are DISABLED, get the first one (as old UniGetUI did) and return it.
             if (!SecureSettings.Get(SecureSettings.K.AllowCustomManagerPaths))
@@ -282,6 +301,10 @@ namespace UniGetUI.PackageEngine.ManagerClasses.Manager
 
         protected bool IsUserSelectedExecutablePath(string path)
         {
+            string? managedPath = ManagedPackageManagerConfiguration.GetExecutablePath(Name);
+            if (!string.IsNullOrWhiteSpace(managedPath))
+                return managedPath.Equals(path, StringComparison.OrdinalIgnoreCase);
+
             if (!SecureSettings.Get(SecureSettings.K.AllowCustomManagerPaths))
             {
                 return false;
@@ -302,6 +325,10 @@ namespace UniGetUI.PackageEngine.ManagerClasses.Manager
         /// </summary>
         public bool IsEnabled()
         {
+            bool? managedState = ManagedPackageManagerConfiguration.IsManagerEnabled(Name);
+            if (managedState.HasValue)
+                return managedState.Value;
+
             return !Settings.GetDictionaryItem<string, bool>(Settings.K.DisabledManagers, Name);
         }
 
@@ -434,7 +461,7 @@ namespace UniGetUI.PackageEngine.ManagerClasses.Manager
                 Logger.Info(
                     $"Found {packages.Count} available packages from {Name} with the query {query}"
                 );
-                return packages;
+                return FilterManagedSources(packages);
             }
             catch (Exception e)
             {
@@ -490,7 +517,7 @@ namespace UniGetUI.PackageEngine.ManagerClasses.Manager
                     "_getAvailableUpdates"
                 );
                 Logger.Info($"Found {packages.Count} available updates from {Name}");
-                return packages;
+                return FilterManagedSources(packages);
             }
             catch (Exception e)
             {
@@ -514,6 +541,16 @@ namespace UniGetUI.PackageEngine.ManagerClasses.Manager
                 LastUpdatesListingFailed = true;
                 return [];
             }
+        }
+
+        private IReadOnlyList<IPackage> FilterManagedSources(IReadOnlyList<IPackage> packages)
+        {
+            return packages
+                .Where(package => ManagedPackageManagerConfiguration.IsSourceAllowed(
+                    Name,
+                    package.Source.Name
+                ))
+                .ToArray();
         }
 
         /// <summary>

@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Text;
 using UniGetUI.Avalonia.Views.Pages.SettingsPages;
 using UniGetUI.Core.Tools;
-using UniGetUI.PackageEngine;
 using UniGetUI.PackageEngine.Interfaces;
 
 namespace UniGetUI.Avalonia.Infrastructure;
@@ -180,18 +179,6 @@ public static class SettingsSearchIndex
                     PageTitle = PageTitle(e.PageType),
                     PageType = e.PageType,
                     Anchor = e.Anchor,
-                }));
-        }
-
-        foreach (var manager in PEInterface.Managers)
-        {
-            int score = Rank(queryWords, manager.DisplayName, manager.DisplayName, [manager.Name]);
-            if (score < NoMatch)
-                scored.Add((score, new SettingsSearchResult
-                {
-                    Title = manager.DisplayName,
-                    PageTitle = CoreTools.Translate("Package manager preferences"),
-                    Manager = manager,
                 }));
         }
 

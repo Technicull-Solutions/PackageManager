@@ -338,7 +338,7 @@ public partial class MainWindow : Window
         {
             (ViewModel.CurrentPageContent as IKeyboardShortcutListener)?.SelectAllTriggered();
         }
-        else if (isCtrl && !isShift && e.Key is Key.D1 or Key.D2 or Key.D3 or Key.D4 or Key.D5 or Key.D6)
+        else if (isCtrl && !isShift && e.Key is Key.D1 or Key.D2 or Key.D3 or Key.D4 or Key.D5)
         {
             _focusSidebarSelectionOnNextPageChange = true;
             ViewModel.NavigateTo(e.Key switch
@@ -347,8 +347,7 @@ public partial class MainWindow : Window
                 Key.D2 => PageType.Updates,
                 Key.D3 => PageType.Installed,
                 Key.D4 => PageType.Bundles,
-                Key.D5 => PageType.Settings,
-                _ => PageType.Managers,
+                _ => PageType.Settings,
             });
             e.Handled = true;
         }

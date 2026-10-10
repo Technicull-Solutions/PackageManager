@@ -12,6 +12,26 @@ namespace UniGetUI.PackageEngine.Tests;
 [Collection(nameof(OperationOrchestrationTestCollection))]
 public sealed class SourceOperationsTests
 {
+    [Theory]
+    [InlineData("Winget")]
+    [InlineData("PowerShell")]
+    [InlineData("PowerShell7")]
+    public void AdministratorManagedManagersRejectSourceChanges(string managerName)
+    {
+        var manager = new PackageManagerBuilder().WithName(managerName).Build();
+        var source = new SourceBuilder().WithManager(manager).Build();
+
+        InvalidOperationException addException = Assert.Throws<InvalidOperationException>(
+            () => new AddSourceOperation(source)
+        );
+        InvalidOperationException removeException = Assert.Throws<InvalidOperationException>(
+            () => new RemoveSourceOperation(source)
+        );
+
+        Assert.Contains("administrator-managed", addException.Message);
+        Assert.Contains("administrator-managed", removeException.Message);
+    }
+
     [Fact]
     public void RetryAsAdminSetsForceAsAdministrator()
     {

@@ -6,7 +6,6 @@ using UniGetUI.Core.Tools;
 using UniGetUI.PackageEngine.Classes.Manager;
 using UniGetUI.PackageEngine.Interfaces;
 using UniGetUI.PackageEngine.ManagerClasses.Manager;
-using UniGetUI.PackageEngine.Operations;
 using UniGetUI.PackageEngine.PackageLoader;
 using UniGetUI.Tui.Infrastructure;
 using UniGetUI.Tui.Theme;
@@ -89,9 +88,6 @@ internal sealed class ManagersPage : UserControl, ITuiPage
 /// </summary>
 internal sealed class ManagerSettingsDialog : FormDialog
 {
-    /// <summary>Managers built on the NuGet base, which accept a local folder or network share as a source.</summary>
-    private static readonly string[] FolderFeedManagers = ["Chocolatey", "PowerShell", "PowerShell7", ".NET Tool"];
-
     private readonly IPackageManager _manager;
     private IReadOnlyList<IManagerSource> _sources = [];
 
@@ -189,21 +185,22 @@ internal sealed class ManagerSettingsDialog : FormDialog
 
     private void BuildSources()
     {
-        Form.AddHeader(CoreTools.Translate("Manage sources"));
+        Form.AddHeader(CoreTools.Translate("Configured sources"));
+        Form.AddNote(CoreTools.Translate(
+            "Sources are configured by your organization through Group Policy or the machine configuration file."
+        ));
         if (!_manager.IsReady())
         {
-            Form.AddNote(CoreTools.Translate("The manager must be enabled and ready to manage its sources."));
+            Form.AddNote(CoreTools.Translate("The manager must be enabled and ready to list its sources."));
             return;
         }
 
         if (_sources.Count == 0) Form.AddNote(CoreTools.Translate("Loading…"));
         foreach (IManagerSource source in _sources)
         {
-            IManagerSource s = source;
-            Form.AddButton($"{CoreTools.Translate("Remove")}  {s.Name}  —  {s.Url}", () => RemoveSourceAsync(s));
+            Form.AddNote($"{source.Name}  —  {source.Url}");
         }
 
-        Form.AddButton(CoreTools.Translate("Add source") + "…", AddSourceAsync);
         Form.AddButton(CoreTools.Translate("Reload sources"), LoadSourcesAsync);
     }
 
@@ -294,51 +291,6 @@ internal sealed class ManagerSettingsDialog : FormDialog
         if (string.IsNullOrWhiteSpace(path)) return;
         Settings.SetDictionaryItem(Settings.K.ManagerPaths, _manager.Name, path.Trim().Trim('"'));
         await ToggleAsync(_manager.IsEnabled());
-    }
-
-    private async Task AddSourceAsync()
-    {
-        var known = _manager.Properties.KnownSources.Where(k => _sources.All(s => s.Name != k.Name)).ToList();
-        var choices = known.Select(k => new TuiChoice($"{k.Name}  —  {k.Url}")).ToList();
-        choices.Add(new TuiChoice(CoreTools.Translate("Other") + "…"));
-        int? picked = await TuiPrompts.ChooseAsync(CoreTools.Translate("Add source"), choices);
-        if (picked is not int i) return;
-
-        IManagerSource source;
-        if (i < known.Count)
-        {
-            source = known[i];
-        }
-        else
-        {
-            string? name = await TuiPrompts.AskTextAsync(CoreTools.Translate("Add source"), CoreTools.Translate("Source name:"));
-            if (string.IsNullOrWhiteSpace(name)) return;
-            // The NuGet-based managers also serve feeds that are a local folder or a network share. The address is
-            // parsed the same way as in the desktop app, where a path such as C:\feeds becomes a file:// source.
-            bool folders = FolderFeedManagers.Contains(_manager.Name);
-            string? url = await TuiPrompts.AskTextAsync(CoreTools.Translate("Add source"),
-                folders ? CoreTools.Translate("Source URL or folder (a local path or \\\\server\\share):") : CoreTools.Translate("Source URL:"),
-                folders ? "" : "https://",
-                u => Uri.TryCreate(u.Trim(), UriKind.Absolute, out _) ? null
-                    : folders ? CoreTools.Translate("Please enter a valid URL or folder path") : CoreTools.Translate("Please enter a valid URL"));
-            if (string.IsNullOrWhiteSpace(url)) return;
-            source = new ManagerSource(_manager, name.Trim(), new Uri(url.Trim()));
-        }
-
-        var op = new AddSourceOperation(source);
-        op.OperationFinished += (_, _) => _ = LoadSourcesAsync();
-        TuiOperationRegistry.Start(op);
-        TuiNotifications.Info(CoreTools.Translate("Add source"), source.Name);
-    }
-
-    private async Task RemoveSourceAsync(IManagerSource source)
-    {
-        if (!await TuiPrompts.ConfirmAsync(CoreTools.Translate("Remove"),
-                CoreTools.Translate("Are you sure you want to delete the source {0}?", source.Name)))
-            return;
-        var op = new RemoveSourceOperation(source);
-        op.OperationFinished += (_, _) => _ = LoadSourcesAsync();
-        TuiOperationRegistry.Start(op);
     }
 
     private static Task ResetWinGetAsync()

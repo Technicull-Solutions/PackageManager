@@ -702,7 +702,7 @@ public partial class MainWindowViewModel : ViewModelBase
             PageType.Bundles => catalogEnabled ? PageType.Catalog : PageType.Settings,
             PageType.Catalog => catalogEnabled ? PageType.CatalogEditor : PageType.Settings,
             PageType.CatalogEditor => PageType.Settings,
-            PageType.Settings => PageType.Managers,
+            PageType.Settings => PageType.Discover,
             PageType.Managers => PageType.Discover,
             _ => PageType.Discover,
         };
@@ -713,7 +713,7 @@ public partial class MainWindowViewModel : ViewModelBase
     internal static PageType GetPreviousPage(PageType type, bool catalogEnabled) =>
         type switch
         {
-            PageType.Discover => PageType.Managers,
+            PageType.Discover => PageType.Settings,
             PageType.Updates => PageType.Discover,
             PageType.Installed => PageType.Updates,
             PageType.Bundles => PageType.Installed,
@@ -732,6 +732,14 @@ public partial class MainWindowViewModel : ViewModelBase
         bool toHistory = true,
         CancellationToken cancellationToken = default)
     {
+        if (newPage_t is PageType.Managers)
+        {
+            Logger.Warn(
+                "Package-manager settings navigation was rejected because configuration is administrator-managed."
+            );
+            return false;
+        }
+
         if (newPage_t is PageType.Catalog or PageType.CatalogEditor && !Sidebar.SoftwareCatalogEnabled)
         {
             Logger.Warn("Software Catalog navigation was rejected because the experimental feature is disabled.");

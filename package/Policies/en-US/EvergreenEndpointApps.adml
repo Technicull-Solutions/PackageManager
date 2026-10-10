@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources revision="1.0" schemaVersion="1.0"
+  xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitionResources">
+  <displayName>Evergreen Endpoint | Apps policy resources</displayName>
+  <description>Administrative policy for Evergreen Endpoint | Apps.</description>
+  <resources>
+    <stringTable>
+      <string id="SUPPORTED_Windows10OrLater">Windows 10 or later</string>
+      <string id="TechnicullSolutions">Technicull Solutions</string>
+      <string id="EvergreenEndpointApps">Evergreen Endpoint | Apps</string>
+      <string id="PackageManagers">Package managers</string>
+      <string id="PackageManagerConfigurationFile">Set the package-manager configuration file</string>
+      <string id="PackageManagerConfigurationFile_Help">Specifies the absolute path to the machine JSON configuration. Policy values configured below override individual values from this file.</string>
+      <string id="EnableWinGet">Enable WinGet and Microsoft Store</string>
+      <string id="EnableWinGet_Help">Controls WinGet. Microsoft Store packages are provided by WinGet through the msstore source.</string>
+      <string id="WinGetExecutablePath">Set the WinGet executable path</string>
+      <string id="AllowedWinGetSources">Set allowed WinGet sources</string>
+      <string id="EnablePowerShell">Enable Windows PowerShell Gallery</string>
+      <string id="EnablePowerShell_Help">Controls module discovery and operations through Windows PowerShell 5.x.</string>
+      <string id="PowerShellExecutablePath">Set the Windows PowerShell executable path</string>
+      <string id="AllowedPowerShellSources">Set allowed Windows PowerShell repositories</string>
+      <string id="EnablePowerShell7">Enable PowerShell 7 repositories</string>
+      <string id="EnablePowerShell7_Help">Controls module discovery and operations through PowerShell 7.</string>
+      <string id="PowerShell7ExecutablePath">Set the PowerShell 7 executable path</string>
+      <string id="AllowedPowerShell7Sources">Set allowed PowerShell 7 repositories</string>
+      <string id="ExecutablePath_Help">Sets an administrator-controlled executable path. An invalid configured path fails closed instead of falling back to another executable.</string>
+      <string id="AllowedSources_Help">Enter one source or repository name per line. Only matching configured sources are exposed by the application. Source registration is performed during managed deployment.</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="PackageManagerConfigurationFile"><textBox refId="ConfigurationFile"><label>Configuration file:</label></textBox></presentation>
+      <presentation id="WinGetExecutablePath"><textBox refId="WinGetExecutablePath"><label>Executable path:</label></textBox></presentation>
+      <presentation id="AllowedWinGetSources"><multiTextBox refId="AllowedWinGetSources">Allowed source names:</multiTextBox></presentation>
+      <presentation id="PowerShellExecutablePath"><textBox refId="PowerShellExecutablePath"><label>Executable path:</label></textBox></presentation>
+      <presentation id="AllowedPowerShellSources"><multiTextBox refId="AllowedPowerShellSources">Allowed repository names:</multiTextBox></presentation>
+      <presentation id="PowerShell7ExecutablePath"><textBox refId="PowerShell7ExecutablePath"><label>Executable path:</label></textBox></presentation>
+      <presentation id="AllowedPowerShell7Sources"><multiTextBox refId="AllowedPowerShell7Sources">Allowed repository names:</multiTextBox></presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>

@@ -110,7 +110,6 @@ public partial class SettingsBasePage : UserControl, IInnerNavigationPage, IEnte
     {
         if (e == typeof(ManagersHomepage))
         {
-            GetMainWindowViewModel()?.NavigateTo(PageType.Managers);
             return;
         }
 
@@ -196,28 +195,13 @@ public partial class SettingsBasePage : UserControl, IInnerNavigationPage, IEnte
 
     // ── IInnerNavigationPage extra overloads ──────────────────────────────
 
-    public async Task<bool> NavigateToAsync(
+    public Task<bool> NavigateToAsync(
         IPackageManager manager,
         CancellationToken cancellationToken = default)
     {
-        await _transitionSemaphore.WaitAsync(cancellationToken);
-        try
-        {
-            if (!await CanCurrentPageLeaveCoreAsync(
-                    PageLeaveReason.NestedNavigation,
-                    cancellationToken))
-                return false;
-
-            if (_currentContent is not null)
-                _history.Push(_currentContent);
-
-            NavigateToPage(new PackageManagerPage(manager));
-            return true;
-        }
-        finally
-        {
-            _transitionSemaphore.Release();
-        }
+        // Manager state and sources are provisioned through machine JSON or Group Policy.
+        // Keep the legacy page types compiled for migration, but do not expose them to users.
+        return Task.FromResult(false);
     }
 
     public async Task<bool> NavigateToAsync(
@@ -225,6 +209,9 @@ public partial class SettingsBasePage : UserControl, IInnerNavigationPage, IEnte
         string? anchor = null,
         CancellationToken cancellationToken = default)
     {
+        if (page == typeof(ManagersHomepage))
+            return false;
+
         await _transitionSemaphore.WaitAsync(cancellationToken);
         try
         {

@@ -321,58 +321,18 @@ internal sealed class OtherPagesE2ETests : TuiE2ETestBase
     }
 
     [Test]
-    public async Task Managers_AddAndRemoveASource()
+    public async Task Managers_SourcesAreReadOnly()
     {
         await ResetAsync(TuiPageIds.Managers);
         await EnterPage();
         await FocusFieldAsync("WinGet settings");
         await Key(K.Enter);
         await WaitForDialogAsync("WinGet settings");
-        await WaitForTextAsync("Manage sources", "msstore");
-        await FocusFieldAsync("Add source");
-        await Key(K.Enter);
-        await ChooseAsync("Other");
-        await WaitForDialogAsync("Add source");
-        await Type("contoso-private");
-        await Key(K.Enter);
-        await WaitForDialogAsync("Add source");
-        await ReplaceTextAsync("https://fake.unigetui.invalid/private");
-        await Key(K.Enter);
-        await WaitForOperationsToFinishAsync();
-        await WaitUntilAsync(() => State.Sources.Any(s => s.Name == "contoso-private"), "the new source");
-        await WaitForTextAsync("Remove  contoso-private");
-
-        await FocusFieldAsync("Remove  contoso-private", K.Up);
-        await Key(K.Enter);
-        await WaitForDialogAsync("Remove");
-        await Key(K.Enter);
-        await WaitForOperationsToFinishAsync();
-        await WaitUntilAsync(() => State.Sources.All(s => s.Name != "contoso-private"), "the source to be removed");
-        await Key(K.Escape);
-    }
-
-    [Test]
-    public async Task Managers_NuGetBasedManager_AcceptsAFolderSource()
-    {
-        await ResetAsync(TuiPageIds.Managers);
-        await EnterPage();
-        await FocusFieldAsync("Chocolatey settings");
-        await Key(K.Enter);
-        await WaitForDialogAsync("Chocolatey settings");
-        await WaitForTextAsync("Manage sources", "community");
-        await FocusFieldAsync("Add source");
-        await Key(K.Enter);
-        await ChooseAsync("Other");
-        await WaitForDialogAsync("Add source");
-        await Type("local-feed");
-        await Key(K.Enter);
-        await WaitForDialogAsync("Add source");
-        await WaitForTextAsync("Source URL or folder");
-        await ReplaceTextAsync(@"C:\feeds\nuget");
-        await Key(K.Enter);
-        await WaitForOperationsToFinishAsync();
-        await WaitUntilAsync(() => State.Sources.Any(s => s.Manager == "Chocolatey" && s.Name == "local-feed"), "the folder source");
-        await Key(K.Escape);
+        await WaitForTextAsync(
+            "Configured sources",
+            "Sources are configured by your organization",
+            "msstore"
+        );
     }
 
     [Test]

@@ -42,7 +42,7 @@ internal static class TuiPageIds
     public const string About = "about";
 
     public static readonly string[] All =
-        [Discover, Updates, Installed, Bundles, Operations, Managers, Settings, Logs, History, Help, About];
+        [Discover, Updates, Installed, Bundles, Operations, Settings, Logs, History, Help, About];
 }
 
 /// <summary>A key and what it does (translated label). <paramref name="Priority"/> orders what is dropped first
