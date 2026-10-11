@@ -73,6 +73,11 @@ internal static partial class AvaloniaAutoUpdater
     public static event Action<string>? UpdateAvailable;
 
     /// <summary>
+    /// Fired on the UI thread when release metadata reports the monotonic build number on main.
+    /// </summary>
+    public static event Action<int>? LatestBuildObserved;
+
+    /// <summary>
     /// Fired on the UI thread to surface progress/result of an update check or
     /// install attempt to the UI banner.  Mirrors the verbose feedback the WinUI
     /// AutoUpdater shows in its <c>InfoBar</c>.
@@ -398,8 +403,12 @@ internal static partial class AvaloniaAutoUpdater
             }
 
             UpdateCandidate candidate = await GetUpdateCandidateAsync(overrides);
+            if (candidate.BuildNumber > 0)
+            {
+                Dispatcher.UIThread.Post(() => LatestBuildObserved?.Invoke(candidate.BuildNumber));
+            }
             LogUpdateInfo(
-                $"Auto-updater source '{candidate.SourceName}' returned version {candidate.VersionName} (upgradable={candidate.IsUpgradable})"
+                $"Auto-updater source '{candidate.SourceName}' returned version {candidate.VersionName}, build {candidate.BuildVersion} (upgradable={candidate.IsUpgradable})"
             );
 
             if (!candidate.IsUpgradable)
@@ -408,7 +417,7 @@ internal static partial class AvaloniaAutoUpdater
                 {
                     RaiseStatus(
                         CoreTools.Translate("Great! You are on the latest version."),
-                        CoreTools.Translate("There are no new UniGetUI versions to be installed"),
+                        CoreTools.Translate("There are no new Package Manager versions to be installed"),
                         InfoBarSeverity.Success,
                         isClosable: true);
                 }
@@ -418,7 +427,7 @@ internal static partial class AvaloniaAutoUpdater
 
             wasCheckingForUpdates = false;
             RecordTargetVersion(candidate.VersionName);
-            LogUpdateInfo($"Update to UniGetUI {candidate.VersionName} is available.");
+            LogUpdateInfo($"Update to {CoreData.ApplicationDisplayName} {candidate.VersionName} is available.");
 
             string installerName;
             if (OperatingSystem.IsWindows())
@@ -1272,7 +1281,15 @@ internal static partial class AvaloniaAutoUpdater
             $"ProductInfo check: current={current}, available={available}, upgradable={upgradable}"
         );
 
-        return new UpdateCandidate(upgradable, channel.Version, installer.Hash, installer.Url, "ProductInfo");
+        return new UpdateCandidate(
+            upgradable,
+            channel.Version,
+            channel.BuildVersion,
+            channel.BuildNumber,
+            installer.Hash,
+            installer.Url,
+            "ProductInfo"
+        );
     }
 
     // ------------------------------------------------------------------ validation helpers
@@ -1704,6 +1721,8 @@ internal static partial class AvaloniaAutoUpdater
     private sealed record UpdateCandidate(
         bool IsUpgradable,
         string VersionName,
+        string BuildVersion,
+        int BuildNumber,
         string InstallerHash,
         string InstallerDownloadUrl,
         string SourceName
@@ -1727,6 +1746,8 @@ internal static partial class AvaloniaAutoUpdater
     private sealed class ProductInfoChannel
     {
         public string Version { get; set; } = string.Empty;
+        public string BuildVersion { get; set; } = string.Empty;
+        public int BuildNumber { get; set; }
         public List<ProductInfoFile> Files { get; set; } = [];
     }
 

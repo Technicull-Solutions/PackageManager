@@ -297,27 +297,6 @@ public static class IpcManagerSettingsApi
         };
     }
 
-    private static IpcSourceOperationResult ToSourceOperationResult(
-        string command,
-        AbstractOperation operation,
-        IManagerSource source
-    )
-    {
-        return new IpcSourceOperationResult
-        {
-            Status = operation.Status == OperationStatus.Succeeded ? "success" : "error",
-            Command = command,
-            OperationStatus = operation.Status.ToString().ToLowerInvariant(),
-            Message = operation.Status switch
-            {
-                OperationStatus.Succeeded => null,
-                OperationStatus.Canceled => "The operation was canceled.",
-                _ => operation.GetOutput().LastOrDefault().Item1,
-            },
-            Source = ToSourceInfo(source, isKnown: true, isConfigured: true),
-        };
-    }
-
     internal static IReadOnlyList<IPackageManager> ResolveManagers(string? managerName)
     {
         var managers = PEInterface.Managers
@@ -383,85 +362,6 @@ public static class IpcManagerSettingsApi
             || manager.Name.Equals(managerName, StringComparison.OrdinalIgnoreCase)
             || manager.DisplayName.Equals(managerName, StringComparison.OrdinalIgnoreCase)
         );
-    }
-
-    private static IManagerSource ResolveSourceForAdd(
-        IPackageManager manager,
-        IpcSourceRequest request
-    )
-    {
-        if (string.IsNullOrWhiteSpace(request.SourceName))
-        {
-            throw new InvalidOperationException("The source name is required.");
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.SourceUrl))
-        {
-            return new ManagerSource(
-                manager,
-                request.SourceName,
-                new Uri(request.SourceUrl, UriKind.Absolute)
-            );
-        }
-
-        return manager.Properties.KnownSources.FirstOrDefault(source =>
-                SourceMatches(source, request.SourceName, null)
-            )
-            ?? throw new InvalidOperationException(
-                $"No known source matching \"{request.SourceName}\" was found for manager \"{manager.Name}\"."
-            );
-    }
-
-    private static IManagerSource ResolveSourceForRemove(
-        IPackageManager manager,
-        IpcSourceRequest request
-    )
-    {
-        if (string.IsNullOrWhiteSpace(request.SourceName))
-        {
-            throw new InvalidOperationException("The source name is required.");
-        }
-
-        var configuredSource = GetConfiguredSources(manager).FirstOrDefault(source =>
-            SourceMatches(source, request.SourceName, request.SourceUrl)
-        );
-        if (configuredSource is not null)
-        {
-            return configuredSource;
-        }
-
-        if (!string.IsNullOrWhiteSpace(request.SourceUrl))
-        {
-            return new ManagerSource(
-                manager,
-                request.SourceName,
-                new Uri(request.SourceUrl, UriKind.Absolute)
-            );
-        }
-
-        var knownSource = manager.Properties.KnownSources.FirstOrDefault(source =>
-            SourceMatches(source, request.SourceName, null)
-        );
-        if (knownSource is not null)
-        {
-            return knownSource;
-        }
-
-        return new ManagerSource(manager, request.SourceName, new Uri("https://localhost/"));
-    }
-
-    private static bool SourceMatches(
-        IManagerSource source,
-        string sourceName,
-        string? sourceUrl
-    )
-    {
-        return source.Name.Equals(sourceName, StringComparison.OrdinalIgnoreCase)
-            || source.AsString_DisplayName.Equals(sourceName, StringComparison.OrdinalIgnoreCase)
-            || (
-                !string.IsNullOrWhiteSpace(sourceUrl)
-                && source.Url.ToString().Equals(sourceUrl, StringComparison.OrdinalIgnoreCase)
-            );
     }
 
     private static IReadOnlyList<IManagerSource> GetConfiguredSources(IPackageManager manager)

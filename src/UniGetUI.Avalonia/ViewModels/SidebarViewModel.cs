@@ -39,6 +39,21 @@ public partial class SidebarViewModel : ViewModelBase
     [ObservableProperty]
     private bool _installedIsLoading;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(BuildStatusIsCurrent))]
+    [NotifyPropertyChangedFor(nameof(BuildStatusIsSlightlyBehind))]
+    [NotifyPropertyChangedFor(nameof(BuildStatusIsBehind))]
+    [NotifyPropertyChangedFor(nameof(BuildStatusIsCriticallyBehind))]
+    private BuildFreshnessLevel _buildStatusLevel = BuildFreshnessLevel.Current;
+
+    [ObservableProperty]
+    private string _buildStatusText = $"{CoreTools.Translate("Status")}: {CoreTools.Translate("Up to date")}";
+
+    public bool BuildStatusIsCurrent => BuildStatusLevel is BuildFreshnessLevel.Current;
+    public bool BuildStatusIsSlightlyBehind => BuildStatusLevel is BuildFreshnessLevel.SlightlyBehind;
+    public bool BuildStatusIsBehind => BuildStatusLevel is BuildFreshnessLevel.Behind;
+    public bool BuildStatusIsCriticallyBehind => BuildStatusLevel is BuildFreshnessLevel.CriticallyBehind;
+
     // ─── Pane open/closed ─────────────────────────────────────────────────────
     // NavMenuMode: Automatic mirrors WinUI (dock ≥1600px, else rail+overlay), Docked = always
     // inline, Overlay = always rail+overlay. IsPaneOpen = labeled pane showing, in any mode.
@@ -127,7 +142,22 @@ public partial class SidebarViewModel : ViewModelBase
     public event EventHandler<PageType>? NavigationRequested;
 
     public string VersionLabel { get; } =
-        CoreTools.Translate("UniGetUI Version {0} by Devolutions", CoreData.VersionName);
+        $"{CoreTools.Translate("Version")} {CoreData.VersionName} · {CoreTools.Translate("Build")} {CoreData.BuildNumber}";
+
+    public void UpdateBuildFreshness(int latestMainBuildNumber)
+    {
+        BuildFreshnessStatus status = BuildFreshness.Compare(
+            CoreData.BuildNumber,
+            latestMainBuildNumber
+        );
+
+        BuildStatusLevel = status.Level;
+        BuildStatusText = status.BuildsBehind == 0
+            ? $"{CoreTools.Translate("Status")}: {CoreTools.Translate("Up to date")}"
+            : status.BuildsBehind == 1
+                ? $"{CoreTools.Translate("Status")}: {CoreTools.Translate("1 build behind")}"
+                : $"{CoreTools.Translate("Status")}: {CoreTools.Translate("{0} builds behind", status.BuildsBehind)}";
+    }
 
     [RelayCommand]
     public void RequestNavigation(string? pageName)

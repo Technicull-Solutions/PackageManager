@@ -3,15 +3,15 @@ using System.Reflection;
 using System.Runtime.Versioning;
 #endif
 
-[assembly: AssemblyProduct("UniGetUI")]
-[assembly: AssemblyDescription("UniGetUI")]
-[assembly: AssemblyTitle("UniGetUI")]
-[assembly: AssemblyDefaultAlias("UniGetUI")]
-[assembly: AssemblyCompany("Devolutions Inc.")]
-[assembly: AssemblyCopyright("Copyright 2021-2026 Devolutions Inc.")]
-[assembly: AssemblyVersion("3.3.7.0")]
-[assembly: AssemblyFileVersion("3.3.7.0")]
-[assembly: AssemblyInformationalVersion("3.3.7")]
+[assembly: AssemblyProduct("Evergreen Endpoint Package Manager")]
+[assembly: AssemblyDescription("Managed application discovery, installation, and updates for Windows endpoints")]
+[assembly: AssemblyTitle("Evergreen Endpoint Package Manager")]
+[assembly: AssemblyDefaultAlias("Evergreen Endpoint Package Manager")]
+[assembly: AssemblyCompany("Technicull Solutions")]
+[assembly: AssemblyCopyright("Copyright 2026 Technicull Solutions")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
+[assembly: AssemblyInformationalVersion("0.1.0")]
 #if WINDOWS
 [assembly: SupportedOSPlatform("windows10.0.19041")]
 #endif

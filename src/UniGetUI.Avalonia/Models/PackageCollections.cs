@@ -175,6 +175,7 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
         }
     }
     public bool HasCustomIcon => _iconBitmap is not null;
+    public string IconFallbackText { get; }
 
     public bool IsChecked
     {
@@ -247,6 +248,7 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
     {
         Package = package;
         _page = page;
+        IconFallbackText = CreateIconFallbackText(package.Name, package.Id);
         VersionComboString = package.VersionString;
         InstalledVersionTooltip = InstalledVersionNotice.BuildTooltip(package);
 
@@ -256,6 +258,20 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
         // Icons are normally preloaded after the result set completes. The visible-row hook remains
         // as a fallback while results are still arriving.
         MaybeStartInstallerHostCheck();
+    }
+
+    public static string CreateIconFallbackText(string? name, string? id)
+    {
+        string source = string.IsNullOrWhiteSpace(name) ? id ?? string.Empty : name;
+        char[] initials = source
+            .Split([' ', '.', '-', '_', '/', '\\'], StringSplitOptions.RemoveEmptyEntries)
+            .Select(part => part.FirstOrDefault(char.IsLetterOrDigit))
+            .Where(character => character != default)
+            .Take(2)
+            .Select(char.ToUpperInvariant)
+            .ToArray();
+
+        return initials.Length == 0 ? "?" : new string(initials);
     }
 
     private readonly object _iconLoadLock = new();

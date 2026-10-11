@@ -149,8 +149,12 @@
                                 <Image Source="{Binding IconBitmap}" Width="24" Height="24"
                                        Stretch="Uniform" IsVisible="{Binding HasCustomIcon}"
                                        RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                                <controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/package.svg"
-                                                  Width="24" Height="24" IsVisible="{Binding !HasCustomIcon}"/>
+                                <Border Width="24" Height="24" CornerRadius="5"
+                                        Background="{DynamicResource PackageInitialBackgroundBrush}" IsVisible="{Binding !HasCustomIcon}">
+                                    <TextBlock Text="{Binding IconFallbackText}" Foreground="{DynamicResource PackageInitialForegroundBrush}"
+                                               FontSize="10" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
                             </Panel>
                             <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="2,0"
                                        Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>

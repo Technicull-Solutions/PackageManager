@@ -6,9 +6,9 @@ namespace UniGetUI.Core.Data
 {
     public static class CoreData
     {
-        private const string GitHubReleasePageBaseUrl = "https://github.com/Devolutions/UniGetUI/releases/tag/";
-        private const string GitHubReleaseApiBaseUrl = "https://api.github.com/repos/Devolutions/UniGetUI/releases/tags/";
-        public const string ReleaseNotesUrl = "https://devolutions.net/unigetui/release-notes/";
+        private const string GitHubReleasePageBaseUrl = "https://github.com/Technicull-Solutions/PackageManager/releases/tag/";
+        private const string GitHubReleaseApiBaseUrl = "https://api.github.com/repos/Technicull-Solutions/PackageManager/releases/tags/";
+        public const string ReleaseNotesUrl = "https://github.com/Technicull-Solutions/PackageManager/releases";
 
         private static int? __code_page;
         public static int CODE_PAGE
@@ -38,11 +38,18 @@ namespace UniGetUI.Core.Data
                 return __console_encoding;
             }
         }
-        public const string VersionName = "2026.1.0"; // Do not modify this line, use file scripts/set-version.ps1
-        public const int BuildNumber = 106; // Do not modify this line, use file scripts/set-version.ps1
+        public const string VersionName = "0.1.0"; // Do not modify this line, use file scripts/set-version.ps1
+        public const int BuildNumber = 1; // Do not modify this line, use file scripts/set-version.ps1
+        public const string ProductName = "Evergreen Endpoint Package Manager";
+        public const string ApplicationDisplayName = "Evergreen Endpoint | APPS";
+        public const string UpstreamBaseVersion = "3.3.7";
+        public const string UpstreamBaseCommit = "5b9cc2bf35050a2a4ed8e8fe7d8b6732b049afb2";
 
-        public const string UserAgentString =
-            $"UniGetUI/{VersionName} (https://devolutions.net/unigetui; unigetui@devolutions.net)";
+        public static readonly string UserAgentString =
+            $"EvergreenEndpointPackageManager/{VersionName} (build {BuildNumber})";
+
+        public const string MainBuildNumberUrl =
+            "https://raw.githubusercontent.com/Technicull-Solutions/PackageManager/main/scripts/BuildNumber";
 
         public const string AppIdentifier = "MartiCliment.UniGetUI";
         public const string MainWindowIdentifier = "MartiCliment.UniGetUI.MainInterface";

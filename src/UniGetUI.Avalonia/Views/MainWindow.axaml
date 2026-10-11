@@ -13,7 +13,8 @@
         mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="750"
         x:Class="UniGetUI.Avalonia.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="UniGetUI"
+        Title="Evergreen Endpoint | APPS"
+        WindowDecorations="None"
         Width="1450"
         MinWidth="700"
         MinHeight="500">
@@ -592,12 +593,13 @@
         <Grid x:Name="TitleBarGrid"
               Height="{Binding $parent[Window].WindowDecorationMargin.Top}"
               VerticalAlignment="Top"
+              Background="{DynamicResource AppTitleBarBackground}"
               ColumnDefinitions="*,Auto,*">
 
             <!-- Drag area — sits behind everything so interactive controls still work -->
             <Border Grid.Column="0" Grid.ColumnSpan="3"
                     x:Name="TitleBarDragArea"
-                    Background="{DynamicResource MicaPageBackground}"
+                    Background="Transparent"
                     automation:AutomationProperties.AccessibilityView="Raw"
                     IsHitTestVisible="True"
                     PointerPressed="TitleBar_PointerPressed"
@@ -626,7 +628,7 @@
                         ToolTip.Tip="{t:Translate Go back}"
                         Click="BackButton_Click">
                     <Path Width="16" Height="14"
-                          Stroke="{DynamicResource TextFillColorPrimaryBrush}"
+                          Stroke="{DynamicResource AppTitleBarForeground}"
                           StrokeThickness="1.5"
                           StrokeLineCap="Round"
                           StrokeJoin="Round"
@@ -643,15 +645,19 @@
                         ToolTip.Tip="{t:Translate Toggle navigation panel}"
                         Command="{Binding ToggleSidebarCommand}">
                     <Path Width="16" Height="14"
-                          Stroke="{DynamicResource TextFillColorPrimaryBrush}"
+                          Stroke="{DynamicResource AppTitleBarForeground}"
                           StrokeThickness="1.5"
                           StrokeLineCap="Round"
                           automation:AutomationProperties.AccessibilityView="Raw"
                           Data="M0,1 H16 M0,7 H16 M0,13 H16"/>
                 </Button>
-                <TextBlock Text="{Binding TitleBarText}"
-                           FontSize="13"
-                           FontWeight="SemiBold"
+                <controls:BrandWordmark Width="145"
+                                        Height="48"
+                                        VerticalAlignment="Center"
+                                        automation:AutomationProperties.Name="Evergreen Endpoint | APPS"/>
+                <TextBlock Text="{Binding TitleBarVersionText}"
+                           Foreground="{DynamicResource AppTitleBarForeground}"
+                           FontSize="12"
                            VerticalAlignment="Center"/>
             </StackPanel>
 
@@ -791,6 +797,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Spacing="0"
+                            TextElement.Foreground="{DynamicResource AppTitleBarForeground}"
                             IsVisible="False">
                     <!-- Minimize: horizontal line -->
                     <Button Width="46" Height="44"

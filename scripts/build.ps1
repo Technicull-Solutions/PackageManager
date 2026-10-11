@@ -19,7 +19,7 @@
     Skip building the Inno Setup installer.
 
 .PARAMETER Version
-    Version string to stamp into the build (e.g. "3.3.7"). If not provided,
+    Evergreen release version to stamp into the build (e.g. "0.1.0"). If not provided,
     the current version from SharedAssemblyInfo.cs is used.
 
 .PARAMETER MaxInstallerCompression
@@ -80,7 +80,7 @@ if (-not $SkipTests) {
 Write-Host "`n=== Publishing $Configuration|$Platform ===" -ForegroundColor Cyan
 dotnet clean $WindowsSolution -v m --nologo /p:Platform=$Platform
 
-dotnet publish $PublishProject /noLogo /p:Configuration=$Configuration /p:Platform=$Platform -p:RuntimeIdentifier=win-$Platform --ignore-failed-sources -v m
+dotnet publish $PublishProject /noLogo /m:1 /p:Configuration=$Configuration /p:Platform=$Platform -p:RuntimeIdentifier=win-$Platform --ignore-failed-sources -v m
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish Avalonia failed with exit code $LASTEXITCODE"
 }
@@ -125,12 +125,27 @@ if ($PdbsToRemove.Count -gt 0) {
 if (Test-Path $OutputPath) { Remove-Item $OutputPath -Recurse -Force }
 New-Item $OutputPath -ItemType Directory | Out-Null
 
-$ZipPath = Join-Path $OutputPath "UniGetUI.$Platform.zip"
+$BuildNumberPath = Join-Path $PSScriptRoot "BuildNumber"
+$BuildNumber = (Get-Content -LiteralPath $BuildNumberPath -Raw).Trim()
+$ArtifactStem = "EvergreenEndpointPackageManager.$PackageVersion-build.$BuildNumber.$Platform"
+$ZipPath = Join-Path $OutputPath "$ArtifactStem.zip"
 Write-Host "`n=== Refreshing integrity tree before zip packaging ===" -ForegroundColor Cyan
 & (Join-Path $PSScriptRoot "refresh-integrity-tree.ps1") -Path $BinDir -FailOnUnexpectedFiles
 
 Write-Host "`n=== Creating zip: $ZipPath ===" -ForegroundColor Cyan
 Compress-Archive -Path (Join-Path $BinDir "*") -DestinationPath $ZipPath -CompressionLevel Optimal
+
+# Package the ADMX/ADML files in the PolicyDefinitions layout expected by local and domain GPO stores.
+$PolicyArtifactPath = Join-Path $OutputPath "EvergreenEndpointPackageManager.Policies.$PackageVersion-build.$BuildNumber.zip"
+$PolicyStage = Join-Path $OutputPath ".policy-staging"
+$PolicyDefinitionsStage = Join-Path $PolicyStage "PolicyDefinitions"
+$PolicyLocaleStage = Join-Path $PolicyDefinitionsStage "en-US"
+New-Item $PolicyLocaleStage -ItemType Directory -Force | Out-Null
+Copy-Item (Join-Path $RepoRoot "package\Policies\EvergreenEndpointPackageManager.admx") $PolicyDefinitionsStage
+Copy-Item (Join-Path $RepoRoot "package\Policies\en-US\EvergreenEndpointPackageManager.adml") $PolicyLocaleStage
+Copy-Item (Join-Path $RepoRoot "package\Policies\README.md") $PolicyStage
+Compress-Archive -Path (Join-Path $PolicyStage "*") -DestinationPath $PolicyArtifactPath -CompressionLevel Optimal
+Remove-Item $PolicyStage -Recurse -Force
 
 # --- Installer (Inno Setup) ---
 if (-not $SkipInstaller) {
@@ -146,7 +161,7 @@ if (-not $SkipInstaller) {
 
     if ($IsccPath) {
         Write-Host "`n=== Building installer ===" -ForegroundColor Cyan
-        $InstallerBaseName = "UniGetUI.Installer.$Platform"
+        $InstallerBaseName = "$ArtifactStem.Setup"
         $IssPath = Join-Path $RepoRoot "UniGetUI.iss"
         $IssContent = Get-Content $IssPath -Raw
 

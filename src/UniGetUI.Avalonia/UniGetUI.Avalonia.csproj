@@ -321,6 +321,8 @@
         <AvaloniaResource Include="Assets\Images\launcher.png" />
         <AvaloniaResource Include="Assets\Images\Trophee.png" />
         <AvaloniaResource Include="Assets\Images\Empty_inbox.png" />
+        <AvaloniaResource Include="Assets\Brand\*.png" />
+        <AvaloniaResource Include="Assets\Brand\*.svg" />
         <AvaloniaResource Include="..\SharedAssets\Assets\SplashScreen.png" Link="Assets\SplashScreen.png" />
         <AvaloniaResource Include="..\SharedAssets\Assets\SplashScreen.theme-dark.png" Link="Assets\SplashScreen.theme-dark.png" />
         <!-- Tray status icon variants: status colour encoded by the corner dot; light/dark tone per taskbar theme. -->

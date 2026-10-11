@@ -102,14 +102,14 @@ namespace UniGetUI.Core.Data.Tests
         public void CheckGitHubReleaseUrlsUseEscapedResolvedTag()
         {
             Assert.Equal(
-                "https://github.com/Devolutions/UniGetUI/releases/tag/v2026.1.2",
+                "https://github.com/Technicull-Solutions/PackageManager/releases/tag/v2026.1.2",
                 CoreData.GetGitHubReleasePageUrlFromTag(CoreData.GetGitHubReleaseTag("2026.1.2"))
             );
             Assert.Equal(
-                "https://api.github.com/repos/Devolutions/UniGetUI/releases/tags/3.3.7-beta1",
+                "https://api.github.com/repos/Technicull-Solutions/PackageManager/releases/tags/3.3.7-beta1",
                 CoreData.GetGitHubReleaseApiUrlFromTag("3.3.7-beta1")
             );
-            Assert.Equal("https://devolutions.net/unigetui/release-notes/", CoreData.ReleaseNotesUrl);
+            Assert.Equal("https://github.com/Technicull-Solutions/PackageManager/releases", CoreData.ReleaseNotesUrl);
             Assert.Equal(CoreData.ReleaseNotesUrl, CoreData.GetGitHubReleasePageUrl());
         }
     }

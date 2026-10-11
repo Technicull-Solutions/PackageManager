@@ -271,6 +271,7 @@ public partial class AutoUpdateCandidateViewModel : ObservableObject, IPackageIc
     private Bitmap? _iconBitmap;
 
     public bool HasCustomIcon => IconBitmap is not null;
+    public string IconFallbackText { get; }
 
     public AutoUpdateCandidateViewModel(
         string autoUpdateId, string id, string name, string version,
@@ -284,6 +285,7 @@ public partial class AutoUpdateCandidateViewModel : ObservableObject, IPackageIc
         _package = package;
         Id = id;
         Name = name;
+        IconFallbackText = PackageWrapper.CreateIconFallbackText(name, id);
         Version = version;
         Manager = manager;
         ManagerIconPath = managerIconPath;

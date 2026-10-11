@@ -901,7 +901,6 @@ public partial class PolicyEditorSessionViewModel : ViewModelBase, IDisposable
         out JsonElement element,
         out PolicyEditorSyntaxError? error)
     {
-        element = default;
         if (Session.Mode == PolicyEditorMode.Raw
             && string.Equals(raw, Session.RawBuffer, StringComparison.Ordinal)
             && Session.TryGetAnalyzedRawElement(out element))

@@ -633,7 +633,7 @@ public class AgentPolicyInspectorViewModelTests
         Assert.Equal("Invalid", viewModel.ManagementStateText);
         Assert.Equal("The configured policy file is invalid", viewModel.ManagementStatus.Title);
         Assert.Contains("administrator", viewModel.ManagementStatus.Message);
-        Assert.Contains("outside UniGetUI", viewModel.ManagementStatus.Message);
+        Assert.Contains("outside Evergreen Endpoint | APPS", viewModel.ManagementStatus.Message);
         Assert.Equal("Unavailable", viewModel.PolicyChangesFromThisAppText);
         Assert.Contains("outside this app", viewModel.PolicyChangesReasonText);
         Assert.True(viewModel.HasPolicyChangesReason);

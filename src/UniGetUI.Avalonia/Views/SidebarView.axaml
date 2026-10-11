@@ -226,7 +226,7 @@
                     </Grid>
                     <FlyoutBase.AttachedFlyout>
                         <MenuFlyout Placement="RightEdgeAlignedTop">
-                        <MenuItem Header="{t:Translate UniGetUI Log}" Command="{Binding RequestNavigationCommand}" CommandParameter="OwnLog">
+                        <MenuItem Header="{t:Translate Application log}" Command="{Binding RequestNavigationCommand}" CommandParameter="OwnLog">
                             <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/buggy.svg" Width="16" Height="16"/></MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{t:Translate Package Manager logs}" Command="{Binding RequestNavigationCommand}" CommandParameter="ManagerLog">
@@ -242,7 +242,7 @@
                         <MenuItem Header="{t:Translate Release notes}" Command="{Binding RequestNavigationCommand}" CommandParameter="ReleaseNotes">
                             <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/megaphone.svg" Width="16" Height="16"/></MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="{t:Translate Check for UniGetUI updates}" Command="{Binding CheckForUpdatesCommand}">
+                        <MenuItem Header="{t:Translate Check for updates}" Command="{Binding CheckForUpdatesCommand}">
                             <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/update.svg" Width="16" Height="16"/></MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
@@ -253,7 +253,7 @@
                             <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/info_round.svg" Width="16" Height="16"/></MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="{t:Translate Quit UniGetUI}" Command="{Binding RequestNavigationCommand}" CommandParameter="Quit">
+                        <MenuItem Header="{t:Translate Quit Evergreen Endpoint | APPS}" Command="{Binding RequestNavigationCommand}" CommandParameter="Quit">
                             <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/close_round.svg" Width="16" Height="16"/></MenuItem.Icon>
                         </MenuItem>
                         </MenuFlyout>
@@ -261,6 +261,39 @@
                 </ListBoxItem>
 
             </ListBox>
+
+            <StackPanel Margin="12,8,8,0"
+                        HorizontalAlignment="Left">
+                <ToolTip.Tip>
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="{Binding BuildStatusText}"/>
+                        <TextBlock Text="{Binding VersionLabel}"/>
+                    </StackPanel>
+                </ToolTip.Tip>
+                <Grid ColumnDefinitions="12,*"
+                      ColumnSpacing="8"
+                      automation:AutomationProperties.Name="{Binding BuildStatusText}">
+                    <Panel Width="10" Height="10" VerticalAlignment="Center">
+                        <Ellipse Fill="{DynamicResource BuildStatusCurrentBrush}" IsVisible="{Binding BuildStatusIsCurrent}"/>
+                        <Ellipse Fill="{DynamicResource BuildStatusSlightlyBehindBrush}" IsVisible="{Binding BuildStatusIsSlightlyBehind}"/>
+                        <Ellipse Fill="{DynamicResource BuildStatusBehindBrush}" IsVisible="{Binding BuildStatusIsBehind}"/>
+                        <Ellipse Fill="{DynamicResource BuildStatusCriticalBrush}" IsVisible="{Binding BuildStatusIsCriticallyBehind}"/>
+                    </Panel>
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding BuildStatusText}"
+                               FontSize="12"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
+                </Grid>
+                <TextBlock Text="{Binding VersionLabel}"
+                           Margin="20,2,0,0"
+                           FontSize="11"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           TextTrimming="CharacterEllipsis"
+                           IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"
+                           automation:AutomationProperties.Name="{Binding VersionLabel}"/>
+            </StackPanel>
 
         </StackPanel>
 

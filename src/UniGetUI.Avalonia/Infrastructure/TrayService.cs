@@ -34,7 +34,7 @@ internal sealed class TrayService : IDisposable
 
         _trayIcon = new TrayIcon
         {
-            ToolTipText = "UniGetUI",
+            ToolTipText = CoreData.ApplicationDisplayName,
             Menu = BuildMenu(owner, _restartComputerItem),
         };
 
@@ -88,12 +88,12 @@ internal sealed class TrayService : IDisposable
                 status = "turquoise";
                 tooltip = (rebootPendingCount, appRestartRequired) switch
                 {
-                    (0, _) => CoreTools.Translate("Restart UniGetUI to fully apply changes"),
+                    (0, _) => CoreTools.Translate("Restart Evergreen Endpoint | APPS to fully apply changes"),
                     (1, false) => CoreTools.Translate(
                         "1 package is waiting for your computer to restart"),
                     (_, false) => CoreTools.Translate(
                         "{0} packages are waiting for your computer to restart", rebootPendingCount),
-                    _ => CoreTools.Translate("UniGetUI and your computer both need to be restarted"),
+                    _ => CoreTools.Translate("Evergreen Endpoint | APPS and your computer both need to be restarted"),
                 };
             }
             else if (updatesCount > 0)
@@ -109,7 +109,7 @@ internal sealed class TrayService : IDisposable
                 tooltip = CoreTools.Translate("Everything is up to date");
             }
 
-            _trayIcon.ToolTipText = tooltip + " - UniGetUI";
+            _trayIcon.ToolTipText = tooltip + " - " + CoreData.ApplicationDisplayName;
 
             bool light = IsTaskbarLight();
             string tone = light ? "_black" : "_white";
@@ -173,13 +173,13 @@ internal sealed class TrayService : IDisposable
         menu.Add(new NativeMenuItemSeparator());
 
         menu.Add(new NativeMenuItem(
-            CoreTools.Translate("UniGetUI Version {0} by Devolutions", CoreData.VersionName))
+            $"{CoreData.ApplicationDisplayName} {CoreData.VersionName} · build {CoreData.BuildNumber}")
         {
             IsEnabled = false,
         });
         menu.Add(new NativeMenuItemSeparator());
 
-        var show = new NativeMenuItem(CoreTools.Translate("Show UniGetUI"));
+        var show = new NativeMenuItem(CoreTools.Translate("Show Evergreen Endpoint | APPS"));
         show.Click += (_, _) => Dispatcher.UIThread.Post(() => owner.ShowFromTray());
         menu.Add(show);
 

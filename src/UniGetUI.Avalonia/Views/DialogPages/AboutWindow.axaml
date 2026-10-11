@@ -4,7 +4,7 @@
         xmlns:t="using:UniGetUI.Avalonia.MarkupExtensions"
         xmlns:about="using:UniGetUI.Avalonia.Views.Pages.AboutPages"
         x:Class="UniGetUI.Avalonia.Views.DialogPages.AboutWindow"
-        Title="{t:Translate About UniGetUI}"
+        Title="{t:Translate About Evergreen Endpoint | APPS}"
         MaxWidth="700"
         MinWidth="500"
         MaxHeight="600"

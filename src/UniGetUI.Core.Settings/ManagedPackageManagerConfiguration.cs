@@ -16,13 +16,13 @@ public static class ManagedPackageManagerConfiguration
     private const long MaximumConfigurationFileSize = 1024 * 1024;
 
     public const string PolicyRegistryPath =
-        @"Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps\PackageManagers";
+        @"Software\Policies\Technicull Solutions\Evergreen Endpoint\Package Manager\PackageManagers";
 
     public static readonly string DefaultConfigurationPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
         "Technicull Solutions",
         "Evergreen Endpoint",
-        "Apps",
+        "Package Manager",
         "package-managers.json"
     );
 

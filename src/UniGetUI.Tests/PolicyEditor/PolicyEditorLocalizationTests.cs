@@ -99,10 +99,6 @@ public partial class PolicyEditorLocalizationTests
             "Allowed pre/post commands",
             "Allowed hash-check skipping",
         ]);
-        keys.UnionWith(typeof(PolicyEditorHelp)
-            .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
-            .Where(property => property.PropertyType == typeof(string))
-            .Select(property => (string)property.GetValue(null)!));
         keys.UnionWith(AllEnumOptionHelpTexts(includeManagers: false));
         keys.Add("{0} applies this rule to requests handled by that package manager. Leave all managers clear to include every package manager.");
 

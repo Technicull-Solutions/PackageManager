@@ -1,18 +1,18 @@
-# Evergreen Endpoint | Apps administrative configuration
+# Evergreen Endpoint Package Manager administrative configuration
 
-Copy `EvergreenEndpointApps.admx` to `%SystemRoot%\PolicyDefinitions` and copy the `en-US`
+Copy `EvergreenEndpointPackageManager.admx` to `%SystemRoot%\PolicyDefinitions` and copy the `en-US`
 resource file into `%SystemRoot%\PolicyDefinitions\en-US`. For a domain, copy the same files to the
 domain Central Store under `SYSVOL\<domain>\Policies\PolicyDefinitions`.
 
 Policies appear under:
 
-`Computer Configuration > Administrative Templates > Technicull Solutions > Evergreen Endpoint | Apps > Package managers`
+`Computer Configuration > Administrative Templates > Technicull Solutions > Evergreen Endpoint Package Manager > Package managers`
 
 Package-manager configuration is machine-owned and resolves in this order:
 
 1. Group Policy values
 2. The JSON file selected by policy
-3. `%ProgramData%\Technicull Solutions\Evergreen Endpoint\Apps\package-managers.json`
+3. `%ProgramData%\Technicull Solutions\Evergreen Endpoint\Package Manager\package-managers.json`
 4. Built-in defaults
 
 Deploy the JSON file with permissions that allow standard users to read it and only administrators

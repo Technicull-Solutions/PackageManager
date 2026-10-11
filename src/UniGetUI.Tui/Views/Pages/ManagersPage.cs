@@ -107,7 +107,7 @@ internal sealed class ManagerSettingsDialog : FormDialog
     private async Task LoadSourcesAsync()
     {
         if (!_manager.Capabilities.SupportsCustomSources || !_manager.IsReady()) return;
-        _sources = await Task.Run(() => _manager.SourcesHelper.GetSources());
+        _sources = await Task.Run(_manager.SourcesHelper.GetSources);
         Dispatcher.UIThread.Post(Rebuild);
     }
 
@@ -280,7 +280,7 @@ internal sealed class ManagerSettingsDialog : FormDialog
 
     private async Task SelectExecutableAsync()
     {
-        var candidates = await Task.Run(() => _manager.FindCandidateExecutableFiles());
+        var candidates = await Task.Run(_manager.FindCandidateExecutableFiles);
         var choices = candidates.Select(c => new TuiChoice(c)).ToList();
         choices.Add(new TuiChoice(CoreTools.Translate("Browse...")));
         int? picked = await TuiPrompts.ChooseAsync(CoreTools.Translate("Select the executable to be used. The following list shows the executables found by UniGetUI"), choices);

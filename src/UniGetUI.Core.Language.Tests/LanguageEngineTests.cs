@@ -30,7 +30,7 @@ namespace UniGetUI.Core.Language.Tests
         }
 
         [Theory]
-        [InlineData("en", "UniGetUI Log", "UniGetUI")]
+        [InlineData("en", "Evergreen Endpoint | APPS Log", "Evergreen Endpoint | APPS")]
         [InlineData("ca", "Registre de l'UniGetUI", "UniGetUI")]
         public void TestUniGetUIRefactoring(
             string language,

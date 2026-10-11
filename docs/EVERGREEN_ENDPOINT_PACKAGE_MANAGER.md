@@ -1,10 +1,10 @@
-# Evergreen Endpoint | Apps
+# Evergreen Endpoint Package Manager
 
-This document defines the proposed product direction for the Technicull Solutions fork of UniGetUI. The working product name is **Evergreen Endpoint | Apps**. It sits beside **Evergreen Endpoint | Connect** and describes the employee-facing purpose without exposing package-manager terminology.
+This document defines the product direction for the Technicull Solutions fork of UniGetUI. The project, installer, policies, and management utility are named **Evergreen Endpoint Package Manager**. Its employee-facing Windows experience is branded **Evergreen Endpoint | APPS**, alongside products such as **Evergreen Endpoint | Connect**.
 
 ## Product promise
 
-Evergreen Endpoint | Apps gives employees a clear, safe place to find, install, and update organization-approved Windows applications. IT administrators retain control through policy, curated catalogs, audit history, and optional brokered operations.
+Evergreen Endpoint | APPS gives employees a clear, safe place to find, install, and update organization-approved Windows applications. IT administrators manage the underlying Evergreen Endpoint Package Manager through policy, curated catalogs, audit history, and optional brokered operations.
 
 The product targets Windows 10/11 Pro and Enterprise. Its supported software channels are:
 
@@ -91,7 +91,7 @@ The proposed mark combines an open software package, an evergreen sprout, and a 
 
 Administrative policy is read from:
 
-`HKLM\Software\Policies\Technicull Solutions\Evergreen Endpoint\Apps`
+`HKLM\Software\Policies\Technicull Solutions\Evergreen Endpoint\Package Manager`
 
 Machine policy takes precedence over the machine JSON document. Package-manager controls are absent
 from the end-user UI. Policy and JSON changes take effect when the application or background service
@@ -100,7 +100,7 @@ restarts, avoiding partially reconfigured package-manager sessions.
 Package-manager configuration resolves in this order:
 
 1. Group Policy values under the machine policy key
-2. Machine JSON at `%ProgramData%\Technicull Solutions\Evergreen Endpoint\Apps\package-managers.json`, or the path selected by policy
+2. Machine JSON at `%ProgramData%\Technicull Solutions\Evergreen Endpoint\Package Manager\package-managers.json`, or the path selected by policy
 3. Built-in secure defaults
 
 Per-user settings never participate in package-manager or source configuration. The JSON schema is
@@ -113,8 +113,8 @@ supported managers, so a legacy or indirect interface cannot bypass the managed 
 
 The ADMX package should contain:
 
-- `EvergreenEndpointApps.admx`
-- `en-US\EvergreenEndpointApps.adml`
+- `EvergreenEndpointPackageManager.admx`
+- `en-US\EvergreenEndpointPackageManager.adml`
 - a deployment README with Local Group Policy and Central Store instructions
 - PowerShell install/remove scripts for evaluation and automated deployment
 

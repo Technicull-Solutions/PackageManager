@@ -47,8 +47,6 @@ public sealed record PolicyElevationLaunchArguments(
         [NotNullWhen(false)] out string? error)
     {
         parsed = null;
-        error = null;
-
         if (arguments is null || arguments.Count is not 10)
         {
             error = "The elevated policy helper expects exactly five named arguments.";

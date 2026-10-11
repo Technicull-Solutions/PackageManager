@@ -22,7 +22,7 @@ namespace UniGetUI.Avalonia.Infrastructure;
 internal static class Win32ToastNotifier
 {
     /// <summary>Stable AUMID for UniGetUI. Must match the one stamped on the Start Menu shortcut.</summary>
-    public const string AppUserModelId = "Devolutions.UniGetUI";
+    public const string AppUserModelId = "Technicull.EvergreenEndpointApps";
 
     private static bool _availabilityChecked;
     private static bool _isAvailable;

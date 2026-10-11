@@ -284,12 +284,15 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     // ─── Title bar ───────────────────────────────────────────────────────────
-    // Mirrors WinUI behavior: the version appears next to "UniGetUI" only when
-    // the ShowVersionNumberOnTitlebar setting is enabled (the setting is gated
-    // on restart, so a one-shot read at construction is sufficient).
+    // The version remains optional so managed deployments can keep the employee-facing title quiet.
+    // ShowVersionNumberOnTitlebar is gated on restart, so a one-shot read at construction is sufficient.
     public string TitleBarText { get; } = Settings.Get(Settings.K.ShowVersionNumberOnTitlebar)
-        ? $"UniGetUI {CoreTools.Translate("version {0}", CoreData.VersionName)}"
-        : "UniGetUI";
+        ? $"{CoreData.ApplicationDisplayName} · {CoreTools.Translate("version {0}", CoreData.VersionName)}"
+        : CoreData.ApplicationDisplayName;
+
+    public string TitleBarVersionText { get; } = Settings.Get(Settings.K.ShowVersionNumberOnTitlebar)
+        ? CoreTools.Translate("version {0}", CoreData.VersionName)
+        : string.Empty;
 
     // ─── Notifications (bottom-right toasts) ───────────────────────────────────
     // Persistent banners kept as singletons; RegisterBannerToast mirrors their IsOpen into Toasts.
@@ -479,17 +482,21 @@ public partial class MainWindowViewModel : ViewModelBase
         Sidebar.BundlesBadgeVisible = BundlesPage.HasUnsavedChanges;
 
         Sidebar.NavigationRequested += (_, pageType) => NavigateTo(pageType);
+        _ = MainBuildStatusService.RefreshAsync(Sidebar);
 
         AvaloniaAutoUpdater.UpdateAvailable += version => Dispatcher.UIThread.Post(() =>
         {
             UpdatesBanner.Severity = InfoBarSeverity.Success;
-            UpdatesBanner.Title = CoreTools.Translate("UniGetUI {0} is ready to be installed.", version);
-            UpdatesBanner.Message = CoreTools.Translate("The update process will start after closing UniGetUI");
+            UpdatesBanner.Title = CoreTools.Translate("Evergreen Endpoint | APPS {0} is ready to be installed.", version);
+            UpdatesBanner.Message = CoreTools.Translate("The update process will start after closing Evergreen Endpoint | APPS");
             UpdatesBanner.ActionButtonText = CoreTools.Translate("Update now");
             UpdatesBanner.ActionButtonCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(AvaloniaAutoUpdater.TriggerInstall);
             UpdatesBanner.IsClosable = true;
             UpdatesBanner.IsOpen = true;
         });
+
+        AvaloniaAutoUpdater.LatestBuildObserved += latestBuildNumber =>
+            Dispatcher.UIThread.Post(() => Sidebar.UpdateBuildFreshness(latestBuildNumber));
 
         AvaloniaAutoUpdater.StatusChanged += status => Dispatcher.UIThread.Post(() =>
         {
@@ -526,7 +533,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Settings.Set(Settings.K.AlreadyWarnedAboutAdmin, true);
             WinGetWarningBanner.Title = CoreTools.Translate("Administrator privileges");
             WinGetWarningBanner.Message = CoreTools.Translate(
-                "UniGetUI has been ran as administrator, which is not recommended. When running UniGetUI as administrator, EVERY operation launched from UniGetUI will have administrator privileges. You can still use the program, but we highly recommend not running UniGetUI with administrator privileges."
+                "Evergreen Endpoint | APPS is running as administrator, which is not recommended. Every operation it launches will have administrator privileges. You can continue, but we strongly recommend running it without administrator privileges."
             );
             WinGetWarningBanner.IsClosable = true;
             WinGetWarningBanner.IsOpen = true;
@@ -536,7 +543,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             TelemetryWarner.Title = CoreTools.Translate("Share anonymous usage data");
             TelemetryWarner.Message = CoreTools.Translate(
-                "UniGetUI collects anonymous usage data in order to improve the user experience."
+                "Evergreen Endpoint | APPS collects anonymous usage data to improve the user experience."
             );
             TelemetryWarner.IsClosable = true;
             TelemetryWarner.ActionButtonText = CoreTools.Translate("Accept");
@@ -575,7 +582,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 PortableImportBanner.Severity = InfoBarSeverity.Success;
                 PortableImportBanner.Title = CoreTools.Translate("Settings imported");
                 PortableImportBanner.Message = CoreTools.Translate(
-                    "{0} file(s) were copied. Restart UniGetUI to apply them.", copied);
+                    "{0} file(s) were copied. Restart Evergreen Endpoint | APPS to apply them.", copied);
                 PortableImportBanner.ActionButtonText = CoreTools.Translate("Restart");
                 PortableImportBanner.ActionButtonCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(
                     AppRestartHelper.Restart);
@@ -595,7 +602,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         PortableImportBanner.Title = CoreTools.Translate("Import your previous settings?");
         PortableImportBanner.Message = CoreTools.Translate(
-            "UniGetUI is running in portable mode and started with empty settings. Settings from a previous installation were found at {0}.",
+            "Evergreen Endpoint | APPS is running in portable mode and started with empty settings. Settings from a previous installation were found at {0}.",
             importableSource
         );
         PortableImportBanner.IsClosable = true;
@@ -745,7 +752,7 @@ public partial class MainWindowViewModel : ViewModelBase
             Logger.Warn("Software Catalog navigation was rejected because the experimental feature is disabled.");
             MainWindow.Instance?.ShowBanner(
                 CoreTools.Translate("Software Catalog is disabled"),
-                CoreTools.Translate("Enable Software Catalog in Experimental settings and developer options, then restart UniGetUI."),
+                    CoreTools.Translate("Enable Software Catalog in Experimental settings and developer options, then restart Evergreen Endpoint | APPS."),
                 MainWindow.RuntimeNotificationLevel.Error);
             return false;
         }
@@ -838,12 +845,12 @@ public partial class MainWindowViewModel : ViewModelBase
         PageType.CatalogEditor => CoreTools.Translate("Catalog Editor"),
         PageType.Settings => CoreTools.Translate("Settings"),
         PageType.Managers => CoreTools.Translate("Package Managers"),
-        PageType.OwnLog => CoreTools.Translate("UniGetUI Log"),
+        PageType.OwnLog => CoreTools.Translate("Application log"),
         PageType.ManagerLog => CoreTools.Translate("Package Manager logs"),
         PageType.OperationHistory => CoreTools.Translate("Operation history"),
         PageType.Help => CoreTools.Translate("Help"),
         PageType.ReleaseNotes => CoreTools.Translate("Release notes"),
-        _ => CoreTools.Translate("UniGetUI"),
+        _ => CoreData.ApplicationDisplayName,
     };
 
     public void NavigateBack() => _ = NavigateBackAsync();

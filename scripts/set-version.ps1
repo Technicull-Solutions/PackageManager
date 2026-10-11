@@ -5,7 +5,7 @@
     CI-friendly version stamping script for local builds and CI.
 
 .PARAMETER Version
-    Semantic version string, e.g. "3.3.7" or "3.4.0-beta1".
+    Evergreen release version, e.g. "0.1.0" or a manually selected dated release version.
     A four-part version (X.X.X.X) is derived automatically for assembly info.
 #>
 
@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Stop'
 
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 
-# Derive four-part version: 3.3.7 -> 3.3.7.0, 3.4.0-beta1 -> 3.4.0.0
+# Derive the four-part Windows version from the manually supplied release version.
 $CleanVersion = ($Version -Split '-')[0]   # strip prerelease tag
 $Parts = $CleanVersion -Split '\.'
 while ($Parts.Count -lt 4) { $Parts += '0' }
@@ -86,12 +86,17 @@ Set-LinesByPrefix -FilePath (Join-Path $RepoRoot "UniGetUI.iss") -Replacements @
     'VersionInfoProductVersion=' = "VersionInfoProductVersion=$FourPartVersion"
 }
 
-# --- app.manifest (only the assemblyIdentity version, not manifestVersion) ---
-$ManifestPath = Join-Path $RepoRoot "src" "UniGetUI" "app.manifest"
-if (Test-Path $ManifestPath) {
-    $content = Get-Content $ManifestPath -Raw -Encoding utf8BOM
-    $content = $content -Replace '(?s)(<assemblyIdentity\b.*?\bversion\s*=\s*")[^"]*(")', "`${1}$FourPartVersion`${2}"
-    Set-Content $ManifestPath $content -Encoding utf8BOM -NoNewline
+# --- app manifests (only the assemblyIdentity version, not manifestVersion) ---
+$ManifestPaths = @(
+    (Join-Path $RepoRoot "src" "UniGetUI.Avalonia" "app.manifest"),
+    (Join-Path $RepoRoot "src" "UniGetUI.AgentPolicy.ElevatedHelper" "app.manifest")
+)
+foreach ($ManifestPath in $ManifestPaths) {
+    if (Test-Path $ManifestPath) {
+        $content = Get-Content $ManifestPath -Raw -Encoding utf8BOM
+        $content = $content -Replace '(?s)(<assemblyIdentity\b.*?\bversion\s*=\s*")[^"]*(")', "`${1}$FourPartVersion`${2}"
+        Set-Content $ManifestPath $content -Encoding utf8BOM -NoNewline
+    }
 }
 
 Write-Host "Version stamped successfully."

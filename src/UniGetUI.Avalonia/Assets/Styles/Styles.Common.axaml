@@ -144,7 +144,15 @@
                     <SolidColorBrush x:Key="DataGridColumnHeaderPressedBackgroundBrush" Color="#14000000"/>
                     <!-- Window structure -->
                     <SolidColorBrush x:Key="AppWindowBackground"         Color="#F3F3F3"/>
-                    <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#F3F3F3"/>
+                    <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="AppTitleBarForeground"       Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="AppTitleBarSecondaryForeground" Color="#C9F0DF"/>
+                    <SolidColorBrush x:Key="BuildStatusCurrentBrush"       Color="#2E8B57"/>
+                    <SolidColorBrush x:Key="BuildStatusSlightlyBehindBrush" Color="#D6B11F"/>
+                    <SolidColorBrush x:Key="BuildStatusBehindBrush"        Color="#D97706"/>
+                    <SolidColorBrush x:Key="BuildStatusCriticalBrush"      Color="#B83D3D"/>
+                    <SolidColorBrush x:Key="PackageInitialBackgroundBrush" Color="#176B4D"/>
+                    <SolidColorBrush x:Key="PackageInitialForegroundBrush" Color="#FFFFFF"/>
                     <!-- Window/page surface; overridden to Transparent by Styles.WindowsMica when Mica is active -->
                     <SolidColorBrush x:Key="MicaPageBackground"          Color="#F3F3F3"/>
                     <SolidColorBrush x:Key="AppSplitterBackground"       Color="#E5E5E5"/>
@@ -347,7 +355,15 @@
                     <SolidColorBrush x:Key="DataGridColumnHeaderPressedBackgroundBrush" Color="#1FFFFFFF"/>
                     <!-- Window structure -->
                     <SolidColorBrush x:Key="AppWindowBackground"         Color="#202020"/>
-                    <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#202020"/>
+                    <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="AppTitleBarForeground"       Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="AppTitleBarSecondaryForeground" Color="#C9F0DF"/>
+                    <SolidColorBrush x:Key="BuildStatusCurrentBrush"       Color="#54AD88"/>
+                    <SolidColorBrush x:Key="BuildStatusSlightlyBehindBrush" Color="#E7C84A"/>
+                    <SolidColorBrush x:Key="BuildStatusBehindBrush"        Color="#F59E0B"/>
+                    <SolidColorBrush x:Key="BuildStatusCriticalBrush"      Color="#FF7777"/>
+                    <SolidColorBrush x:Key="PackageInitialBackgroundBrush" Color="#176B4D"/>
+                    <SolidColorBrush x:Key="PackageInitialForegroundBrush" Color="#FFFFFF"/>
                     <!-- Window/page surface; overridden to Transparent by Styles.WindowsMica when Mica is active -->
                     <SolidColorBrush x:Key="MicaPageBackground"          Color="#202020"/>
                     <SolidColorBrush x:Key="AppSplitterBackground"       Color="#1A1A1A"/>

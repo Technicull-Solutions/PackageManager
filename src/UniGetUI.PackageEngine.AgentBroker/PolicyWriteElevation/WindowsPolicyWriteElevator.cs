@@ -538,8 +538,6 @@ public sealed class WindowsPolicyWriteElevator : IPolicyWriteElevator
         nint pseudoHandle = -1;
         creationTicks = 0;
         sessionId = 0;
-        processId = 0;
-
         return WindowsProcessInspector.TryGetProcessId(pseudoHandle, out processId)
             && WindowsProcessInspector.TryGetCreationTimeUtcTicks(pseudoHandle, out creationTicks)
             && WindowsProcessInspector.TryGetSessionId(processId, out sessionId);

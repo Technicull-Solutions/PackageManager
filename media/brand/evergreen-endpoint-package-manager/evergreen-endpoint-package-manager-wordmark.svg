@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="260" viewBox="0 0 1040 260" role="img" aria-label="Evergreen Endpoint APPS">
+  <g transform="translate(20 20) scale(.43)">
+<rect x="20" y="20" width="472" height="472" rx="108" fill="#0D3F30" stroke="#D69B2D" stroke-width="5"/>
+  <path fill="#54AD88" d="m256 242-40-88 40-82 40 82-40 88Z"/>
+  <path fill="#BDEED8" d="m256 242 0-170 40 82-40 88Z"/>
+  <path fill="#74C7A4" d="m240 224-70-78-65-10 25 62 80 52 30-26Z"/>
+  <path fill="#176B4D" d="m240 224-30 26-40-104 70 78Z"/>
+  <path fill="#BDEED8" d="m272 224 70-78 65-10-25 62-80 52-30-26Z"/>
+  <path fill="#74C7A4" d="m272 224 70-78-40 104-30-26Z"/>
+  <path fill="#54AD88" d="m256 224-155 73 155 76V224Z"/>
+  <path fill="#94DDBD" d="m256 224 155 73-155 76V224Z"/>
+  <path fill="#176B4D" d="m101 297 155 76v81l-155-76v-81Z"/>
+  <path fill="#075844" d="m256 373 155-76v81l-155 76v-81Z"/>
+  <path fill="none" stroke="#D69B2D" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" d="m278 382 33 33 67-71"/>
+</g>
+  <text x="270" y="115" fill="#17211D" font-family="Lato, Segoe UI, sans-serif" font-size="64" font-weight="900">Evergreen Endpoint</text>
+  <text x="273" y="176" fill="#D69B2D" font-family="Lato, Segoe UI, sans-serif" font-size="34" font-weight="800" letter-spacing="4">APPS</text>
+  <text x="275" y="216" fill="#5F6C66" font-family="Lato, Segoe UI, sans-serif" font-size="18" font-weight="700" letter-spacing="2">A TECHNICULL SOLUTIONS PRODUCT</text>
+</svg>

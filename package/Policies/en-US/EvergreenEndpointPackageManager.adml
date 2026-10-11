@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <policyDefinitionResources revision="1.0" schemaVersion="1.0"
   xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitionResources">
-  <displayName>Evergreen Endpoint | Apps policy resources</displayName>
-  <description>Administrative policy for Evergreen Endpoint | Apps.</description>
+  <displayName>Evergreen Endpoint Package Manager policy resources</displayName>
+  <description>Administrative policy for Evergreen Endpoint Package Manager.</description>
   <resources>
     <stringTable>
       <string id="SUPPORTED_Windows10OrLater">Windows 10 or later</string>
       <string id="TechnicullSolutions">Technicull Solutions</string>
-      <string id="EvergreenEndpointApps">Evergreen Endpoint | Apps</string>
+      <string id="EvergreenEndpointPackageManager">Evergreen Endpoint Package Manager</string>
       <string id="PackageManagers">Package managers</string>
       <string id="PackageManagerConfigurationFile">Set the package-manager configuration file</string>
       <string id="PackageManagerConfigurationFile_Help">Specifies the absolute path to the machine JSON configuration. Policy values configured below override individual values from this file.</string>
