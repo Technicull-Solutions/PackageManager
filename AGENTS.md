@@ -1,4 +1,10 @@
-# UniGetUI - Copilot Instructions
+# Evergreen Endpoint Package Manager - Codex Instructions
+
+## Codex project configuration
+
+- `AGENTS.md` is the authoritative repository instruction file for Codex and other compatible coding agents.
+- Reusable project skills live under `.agents/skills/`; each skill keeps its workflow in `SKILL.md` and any supporting automation in its own `scripts/` directory.
+- Keep agent instructions and skills provider-neutral. Do not add provider-specific mirrors or compatibility links that can drift from these canonical files.
 
 ## Project Overview
 
