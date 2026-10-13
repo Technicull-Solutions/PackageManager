@@ -398,7 +398,7 @@
   "Go forward": "Avança",
   "Go to home page": "Ves a la pàgina d'inici",
   "Reload page": "Torna a carregar la pàgina",
-  "View page on browser": "Mostra al navegador",
+  "View page in browser": "Mostra al navegador",
   "The built-in browser is not supported on Linux yet.": "El navegador integrat encara no és compatible amb Linux.",
   "Open in browser": "Obre al navegador",
   "Copy to clipboard": "Copia al porta-retalls",

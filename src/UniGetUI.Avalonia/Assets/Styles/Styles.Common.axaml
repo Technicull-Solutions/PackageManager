@@ -7,14 +7,23 @@
 
     <Styles.Resources>
         <ResourceDictionary>
+            <SolidColorBrush x:Key="BrandOrangeBrush" Color="#D69B2D"/>
             <ResourceDictionary.ThemeDictionaries>
                 <!-- WinUI Fluent v2 design tokens (Avalonia's Fluent theme only ships UWP-era names; these polyfill the v2 set). -->
                 <ResourceDictionary x:Key="Light">
+                    <!-- Evergreen Endpoint light palette -->
+                    <Color x:Key="SystemAccentColor">#176B4D</Color>
+                    <Color x:Key="SystemAccentColorLight1">#2A7B5E</Color>
+                    <Color x:Key="SystemAccentColorLight2">#438C73</Color>
+                    <Color x:Key="SystemAccentColorLight3">#6AA58F</Color>
+                    <Color x:Key="SystemAccentColorDark1">#12563E</Color>
+                    <Color x:Key="SystemAccentColorDark2">#0D3F30</Color>
+                    <Color x:Key="SystemAccentColorDark3">#092D22</Color>
                     <!-- Accent fills -->
-                    <SolidColorBrush x:Key="AccentFillColorDefaultBrush"  Color="{DynamicResource SystemAccentColor}"/>
-                    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="{DynamicResource SystemAccentColorDark1}"/>
-                    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush"  Color="{DynamicResource SystemAccentColorDark2}"/>
-                    <SolidColorBrush x:Key="PackageActionHoverBackground" Color="{DynamicResource SystemAccentColorLight1}"/>
+                    <SolidColorBrush x:Key="AccentFillColorDefaultBrush"  Color="#176B4D"/>
+                    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#12563E"/>
+                    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush"  Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="PackageActionHoverBackground" Color="#2A7B5E"/>
                     <SolidColorBrush x:Key="AccentFillColorDisabledBrush"  Color="#37000000"/>
                     <SolidColorBrush x:Key="AccentFillColorSelectedTextBackgroundBrush" Color="{DynamicResource SystemAccentColor}"/>
                     <!-- Bridge Avalonia's legacy Fluent accent aliases to the same palette. -->
@@ -39,13 +48,13 @@
                     <!-- Hyperlinks: fixed blue, decoupled from the accent so links stay readable over accent-tinted Mica -->
                     <SolidColorBrush x:Key="HyperlinkForeground"               Color="#1C5FB8"/>
                     <!-- Text fill -->
-                    <SolidColorBrush x:Key="TextFillColorPrimaryBrush"   Color="#E4000000"/>
-                    <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#9E000000"/>
-                    <SolidColorBrush x:Key="TextFillColorTertiaryBrush"  Color="#72000000"/>
+                    <SolidColorBrush x:Key="TextFillColorPrimaryBrush"   Color="#17211D"/>
+                    <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#B317211D"/>
+                    <SolidColorBrush x:Key="TextFillColorTertiaryBrush"  Color="#8017211D"/>
                     <!-- Search-box placeholders. The big Discover field uses larger (thicker-stroked) text, so it
                          gets a lighter light-theme value to read as the same weight as the compact title-bar field. -->
-                    <SolidColorBrush x:Key="SearchBoxPlaceholderForeground"   Color="#72000000"/>
-                    <SolidColorBrush x:Key="MegaQueryPlaceholderForeground"   Color="#52000000"/>
+                    <SolidColorBrush x:Key="SearchBoxPlaceholderForeground"   Color="#9917211D"/>
+                    <SolidColorBrush x:Key="MegaQueryPlaceholderForeground"   Color="#8017211D"/>
                     <SolidColorBrush x:Key="SearchBoxInactiveBackground"      Color="#B3FFFFFF"/>
                     <SolidColorBrush x:Key="SearchBoxFocusedBackground"       Color="#FFFFFFFF"/>
                     <SolidColorBrush x:Key="SearchBoxFocusedBorderBrush"      Color="#0F000000"/>
@@ -88,7 +97,7 @@
                     <StaticResource x:Key="SplitButtonBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush"/>
                     <StaticResource x:Key="SplitButtonBorderBrushDisabled" ResourceKey="ControlStrokeColorDefaultBrush"/>
                     <StaticResource x:Key="SplitButtonBorderBrushDivider" ResourceKey="ControlStrokeColorDefaultBrush"/>
-                    <SolidColorBrush x:Key="TextFillColorInverseBrush"   Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="TextFillColorInverseBrush"   Color="#F7FAF8"/>
                     <!-- Opaque WinUI menu surface and low-contrast divider. -->
                     <SolidColorBrush x:Key="MenuSurfaceBrush"            Color="#FFFFFFFF"/>
                     <SolidColorBrush x:Key="MenuSurfaceBorderBrush"      Color="#0F000000"/>
@@ -97,10 +106,10 @@
                     <StaticResource x:Key="MenuFlyoutPresenterBorderBrush" ResourceKey="MenuSurfaceBorderBrush"/>
                     <SolidColorBrush x:Key="MenuDividerBrush"            Color="#0F000000"/>
                     <!-- Text on accent -->
-                    <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush"      Color="#FFFFFFFF"/>
-                    <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush"    Color="#B3FFFFFF"/>
-                    <SolidColorBrush x:Key="TextOnAccentFillColorDisabledBrush"     Color="#FFFFFFFF"/>
-                    <SolidColorBrush x:Key="TextOnAccentFillColorSelectedTextBrush" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush"      Color="#F7FAF8"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush"    Color="#B3F7FAF8"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorDisabledBrush"     Color="#87F7FAF8"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorSelectedTextBrush" Color="#F7FAF8"/>
                     <!-- Avalonia's Button theme reads these keys from inside its control template. -->
                     <StaticResource x:Key="AccentButtonBackground" ResourceKey="AccentFillColorDefaultBrush"/>
                     <StaticResource x:Key="AccentButtonBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush"/>
@@ -111,7 +120,7 @@
                     <StaticResource x:Key="AccentButtonForegroundPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush"/>
                     <StaticResource x:Key="AccentButtonForegroundDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush"/>
                     <!-- Settings cards -->
-                    <SolidColorBrush x:Key="SettingsCardBackground"      Color="#B3FFFFFF"/>
+                    <SolidColorBrush x:Key="SettingsCardBackground"      Color="#F7FAF8"/>
                     <SolidColorBrush x:Key="SettingsCardBorderBrush"     Color="#0F000000"/>
                     <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#F6F6F6"/>
                     <!-- Secondary actions keep a 1-DIP edge, but use WinUI's low-contrast
@@ -134,7 +143,7 @@
                     <StaticResource x:Key="ComboBoxDropDownBackground" ResourceKey="MenuSurfaceBrush"/>
                     <StaticResource x:Key="ComboBoxDropDownBorderBrush" ResourceKey="MenuSurfaceBorderBrush"/>
                     <!-- Package list container; near-transparent over Mica (see Styles.WindowsMica) -->
-                    <SolidColorBrush x:Key="PackageListBackground"       Color="#FBFBFB"/>
+                    <SolidColorBrush x:Key="PackageListBackground"       Color="#F7FAF8"/>
                     <SolidColorBrush x:Key="PackageListBorderBrush"      Color="#0F000000"/>
                     <!-- Column header: WinUI default button (ControlFillColorDefault fill + ControlStrokeColorDefault border) -->
                     <SolidColorBrush x:Key="PackageListHeaderBackground" Color="#B3FFFFFF"/>
@@ -143,18 +152,22 @@
                     <SolidColorBrush x:Key="DataGridColumnHeaderHoveredBackgroundBrush" Color="#05000000"/>
                     <SolidColorBrush x:Key="DataGridColumnHeaderPressedBackgroundBrush" Color="#14000000"/>
                     <!-- Window structure -->
-                    <SolidColorBrush x:Key="AppWindowBackground"         Color="#F3F3F3"/>
-                    <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#0D3F30"/>
-                    <SolidColorBrush x:Key="AppTitleBarForeground"       Color="#FFFFFF"/>
-                    <SolidColorBrush x:Key="AppTitleBarSecondaryForeground" Color="#C9F0DF"/>
+                    <SolidColorBrush x:Key="AppWindowBackground"         Color="#E2F5E9"/>
+                    <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#176B4D"/>
+                    <SolidColorBrush x:Key="AppTitleBarForeground"       Color="#F7FAF8"/>
+                    <SolidColorBrush x:Key="AppTitleBarSecondaryForeground" Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="SidebarBackground"           Color="#176B4D"/>
+                    <SolidColorBrush x:Key="SidebarForeground"           Color="#F7FAF8"/>
+                    <SolidColorBrush x:Key="SidebarSecondaryForeground"  Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="SidebarHoverBackground"      Color="#12563E"/>
                     <SolidColorBrush x:Key="BuildStatusCurrentBrush"       Color="#2E8B57"/>
                     <SolidColorBrush x:Key="BuildStatusSlightlyBehindBrush" Color="#D6B11F"/>
                     <SolidColorBrush x:Key="BuildStatusBehindBrush"        Color="#D97706"/>
                     <SolidColorBrush x:Key="BuildStatusCriticalBrush"      Color="#B83D3D"/>
                     <SolidColorBrush x:Key="PackageInitialBackgroundBrush" Color="#176B4D"/>
-                    <SolidColorBrush x:Key="PackageInitialForegroundBrush" Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="PackageInitialForegroundBrush" Color="#F7FAF8"/>
                     <!-- Window/page surface; overridden to Transparent by Styles.WindowsMica when Mica is active -->
-                    <SolidColorBrush x:Key="MicaPageBackground"          Color="#F3F3F3"/>
+                    <SolidColorBrush x:Key="MicaPageBackground"          Color="#E2F5E9"/>
                     <SolidColorBrush x:Key="AppSplitterBackground"       Color="#E5E5E5"/>
                     <SolidColorBrush x:Key="AppOperationsPanelBackground" Color="Transparent"/>
                     <SolidColorBrush x:Key="AppBorderBrush"              Color="#E5E5E5"/>
@@ -164,6 +177,18 @@
                     <SolidColorBrush x:Key="AppDialogPanelBackground"    Color="#F9F9F9"/>
                     <SolidColorBrush x:Key="AppDialogSubtleBackground"   Color="#EEEEEE"/>
                     <SolidColorBrush x:Key="AppDialogDarkBackground"     Color="#EEEEEE"/>
+                    <!-- Evergreen About dialog -->
+                    <SolidColorBrush x:Key="AboutDialogHeaderBackground" Color="#176B4D"/>
+                    <SolidColorBrush x:Key="AboutDialogHeaderForeground" Color="#F7FAF8"/>
+                    <SolidColorBrush x:Key="AboutDialogBodyBackground"   Color="#E2F5E9"/>
+                    <SolidColorBrush x:Key="AboutDialogBodyForeground"   Color="#17211D"/>
+                    <SolidColorBrush x:Key="AboutDialogDividerBrush"     Color="#74C7A4"/>
+                    <SolidColorBrush x:Key="AboutDialogSelectedTabBrush" Color="#D69B2D"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerBackground"   Color="#FFF7E6"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerBorderBrush"  Color="#7B5205"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerForeground"   Color="#7B5205"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerIconBackground" Color="#D69B2D"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerIconForeground" Color="#FFFFFF"/>
                     <SolidColorBrush x:Key="IgnoredUpdatesListBackground" Color="#F3F3F3"/>
                     <SolidColorBrush x:Key="ScreenshotLetterboxBackground" Color="#202020"/>
                     <SolidColorBrush x:Key="ScreenshotEmptyBackground" Color="#F3F3F3"/>
@@ -220,11 +245,19 @@
                     <SolidColorBrush x:Key="InstallOptionsTabSelectedPressedBackground" Color="#F5F5F5"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
+                    <!-- Evergreen Endpoint dark palette -->
+                    <Color x:Key="SystemAccentColor">#0D3F30</Color>
+                    <Color x:Key="SystemAccentColorLight1">#176B4D</Color>
+                    <Color x:Key="SystemAccentColorLight2">#2A7B5E</Color>
+                    <Color x:Key="SystemAccentColorLight3">#438C73</Color>
+                    <Color x:Key="SystemAccentColorDark1">#0A3428</Color>
+                    <Color x:Key="SystemAccentColorDark2">#072A20</Color>
+                    <Color x:Key="SystemAccentColorDark3">#051F18</Color>
                     <!-- Accent fills (lighter accents on dark bg) -->
-                    <SolidColorBrush x:Key="AccentFillColorDefaultBrush"   Color="{DynamicResource SystemAccentColorLight2}"/>
-                    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="{DynamicResource SystemAccentColorLight1}"/>
-                    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush"  Color="{DynamicResource SystemAccentColor}"/>
-                    <SolidColorBrush x:Key="PackageActionHoverBackground" Color="{DynamicResource SystemAccentColorLight3}"/>
+                    <SolidColorBrush x:Key="AccentFillColorDefaultBrush"   Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#176B4D"/>
+                    <SolidColorBrush x:Key="AccentFillColorTertiaryBrush"  Color="#0A3428"/>
+                    <SolidColorBrush x:Key="PackageActionHoverBackground" Color="#176B4D"/>
                     <SolidColorBrush x:Key="AccentFillColorDisabledBrush"  Color="#28FFFFFF"/>
                     <SolidColorBrush x:Key="AccentFillColorSelectedTextBackgroundBrush" Color="{DynamicResource SystemAccentColor}"/>
                     <!-- Avalonia's defaults keep the base accent in dark mode; WinUI uses Light2. -->
@@ -248,13 +281,13 @@
                     <SolidColorBrush x:Key="AccentTextFillColorDisabledBrush"  Color="#5CFFFFFF"/>
                     <SolidColorBrush x:Key="HyperlinkForeground"               Color="#A6D4FF"/>
                     <!-- Text fill -->
-                    <SolidColorBrush x:Key="TextFillColorPrimaryBrush"   Color="#FFFFFFFF"/>
-                    <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#C5FFFFFF"/>
-                    <SolidColorBrush x:Key="TextFillColorTertiaryBrush"  Color="#87FFFFFF"/>
+                    <SolidColorBrush x:Key="TextFillColorPrimaryBrush"   Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#BFDCE5DF"/>
+                    <SolidColorBrush x:Key="TextFillColorTertiaryBrush"  Color="#8FDCE5DF"/>
                     <!-- Search-box placeholders. Dark theme keeps the brighter value that matched WinUI; both fields
                          share it since thick-stroke heaviness only reads as darker on light backgrounds. -->
-                    <SolidColorBrush x:Key="SearchBoxPlaceholderForeground"   Color="#C5FFFFFF"/>
-                    <SolidColorBrush x:Key="MegaQueryPlaceholderForeground"   Color="#C5FFFFFF"/>
+                    <SolidColorBrush x:Key="SearchBoxPlaceholderForeground"   Color="#BFDCE5DF"/>
+                    <SolidColorBrush x:Key="MegaQueryPlaceholderForeground"   Color="#BFDCE5DF"/>
                     <SolidColorBrush x:Key="SearchBoxInactiveBackground"      Color="#0FFFFFFF"/>
                     <SolidColorBrush x:Key="SearchBoxFocusedBackground"       Color="#B31E1E1E"/>
                     <SolidColorBrush x:Key="SearchBoxFocusedBorderBrush"      Color="#12FFFFFF"/>
@@ -305,17 +338,17 @@
                     <StaticResource x:Key="SplitButtonBorderBrushPressed" ResourceKey="ControlStrokeColorDefaultBrush"/>
                     <StaticResource x:Key="SplitButtonBorderBrushDisabled" ResourceKey="ControlStrokeColorDefaultBrush"/>
                     <StaticResource x:Key="SplitButtonBorderBrushDivider" ResourceKey="ControlStrokeColorDefaultBrush"/>
-                    <SolidColorBrush x:Key="TextFillColorInverseBrush"   Color="#E4000000"/>
+                    <SolidColorBrush x:Key="TextFillColorInverseBrush"   Color="#17211D"/>
                     <!-- WinUI's dark flyout surface is an opaque #2C2C2C. -->
                     <SolidColorBrush x:Key="MenuSurfaceBrush"            Color="#FF2C2C2C"/>
                     <SolidColorBrush x:Key="MenuSurfaceBorderBrush"      Color="#33000000"/>
                     <StaticResource x:Key="MenuFlyoutPresenterBorderBrush" ResourceKey="MenuSurfaceBorderBrush"/>
                     <SolidColorBrush x:Key="MenuDividerBrush"            Color="#15FFFFFF"/>
                     <!-- Text on accent -->
-                    <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush"      Color="#000000"/>
-                    <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush"    Color="#80000000"/>
-                    <SolidColorBrush x:Key="TextOnAccentFillColorDisabledBrush"     Color="#87FFFFFF"/>
-                    <SolidColorBrush x:Key="TextOnAccentFillColorSelectedTextBrush" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorPrimaryBrush"      Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorSecondaryBrush"    Color="#BFDCE5DF"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorDisabledBrush"     Color="#87DCE5DF"/>
+                    <SolidColorBrush x:Key="TextOnAccentFillColorSelectedTextBrush" Color="#DCE5DF"/>
                     <!-- Override the keys consumed by Avalonia's nested .accent button theme. -->
                     <StaticResource x:Key="AccentButtonBackground" ResourceKey="AccentFillColorDefaultBrush"/>
                     <StaticResource x:Key="AccentButtonBackgroundPointerOver" ResourceKey="AccentFillColorSecondaryBrush"/>
@@ -326,9 +359,9 @@
                     <StaticResource x:Key="AccentButtonForegroundPressed" ResourceKey="TextOnAccentFillColorSecondaryBrush"/>
                     <StaticResource x:Key="AccentButtonForegroundDisabled" ResourceKey="TextOnAccentFillColorDisabledBrush"/>
                     <!-- Settings cards -->
-                    <SolidColorBrush x:Key="SettingsCardBackground"      Color="#0DFFFFFF"/>
+                    <SolidColorBrush x:Key="SettingsCardBackground"      Color="#303E37"/>
                     <SolidColorBrush x:Key="SettingsCardBorderBrush"     Color="#19000000"/>
-                    <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#323232"/>
+                    <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#37483F"/>
                     <StaticResource x:Key="SecondaryActionBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush"/>
                     <Thickness x:Key="SecondaryActionBorderThickness">1</Thickness>
                     <!-- WinUI dropdown controls use the same control/card fill as settings actions. -->
@@ -345,7 +378,7 @@
                     <StaticResource x:Key="ComboBoxDropDownBackground" ResourceKey="MenuSurfaceBrush"/>
                     <StaticResource x:Key="ComboBoxDropDownBorderBrush" ResourceKey="MenuSurfaceBorderBrush"/>
                     <!-- Package list container; near-transparent over Mica (see Styles.WindowsMica) -->
-                    <SolidColorBrush x:Key="PackageListBackground"       Color="#2D2D2D"/>
+                    <SolidColorBrush x:Key="PackageListBackground"       Color="#303E37"/>
                     <SolidColorBrush x:Key="PackageListBorderBrush"      Color="#19000000"/>
                     <!-- Column header: WinUI default button (ControlFillColorDefault fill + ControlStrokeColorDefault border) -->
                     <SolidColorBrush x:Key="PackageListHeaderBackground" Color="#0FFFFFFF"/>
@@ -354,18 +387,22 @@
                     <SolidColorBrush x:Key="DataGridColumnHeaderHoveredBackgroundBrush" Color="#0AFFFFFF"/>
                     <SolidColorBrush x:Key="DataGridColumnHeaderPressedBackgroundBrush" Color="#1FFFFFFF"/>
                     <!-- Window structure -->
-                    <SolidColorBrush x:Key="AppWindowBackground"         Color="#202020"/>
+                    <SolidColorBrush x:Key="AppWindowBackground"         Color="#27332D"/>
                     <SolidColorBrush x:Key="AppTitleBarBackground"       Color="#0D3F30"/>
-                    <SolidColorBrush x:Key="AppTitleBarForeground"       Color="#FFFFFF"/>
-                    <SolidColorBrush x:Key="AppTitleBarSecondaryForeground" Color="#C9F0DF"/>
+                    <SolidColorBrush x:Key="AppTitleBarForeground"       Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="AppTitleBarSecondaryForeground" Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="SidebarBackground"           Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="SidebarForeground"           Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="SidebarSecondaryForeground"  Color="#BFDCE5DF"/>
+                    <SolidColorBrush x:Key="SidebarHoverBackground"      Color="#145A43"/>
                     <SolidColorBrush x:Key="BuildStatusCurrentBrush"       Color="#54AD88"/>
                     <SolidColorBrush x:Key="BuildStatusSlightlyBehindBrush" Color="#E7C84A"/>
                     <SolidColorBrush x:Key="BuildStatusBehindBrush"        Color="#F59E0B"/>
                     <SolidColorBrush x:Key="BuildStatusCriticalBrush"      Color="#FF7777"/>
-                    <SolidColorBrush x:Key="PackageInitialBackgroundBrush" Color="#176B4D"/>
-                    <SolidColorBrush x:Key="PackageInitialForegroundBrush" Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="PackageInitialBackgroundBrush" Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="PackageInitialForegroundBrush" Color="#DCE5DF"/>
                     <!-- Window/page surface; overridden to Transparent by Styles.WindowsMica when Mica is active -->
-                    <SolidColorBrush x:Key="MicaPageBackground"          Color="#202020"/>
+                    <SolidColorBrush x:Key="MicaPageBackground"          Color="#27332D"/>
                     <SolidColorBrush x:Key="AppSplitterBackground"       Color="#1A1A1A"/>
                     <SolidColorBrush x:Key="AppOperationsPanelBackground" Color="Transparent"/>
                     <SolidColorBrush x:Key="AppBorderBrush"              Color="#15FFFFFF"/>
@@ -375,6 +412,18 @@
                     <SolidColorBrush x:Key="AppDialogPanelBackground"    Color="#2C2C2C"/>
                     <SolidColorBrush x:Key="AppDialogSubtleBackground"   Color="#393939"/>
                     <SolidColorBrush x:Key="AppDialogDarkBackground"     Color="#1A1A1A"/>
+                    <!-- Evergreen About dialog -->
+                    <SolidColorBrush x:Key="AboutDialogHeaderBackground" Color="#0D3F30"/>
+                    <SolidColorBrush x:Key="AboutDialogHeaderForeground" Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="AboutDialogBodyBackground"   Color="#27332D"/>
+                    <SolidColorBrush x:Key="AboutDialogBodyForeground"   Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="AboutDialogDividerBrush"     Color="#74C7A4"/>
+                    <SolidColorBrush x:Key="AboutDialogSelectedTabBrush" Color="#D69B2D"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerBackground"   Color="#3374C7A4"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerBorderBrush"  Color="#74C7A4"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerForeground"   Color="#DCE5DF"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerIconBackground" Color="#74C7A4"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerIconForeground" Color="#F7FAF8"/>
                     <SolidColorBrush x:Key="IgnoredUpdatesListBackground" Color="#1A1A1A"/>
                     <SolidColorBrush x:Key="ScreenshotLetterboxBackground" Color="#202020"/>
                     <SolidColorBrush x:Key="ScreenshotEmptyBackground" Color="#202020"/>
@@ -946,7 +995,7 @@
         <Setter Property="Margin"       Value="40,0"/>
     </Style>
     <Style Selector="Border.settings-card-clickable:pointerover">
-        <Setter Property="Background"  Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+        <Setter Property="Background"  Value="{DynamicResource SettingsCardHoverBackground}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}"/>
     </Style>
     <!-- Setting warning subtext (amber, both themes) -->
@@ -1085,6 +1134,18 @@
             </Transitions>
         </Setter>
     </Style>
+
+    <!-- Package action buttons keep Evergreen as their resting colour. Install actions
+         use the brand orange on hover so the interaction is easy to distinguish. -->
+    <Style Selector="Button.package-primary-action">
+        <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+    </Style>
+    <Style Selector="Button.package-install-action:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BrandOrangeBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BrandOrangeBrush}"/>
+        <Setter Property="Foreground" Value="#F7FAF8"/>
+    </Style>
     <!-- Standalone form inputs use the search field's fill and underline treatment without
          coupling the title-bar search control to this reusable template. -->
     <Style Selector="TextBox.search-field-standalone">
@@ -1165,7 +1226,7 @@
     </Style>
     <Style Selector="TextBox.search-field-standalone:focus-within /template/ Border#SearchFieldStandaloneUnderline">
         <Setter Property="Opacity" Value="1"/>
-        <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource BrandOrangeBrush}"/>
     </Style>
     <Style Selector="TextBox.search-field-standalone.multiline">
         <Setter Property="MinHeight" Value="32"/>

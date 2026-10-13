@@ -5,7 +5,7 @@ namespace UniGetUI.Avalonia.ViewModels.Pages;
 
 public partial class HelpPageViewModel : ViewModels.ViewModelBase
 {
-    public const string HelpBaseUrl = "https://github.com/Devolutions/UniGetUI";
+    public const string HelpBaseUrl = "https://github.com/Technicull-Solutions/PackageManager";
 
     // Kept in sync from the WebView's NavigationCompleted event via code-behind
     public string CurrentUrl { get; set; } = HelpBaseUrl;

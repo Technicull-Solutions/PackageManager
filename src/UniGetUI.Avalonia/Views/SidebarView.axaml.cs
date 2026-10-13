@@ -106,7 +106,7 @@ public partial class SidebarView : BaseView<SidebarViewModel>
             PageType.Discover => DiscoverNavBtn,
             PageType.Updates => UpdatesNavBtn,
             PageType.Installed => InstalledNavBtn,
-            PageType.Bundles => BundlesNavBtn,
+            PageType.OperationHistory => BundlesNavBtn,
             PageType.Catalog => CatalogNavBtn,
             PageType.CatalogEditor => CatalogEditorNavBtn,
             _ => null,

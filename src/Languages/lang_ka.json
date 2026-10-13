@@ -398,7 +398,7 @@
   "Go forward": "წინ გადასვლა",
   "Go to home page": "მთავარ გვერდზე გადასვლა",
   "Reload page": "გვერდის გადატვირთვა",
-  "View page on browser": "გვერდის ბრაუზერში ნახვა",
+  "View page in browser": "გვერდის ბრაუზერში ნახვა",
   "The built-in browser is not supported on Linux yet.": "ჩაშენებული ბრაუზერი Linux-ზე ჯერ არ არის მხარდაჭერილი.",
   "Open in browser": "ბრაუზერში გახსნა",
   "Copy to clipboard": "გაცვლის ბუფერში კოპირება",

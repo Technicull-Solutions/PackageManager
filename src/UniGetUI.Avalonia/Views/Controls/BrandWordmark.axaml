@@ -4,10 +4,10 @@
              IsHitTestVisible="False">
     <Panel>
         <Image x:Name="LightWordmark"
-               Source="avares://UniGetUI/Assets/Brand/evergreen-endpoint-apps-wordmark-light.png"
+               Source="avares://UniGetUI/Assets/Brand/EEA-Logo-Text_Light@2x.png"
                Stretch="Uniform"/>
         <Image x:Name="DarkWordmark"
-               Source="avares://UniGetUI/Assets/Brand/evergreen-endpoint-apps-wordmark-dark.png"
+               Source="avares://UniGetUI/Assets/Brand/EEA-Logo-Text_Light-Alternate@2x.png"
                Stretch="Uniform"/>
     </Panel>
 </UserControl>

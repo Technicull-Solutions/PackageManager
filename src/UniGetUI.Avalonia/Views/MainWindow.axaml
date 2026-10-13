@@ -46,11 +46,27 @@
         <!-- Focus: accent underline (declared after hover so it wins when both apply). -->
         <Style Selector="Border#GlobalSearchContainer:focus-within Border#SearchFocusUnderline">
             <Setter Property="Opacity" Value="1"/>
-            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <Setter Property="Background" Value="{DynamicResource BrandOrangeBrush}"/>
         </Style>
         <Style Selector="Border#GlobalSearchContainer:focus-within">
             <Setter Property="Background" Value="{DynamicResource SearchBoxFocusedBackground}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource SearchBoxFocusedBorderBrush}"/>
+        </Style>
+        <Style Selector="Border#ModalSurface">
+            <Setter Property="Background" Value="{DynamicResource AppDialogBackground}"/>
+        </Style>
+        <Style Selector="Border#ModalSurface.about-dialog">
+            <Setter Property="Background" Value="{DynamicResource AboutDialogBodyBackground}"/>
+        </Style>
+        <Style Selector="Border#ModalSurface.about-dialog Grid#ModalHeader">
+            <Setter Property="Background" Value="{DynamicResource AboutDialogHeaderBackground}"/>
+        </Style>
+        <Style Selector="Border#ModalSurface.about-dialog TextBlock#ModalTitle">
+            <Setter Property="Foreground" Value="{DynamicResource AboutDialogHeaderForeground}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+        </Style>
+        <Style Selector="Border#ModalSurface.about-dialog Button#ModalCloseButton">
+            <Setter Property="Foreground" Value="{DynamicResource AboutDialogHeaderForeground}"/>
         </Style>
         <!-- Nav flyout cross-fade. The flyout's icons sit exactly over the static rail's icons, so
              fading (rather than sliding) keeps the icons perfectly aligned — only the labels fade
@@ -66,6 +82,7 @@
         <!-- Shared WinUI caption-button states for the main window and immersive dialogs. -->
         <Style Selector="Button.caption">
             <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource AppTitleBarForeground}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="Padding" Value="0"/>
@@ -198,6 +215,7 @@
             <ContentControl x:Name="NavRail"
                             Grid.Column="0"
                             Width="64"
+                            Background="{DynamicResource SidebarBackground}"
                             ClipToBounds="True"
                             IsVisible="{Binding Sidebar.RailVisible}"
                             Content="{Binding Sidebar}"
@@ -216,7 +234,8 @@
             <!-- ── Docked labeled pane (Expanded ≥1600px, or NavMenuMode=Docked): sits inline, reflows content. ── -->
             <ContentControl x:Name="NavDock"
                             Grid.Column="0"
-                            Width="250"
+                            Width="264"
+                            Background="{DynamicResource SidebarBackground}"
                             ClipToBounds="True"
                             IsVisible="{Binding Sidebar.NavDockVisible}"
                             BorderThickness="0"
@@ -548,11 +567,11 @@
             <!-- ── Sliding nav flyout: full labeled pane, parked off-screen, slid in via GPU translate ── -->
             <Border x:Name="NavFlyout"
                     Grid.Column="0" Grid.ColumnSpan="2"
-                    Width="250"
+                    Width="264"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Stretch"
                     ZIndex="10"
-                    Background="{DynamicResource AppWindowBackground}"
+                    Background="{DynamicResource SidebarBackground}"
                     IsHitTestVisible="{Binding Sidebar.OverlayActive}"
                     Classes.open="{Binding Sidebar.OverlayActive}">
                 <Border.Transitions>
@@ -615,7 +634,7 @@
                         Orientation="Horizontal"
                         Margin="65,0,8,0"
                         Spacing="8">
-                <!-- Opacity follows window focus (see SetupTitleBarFocusOpacity): white title when active, dimmed when not. -->
+                <!-- Branded controls retain their paper foreground while the window is active or inactive. -->
                 <!-- Back button — appears once there is navigation history (mirrors WinUI's title-bar back). -->
                 <Button x:Name="BackButton"
                         Width="32" Height="32"
@@ -651,8 +670,8 @@
                           automation:AutomationProperties.AccessibilityView="Raw"
                           Data="M0,1 H16 M0,7 H16 M0,13 H16"/>
                 </Button>
-                <controls:BrandWordmark Width="145"
-                                        Height="48"
+                <controls:BrandWordmark Width="150"
+                                        Height="30"
                                         VerticalAlignment="Center"
                                         automation:AutomationProperties.Name="Evergreen Endpoint | APPS"/>
                 <TextBlock Text="{Binding TitleBarVersionText}"
@@ -795,10 +814,37 @@
                 <StackPanel x:Name="WindowButtons"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
+                            VerticalAlignment="Center"
                             Spacing="0"
                             TextElement.Foreground="{DynamicResource AppTitleBarForeground}"
                             IsVisible="False">
+                    <Button x:Name="ThemeToggleButton"
+                            Width="46" Height="44"
+                            Classes="caption"
+                            automation:AutomationProperties.Name="Toggle light or dark theme"
+                            ToolTip.Tip="Toggle light or dark theme"
+                            Click="ThemeToggleButton_Click">
+                        <Panel Width="18" Height="18"
+                               automation:AutomationProperties.AccessibilityView="Raw">
+                            <Path x:Name="SunThemeIcon"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="1.4"
+                                  StrokeLineCap="Round"
+                                  Data="M9,3 V1 M9,17 V15 M3,9 H1 M17,9 H15 M4.75,4.75 L3.3,3.3 M14.7,14.7 L13.25,13.25 M13.25,4.75 L14.7,3.3 M3.3,14.7 L4.75,13.25 M9,5.5 A3.5,3.5 0 1 1 8.99,5.5"
+                                  Width="18" Height="18"
+                                  Stretch="Uniform"/>
+                            <Path x:Name="MoonThemeIcon"
+                                  Stroke="{Binding $parent[Button].Foreground}"
+                                  StrokeThickness="1.4"
+                                  StrokeLineCap="Round"
+                                  StrokeJoin="Round"
+                                  Data="M14.8,12.2 A6.5,6.5 0 0 1 6.1,3.5 A6.5,6.5 0 1 0 14.8,12.2 Z"
+                                  Width="16" Height="16"
+                                  Stretch="Uniform"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Panel>
+                    </Button>
                     <!-- Minimize: horizontal line -->
                     <Button Width="46" Height="44"
                             Classes="caption"
@@ -885,7 +931,6 @@
                     MaxHeight="900"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Background="{DynamicResource AppDialogBackground}"
                     CornerRadius="8"
                     ClipToBounds="True"
                     KeyboardNavigation.TabNavigation="Cycle"

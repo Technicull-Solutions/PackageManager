@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="96" viewBox="0 0 680 96" role="img" aria-label="Evergreen Endpoint | Package Manager">
+<rect width="680" height="96" fill="#F7FAF8"/>
+<g fill="#102B2B" font-family="Lato, Arial, sans-serif">
+<text x="28" y="39" font-size="16" font-weight="800" letter-spacing="0.7">EVERGREEN</text>
+<text x="28" y="61" font-size="16" font-weight="800" letter-spacing="1.1">ENDPOINT</text>
+<path d="M155 25 V71" stroke="#D69B2D" stroke-width="2"/>
+<text x="177" y="57" font-size="28" font-weight="400" letter-spacing="2">PACKAGE MANAGER</text>
+</g>
+</svg>

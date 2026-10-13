@@ -25,14 +25,36 @@ internal static class AutoUpdaterHelpers
             return false;
         }
 
-        return uri.Host.Equals("devolutions.net", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.EndsWith(".devolutions.net", StringComparison.OrdinalIgnoreCase)
+        string path = uri.AbsolutePath;
+        return uri.Host.Equals("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase)
+                && path.StartsWith(
+                    "/Technicull-Solutions/PackageManager/",
+                    StringComparison.OrdinalIgnoreCase
+                )
             || uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.Equals("objects.githubusercontent.com", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.Equals(
-                "release-assets.githubusercontent.com",
-                StringComparison.OrdinalIgnoreCase
-            );
+                && path.StartsWith(
+                    "/Technicull-Solutions/PackageManager/",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            || uri.Host.Equals("api.github.com", StringComparison.OrdinalIgnoreCase)
+                && path.StartsWith(
+                    "/repos/Technicull-Solutions/PackageManager/",
+                    StringComparison.OrdinalIgnoreCase
+                );
+    }
+
+    internal static bool IsUpdateAvailable(
+        string currentVersion,
+        int currentBuildNumber,
+        string availableVersion,
+        int availableBuildNumber
+    )
+    {
+        Version current = ParseVersionOrFallback(currentVersion, new Version(0, 0, 0));
+        Version available = ParseVersionOrFallback(availableVersion, new Version(0, 0, 0));
+        int releaseComparison = available.CompareTo(current);
+        return releaseComparison > 0
+            || releaseComparison == 0 && availableBuildNumber > currentBuildNumber;
     }
 
     internal static ProductInfoFile SelectInstallerFile(List<ProductInfoFile> files)

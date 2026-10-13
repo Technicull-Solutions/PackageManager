@@ -589,14 +589,14 @@ public class SoftwareCatalogTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void CatalogParticipatesInKeyboardPageCycleOnlyWhenEnabled(bool enabled)
+    public void EmployeePageCycleExcludesAdministrativeAndCatalogPages(bool enabled)
     {
-        Assert.Equal(enabled ? PageType.Catalog : PageType.Settings, MainWindowViewModel.GetNextPage(PageType.Bundles, enabled));
-        Assert.Equal(enabled ? PageType.CatalogEditor : PageType.Settings, MainWindowViewModel.GetNextPage(PageType.Catalog, enabled));
-        Assert.Equal(PageType.Settings, MainWindowViewModel.GetNextPage(PageType.CatalogEditor, enabled));
-        Assert.Equal(enabled ? PageType.CatalogEditor : PageType.Bundles, MainWindowViewModel.GetPreviousPage(PageType.Settings, enabled));
-        Assert.Equal(enabled ? PageType.Catalog : PageType.Bundles, MainWindowViewModel.GetPreviousPage(PageType.CatalogEditor, enabled));
-        Assert.Equal(PageType.Bundles, MainWindowViewModel.GetPreviousPage(PageType.Catalog));
+        Assert.Equal(PageType.Updates, MainWindowViewModel.GetNextPage(PageType.Discover, enabled));
+        Assert.Equal(PageType.Installed, MainWindowViewModel.GetNextPage(PageType.Updates, enabled));
+        Assert.Equal(PageType.OperationHistory, MainWindowViewModel.GetNextPage(PageType.Installed, enabled));
+        Assert.Equal(PageType.Discover, MainWindowViewModel.GetNextPage(PageType.OperationHistory, enabled));
+        Assert.Equal(PageType.Discover, MainWindowViewModel.GetNextPage(PageType.Catalog, enabled));
+        Assert.Equal(PageType.Installed, MainWindowViewModel.GetPreviousPage(PageType.Settings, enabled));
     }
 
     [Fact]

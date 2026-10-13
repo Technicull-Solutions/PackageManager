@@ -15,7 +15,7 @@ internal static class AutoUpdaterInstallerArguments
         "/SILENT /SUPPRESSMSGBOXES /NORESTART /SP- /NoVCRedist /NoEdgeWebView /NoWinGet /NoRedirectionGuard /NoDesktopShortcut";
 
     private const string UninstallSubkeyName =
-        @"Software\Microsoft\Windows\CurrentVersion\Uninstall\{889610CC-4337-4BDB-AC3B-4F21806C0BDE}_is1";
+        @"Software\Microsoft\Windows\CurrentVersion\Uninstall\{4C0F2700-664B-4AD6-9633-67C5EEECC132}_is1";
 
     /// <summary>
     /// Arguments for the Windows installer when it is run to update an existing copy.
@@ -35,13 +35,14 @@ internal static class AutoUpdaterInstallerArguments
             _ => "",
         };
 
-        if (!isPortable || string.IsNullOrWhiteSpace(installationDirectory))
+        if (string.IsNullOrWhiteSpace(installationDirectory))
         {
             return arguments;
         }
 
         string directory = Path.TrimEndingDirectorySeparator(installationDirectory);
-        return $"{arguments} /TASKS=\"portableinstall\" /DIR=\"{directory}\"";
+        string taskArgument = isPortable ? " /TASKS=\"portableinstall\"" : "";
+        return $"{arguments}{taskArgument} /DIR=\"{directory}\"";
     }
 
     internal static WindowsInstallScope DetectInstallScope(string installationDirectory)

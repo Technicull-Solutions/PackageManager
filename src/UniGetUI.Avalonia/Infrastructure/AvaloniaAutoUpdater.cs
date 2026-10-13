@@ -19,7 +19,7 @@ using UniGetUI.Shared;
 namespace UniGetUI.Avalonia.Infrastructure;
 
 /// <summary>
-/// Avalonia port of the WinUI AutoUpdater.  Checks for new UniGetUI versions and
+/// Checks the Technicull-controlled Evergreen release channel and
 /// lets the user trigger an in-place upgrade.
 /// </summary>
 internal static partial class AvaloniaAutoUpdater
@@ -27,9 +27,12 @@ internal static partial class AvaloniaAutoUpdater
     private const string INSTALLER_VALIDATION_FAILURE_MARKER_SUFFIX = ".validation-failed";
 
     // ------------------------------------------------------------------ constants
-    private const string REGISTRY_PATH = @"Software\Devolutions\UniGetUI";
-    private const string DEFAULT_PRODUCTINFO_URL = "https://devolutions.net/productinfo.json";
-    private const string DEFAULT_PRODUCTINFO_KEY = "Devolutions.UniGetUI";
+    private const string REGISTRY_PATH =
+        @"Software\Policies\Technicull Solutions\Evergreen Endpoint\Package Manager\Updater";
+    private const string DEFAULT_PRODUCTINFO_URL =
+        "https://raw.githubusercontent.com/Technicull-Solutions/PackageManager/main/update/productinfo.json";
+    private const string DEFAULT_PRODUCTINFO_KEY =
+        "TechnicullSolutions.EvergreenEndpointPackageManager";
 
     private const string REG_PRODUCTINFO_URL = "UpdaterProductInfoUrl";
     private const string REG_PRODUCTINFO_KEY = "UpdaterProductKey";
@@ -38,22 +41,15 @@ internal static partial class AvaloniaAutoUpdater
     private const string REG_SKIP_SIGNER_THUMBPRINT_CHECK = "UpdaterSkipSignerThumbprintCheck";
     private const string REG_DISABLE_TLS_VALIDATION = "UpdaterDisableTlsValidation";
 
-    private static readonly string[] DEVOLUTIONS_CERT_THUMBPRINTS =
-    [
-        "3f5202a9432d54293bdfe6f7e46adb0a6f8b3ba6",
-        "8db5a43bb8afe4d2ffb92da9007d8997a4cc4e13",
-        "50f753333811ff11f1920274afde3ffd4468b210",
-    ];
+    private static readonly string[] TECHNICULL_CERT_THUMBPRINTS = [];
 
-    private static readonly string[] DEVOLUTIONS_MAC_DEVELOPER_IDS =
-    [
-        "N592S9ASDB",
-    ];
+    private static readonly string[] TECHNICULL_MAC_DEVELOPER_IDS = [];
 
 #if !DEBUG
     private static readonly string[] RELEASE_IGNORED_REGISTRY_VALUES =
     [
         REG_PRODUCTINFO_KEY,
+        REG_PRODUCTINFO_URL,
         REG_ALLOW_UNSAFE_URLS,
         REG_SKIP_HASH_VALIDATION,
         REG_SKIP_SIGNER_THUMBPRINT_CHECK,
@@ -121,7 +117,7 @@ internal static partial class AvaloniaAutoUpdater
         lock (_updateLogLock)
         {
             _updateLogBuilder = new StringBuilder()
-                .AppendLine($"=== UniGetUI update attempt started at {DateTime.Now:yyyy-MM-dd HH:mm:ss} ===")
+                .AppendLine($"=== Evergreen Endpoint update attempt started at {DateTime.Now:yyyy-MM-dd HH:mm:ss} ===")
                 .AppendLine($"Current version: {CoreData.VersionName} (build {CoreData.BuildNumber})")
                 .AppendLine($"Manual check: {manualCheck}")
                 .AppendLine($"Auto-launch: {autoLaunch}")
@@ -243,7 +239,7 @@ internal static partial class AvaloniaAutoUpdater
 
             RaiseStatus(
                 CoreTools.Translate("Your last update attempt did not complete."),
-                CoreTools.Translate("UniGetUI could not confirm whether the update succeeded. Open the log to see what happened."),
+                CoreTools.Translate("Evergreen Endpoint could not confirm whether the update succeeded. Open the log to see what happened."),
                 InfoBarSeverity.Warning,
                 isClosable: true,
                 actionButtonText: CoreTools.Translate("View log"),
@@ -321,7 +317,7 @@ internal static partial class AvaloniaAutoUpdater
     /// </summary>
     private static string DescribeInstallerExitCode(int code) => code switch
     {
-        0 => CoreTools.Translate("The installer reported success but did not restart UniGetUI."),
+        0 => CoreTools.Translate("The installer reported success but did not restart Evergreen Endpoint."),
         1 => CoreTools.Translate("The installer failed to initialize."),
         2 => CoreTools.Translate("Setup was canceled before installation began."),
         3 => CoreTools.Translate("A fatal error occurred during the preparation phase."),
@@ -329,7 +325,7 @@ internal static partial class AvaloniaAutoUpdater
         5 => CoreTools.Translate("Installation was canceled while in progress."),
         6 => CoreTools.Translate("The installer was terminated by another process."),
         7 => CoreTools.Translate("The preparation phase determined the installation cannot proceed."),
-        8 => CoreTools.Translate("The installer could not start. UniGetUI may already be running, or you do not have permission to install."),
+        8 => CoreTools.Translate("The installer could not start. Evergreen Endpoint may already be running, or you do not have permission to install."),
         _ => CoreTools.Translate("Unexpected installer error."),
     };
 
@@ -431,10 +427,10 @@ internal static partial class AvaloniaAutoUpdater
 
             string installerName;
             if (OperatingSystem.IsWindows())
-                installerName = "UniGetUI Updater.exe";
+                installerName = "Evergreen Endpoint Package Manager Updater.exe";
             else
                 // macOS and Linux both ship as self-contained .tar.gz archives.
-                installerName = "UniGetUI Updater.tar.gz";
+                installerName = "Evergreen Endpoint Package Manager Updater.tar.gz";
             string installerPath = Path.Join(CoreData.UniGetUIDataDirectory, installerName);
             UpdaterDownloadIdentity installerIdentity = new(
                 candidate.VersionName,
@@ -490,7 +486,7 @@ internal static partial class AvaloniaAutoUpdater
 
             RaiseStatus(
                 CoreTools.Translate(
-                    "UniGetUI version {0} is being downloaded.",
+                    "Evergreen Endpoint version {0} is being downloaded.",
                     candidate.VersionName.ToString(CultureInfo.InvariantCulture)),
                 CoreTools.Translate("This may take a minute or two"),
                 InfoBarSeverity.Informational,
@@ -571,7 +567,7 @@ internal static partial class AvaloniaAutoUpdater
             {
                 RaiseStatus(
                     CoreTools.Translate("Auto-update is not yet available on this platform."),
-                    CoreTools.Translate("Please update UniGetUI manually."),
+                    CoreTools.Translate("Please update Evergreen Endpoint manually."),
                     InfoBarSeverity.Warning,
                     isClosable: true);
             }
@@ -743,7 +739,7 @@ internal static partial class AvaloniaAutoUpdater
         LogUpdateInfo($"Installer process started (PID {p.Id}). The installer is expected to terminate UniGetUI before file replacement.");
 
         RaiseStatus(
-            CoreTools.Translate("UniGetUI is being updated..."),
+            CoreTools.Translate("Evergreen Endpoint is being updated..."),
             CoreTools.Translate("This may take a minute or two"),
             InfoBarSeverity.Informational,
             isClosable: false);
@@ -767,7 +763,7 @@ internal static partial class AvaloniaAutoUpdater
 
             RaiseStatus(
                 CoreTools.Translate("Update installed."),
-                CoreTools.Translate("UniGetUI was updated successfully, but this running copy was not replaced. This usually means you are running a development build. Close this copy and start the newly-installed version to finish."),
+                CoreTools.Translate("Evergreen Endpoint was updated successfully, but this running copy was not replaced. Close this copy and start the newly installed version to finish."),
                 InfoBarSeverity.Warning,
                 isClosable: true,
                 actionButtonText: CoreTools.Translate("View log"),
@@ -794,7 +790,7 @@ internal static partial class AvaloniaAutoUpdater
         LogUpdateInfo($"Applying macOS update from archive: {installerLocation}");
 
         RaiseStatus(
-            CoreTools.Translate("UniGetUI is being updated..."),
+            CoreTools.Translate("Evergreen Endpoint is being updated..."),
             CoreTools.Translate("This may take a minute or two"),
             InfoBarSeverity.Informational,
             isClosable: false);
@@ -839,7 +835,7 @@ internal static partial class AvaloniaAutoUpdater
             return;
         }
 
-        // Verify the embedded app is signed by Devolutions before trusting it.
+        // Verify the embedded app against the configured Technicull signing identity.
         if (!VerifyMacAppSignature(newApp))
         {
             LogUpdateError("The extracted app failed signature validation. Aborting update.");
@@ -930,7 +926,7 @@ internal static partial class AvaloniaAutoUpdater
         LogUpdateInfo($"Applying Linux update from archive: {installerLocation}");
 
         RaiseStatus(
-            CoreTools.Translate("UniGetUI is being updated..."),
+            CoreTools.Translate("Evergreen Endpoint is being updated..."),
             CoreTools.Translate("This may take a minute or two"),
             InfoBarSeverity.Informational,
             isClosable: false);
@@ -1047,7 +1043,7 @@ internal static partial class AvaloniaAutoUpdater
     {
         RaiseStatus(
             CoreTools.Translate("Update installed."),
-            CoreTools.Translate("UniGetUI was updated successfully, but this running copy was not replaced. This usually means you are running a development build. Close this copy and start the newly-installed version to finish."),
+            CoreTools.Translate("Evergreen Endpoint was updated successfully, but this running copy was not replaced. Close this copy and start the newly installed version to finish."),
             InfoBarSeverity.Warning,
             isClosable: true,
             actionButtonText: CoreTools.Translate("View log"),
@@ -1221,7 +1217,9 @@ internal static partial class AvaloniaAutoUpdater
     {
         LogUpdateDebug($"Checking updates via ProductInfo: {overrides.ProductInfoUrl}");
 
-        if (!IsSourceUrlAllowed(overrides.ProductInfoUrl, overrides.AllowUnsafeUrls))
+        if (!AutoUpdaterHelpers.IsSourceUrlAllowed(
+                overrides.ProductInfoUrl,
+                overrides.AllowUnsafeUrls))
         {
             throw new InvalidOperationException(
                 $"ProductInfo URL is not allowed: {overrides.ProductInfoUrl}"
@@ -1233,7 +1231,25 @@ internal static partial class AvaloniaAutoUpdater
         {
             client.Timeout = TimeSpan.FromSeconds(600);
             client.DefaultRequestHeaders.UserAgent.ParseAdd(CoreData.UserAgentString);
-            json = await client.GetStringAsync(overrides.ProductInfoUrl);
+            using HttpResponseMessage response = await client.GetAsync(overrides.ProductInfoUrl);
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                LogUpdateWarn(
+                    "The Technicull release channel has not been published yet; treating this build as current."
+                );
+                return new UpdateCandidate(
+                    false,
+                    CoreData.VersionName,
+                    CoreData.BuildNumber.ToString(CultureInfo.InvariantCulture),
+                    CoreData.BuildNumber,
+                    "",
+                    "",
+                    "Technicull ProductInfo"
+                );
+            }
+
+            response.EnsureSuccessStatusCode();
+            json = await response.Content.ReadAsStringAsync();
         }
 
         Dictionary<string, ProductInfoProduct>? root =
@@ -1264,22 +1280,36 @@ internal static partial class AvaloniaAutoUpdater
             );
         }
 
+        bool upgradable = AutoUpdaterHelpers.IsUpdateAvailable(
+            CoreData.VersionName,
+            CoreData.BuildNumber,
+            channel.Version,
+            channel.BuildNumber
+        );
+
+        LogUpdateDebug(
+            $"ProductInfo check: current={CoreData.VersionName} build {CoreData.BuildNumber}, "
+                + $"available={channel.Version} build {channel.BuildNumber}, upgradable={upgradable}"
+        );
+
+        if (!upgradable)
+        {
+            return new UpdateCandidate(
+                false,
+                channel.Version,
+                channel.BuildVersion,
+                channel.BuildNumber,
+                "",
+                "",
+                "Technicull ProductInfo"
+            );
+        }
+
         ProductInfoFile installer = SelectInstallerFile(channel.Files);
-        if (!IsSourceUrlAllowed(installer.Url, overrides.AllowUnsafeUrls))
+        if (!AutoUpdaterHelpers.IsSourceUrlAllowed(installer.Url, overrides.AllowUnsafeUrls))
         {
             throw new InvalidOperationException($"Installer URL is not allowed: {installer.Url}");
         }
-
-        Version current = ParseVersionOrFallback(
-            CoreData.VersionName,
-            new Version(0, 0, 0, CoreData.BuildNumber)
-        );
-        Version available = ParseVersionOrFallback(channel.Version, new Version(0, 0, 0, 0));
-        bool upgradable = available > current;
-
-        LogUpdateDebug(
-            $"ProductInfo check: current={current}, available={available}, upgradable={upgradable}"
-        );
 
         return new UpdateCandidate(
             upgradable,
@@ -1288,7 +1318,7 @@ internal static partial class AvaloniaAutoUpdater
             channel.BuildNumber,
             installer.Hash,
             installer.Url,
-            "ProductInfo"
+            "Technicull ProductInfo"
         );
     }
 
@@ -1355,13 +1385,24 @@ internal static partial class AvaloniaAutoUpdater
             return true;
         }
 
+        if (TECHNICULL_CERT_THUMBPRINTS.Length == 0)
+        {
+            LogUpdateWarn(
+                "No Technicull Authenticode certificate is configured; relying on the required "
+                    + "SHA-256 hash from the fixed Technicull release channel."
+            );
+            return true;
+        }
+
         try
         {
 #pragma warning disable SYSLIB0057
             X509Certificate signerCert = X509Certificate.CreateFromSignedFile(path);
 #pragma warning restore SYSLIB0057
             using X509Certificate2 cert2 = new(signerCert);
-            string thumbprint = NormalizeThumbprint(cert2.Thumbprint ?? string.Empty);
+            string thumbprint = AutoUpdaterHelpers.NormalizeThumbprint(
+                cert2.Thumbprint ?? string.Empty
+            );
 
             if (string.IsNullOrWhiteSpace(thumbprint))
             {
@@ -1369,7 +1410,7 @@ internal static partial class AvaloniaAutoUpdater
                 return false;
             }
 
-            if (DEVOLUTIONS_CERT_THUMBPRINTS.Contains(thumbprint, StringComparer.OrdinalIgnoreCase))
+            if (TECHNICULL_CERT_THUMBPRINTS.Contains(thumbprint, StringComparer.OrdinalIgnoreCase))
             {
                 LogUpdateDebug($"Installer signer thumbprint is trusted: {thumbprint}");
                 return true;
@@ -1389,10 +1430,10 @@ internal static partial class AvaloniaAutoUpdater
     [SupportedOSPlatform("macos")]
     private static bool VerifyMacAppSignature(string appBundlePath)
     {
-        if (DEVOLUTIONS_MAC_DEVELOPER_IDS.Length == 0)
+        if (TECHNICULL_MAC_DEVELOPER_IDS.Length == 0)
         {
             LogUpdateWarn(
-                "No Devolutions macOS Developer Team IDs configured — skipping .app signature validation."
+                "No Technicull macOS Developer Team IDs configured — relying on the verified download hash."
             );
             return true;
         }
@@ -1452,7 +1493,7 @@ internal static partial class AvaloniaAutoUpdater
                 return true;
             }
 
-            if (DEVOLUTIONS_MAC_DEVELOPER_IDS.Contains(teamId, StringComparer.OrdinalIgnoreCase))
+            if (TECHNICULL_MAC_DEVELOPER_IDS.Contains(teamId, StringComparer.OrdinalIgnoreCase))
             {
                 LogUpdateDebug($"Extracted app is signed by trusted Developer Team ID {teamId}.");
                 return true;
@@ -1476,7 +1517,7 @@ internal static partial class AvaloniaAutoUpdater
         UpdaterOverrides overrides,
         UpdaterDownloadIdentity identity)
     {
-        if (!IsSourceUrlAllowed(url, overrides.AllowUnsafeUrls))
+        if (!AutoUpdaterHelpers.IsSourceUrlAllowed(url, overrides.AllowUnsafeUrls))
         {
             throw new InvalidOperationException($"Download URL is not allowed: {url}");
         }
@@ -1511,32 +1552,7 @@ internal static partial class AvaloniaAutoUpdater
         return handler;
     }
 
-    // ------------------------------------------------------------------ URL / arch helpers
-    private static bool IsSourceUrlAllowed(string url, bool allowUnsafe)
-    {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
-        {
-            return false;
-        }
-
-        if (allowUnsafe)
-        {
-            LogUpdateWarn($"Registry override: allowing potentially unsafe URL {url}");
-            return true;
-        }
-
-        if (!string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        return uri.Host.Equals("devolutions.net", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.EndsWith(".devolutions.net", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.Equals("objects.githubusercontent.com", StringComparison.OrdinalIgnoreCase)
-            || uri.Host.Equals("release-assets.githubusercontent.com", StringComparison.OrdinalIgnoreCase);
-    }
-
+    // ------------------------------------------------------------------ architecture helpers
     private static ProductInfoFile SelectInstallerFile(List<ProductInfoFile> files)
     {
         string arch = RuntimeInformation.ProcessArchitecture switch
@@ -1590,18 +1606,6 @@ internal static partial class AvaloniaAutoUpdater
         && f.Arch.Equals(arch, StringComparison.OrdinalIgnoreCase)
         && f.Url.Contains(osToken, StringComparison.OrdinalIgnoreCase);
 
-    private static Version ParseVersionOrFallback(string raw, Version fallback)
-    {
-        string sanitized = raw.Trim().TrimStart('v', 'V');
-        if (Version.TryParse(sanitized, out Version? parsed))
-        {
-            return CoreTools.NormalizeVersionForComparison(parsed);
-        }
-
-        LogUpdateWarn($"Could not parse version '{raw}', using fallback '{fallback}'");
-        return fallback;
-    }
-
     // Normalize trailing zero components so "2026.1.11" and "2026.1.11.0" compare equal.
     private static bool VersionsMatch(string a, string b)
     {
@@ -1616,9 +1620,6 @@ internal static partial class AvaloniaAutoUpdater
 
         return string.Equals(sa, sb, StringComparison.OrdinalIgnoreCase);
     }
-
-    private static string NormalizeThumbprint(string thumbprint) =>
-        new(thumbprint.ToLowerInvariant().Where(char.IsAsciiHexDigit).ToArray());
 
     // ------------------------------------------------------------------ registry
     private static UpdaterOverrides LoadUpdaterOverrides()
@@ -1654,10 +1655,8 @@ internal static partial class AvaloniaAutoUpdater
         );
 #else
         LogIgnoredReleaseOverrides(key);
-        string productInfoUrl = GetRegistryString(key, REG_PRODUCTINFO_URL) ?? DEFAULT_PRODUCTINFO_URL;
-
         return new UpdaterOverrides(
-            productInfoUrl,
+            DEFAULT_PRODUCTINFO_URL,
             DEFAULT_PRODUCTINFO_KEY,
             false,
             false,

@@ -10,59 +10,80 @@
              mc:Ignorable="d"
              x:DataType="vm:AboutPageViewModel">
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Orientation="Vertical" Spacing="4" Margin="16,8">
+    <UserControl.Styles>
+        <Style Selector="Button.about-link:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                         Button.about-link:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        <Style Selector="Button.about-link:pointerover TextBlock.hyperlink,
+                         Button.about-link:pressed TextBlock.hyperlink">
+            <Setter Property="Foreground" Value="{DynamicResource BrandOrangeBrush}"/>
+        </Style>
+    </UserControl.Styles>
 
-            <controls:BrandWordmark Width="290"
-                                    Height="96"
-                                    HorizontalAlignment="Left"
-                                    automation:AutomationProperties.Name="{Binding AboutTitle}"/>
-
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  Background="{DynamicResource AboutDialogBodyBackground}">
+        <StackPanel Orientation="Vertical"
+                    Spacing="8"
+                    Margin="46,34,46,38">
             <TextBlock Text="{Binding PublisherText}"
-                       FontSize="14"
-                       FontWeight="SemiBold"
-                       Opacity="0.75"
-                       Margin="0,-4,0,4"/>
+                       FontFamily="Segoe UI Variable Display"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource AboutDialogBodyForeground}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,10"/>
 
             <TextBlock Text="{Binding ProductDescription}"
-                       FontSize="14"
-                       TextWrapping="Wrap"/>
+                       FontSize="18"
+                       LineHeight="26"
+                       Foreground="{DynamicResource AboutDialogBodyForeground}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,16"/>
 
             <SelectableTextBlock Text="{Binding VersionText}"
-                       FontSize="15"
-                       FontWeight="SemiBold"
-                       Margin="0,10,0,2"/>
+                                 FontSize="18"
+                                 FontWeight="Bold"
+                                 Foreground="{DynamicResource AboutDialogBodyForeground}"
+                                 Margin="0,0,0,0"/>
             <SelectableTextBlock Text="{Binding UpstreamBaseText}"
-                                 FontSize="12"
-                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                 Margin="0,0,0,10"/>
+                                 FontSize="16"
+                                 Foreground="{DynamicResource AboutDialogBodyForeground}"
+                                 Margin="0,0,0,24"/>
 
             <!-- Disclaimer banner -->
-            <Border Classes="warning-banner"
-                    CornerRadius="8"
-                    Padding="12,10"
-                    Margin="0,6">
+            <Border CornerRadius="8"
+                    Padding="24,16"
+                    Margin="0,0,0,24"
+                    Background="{DynamicResource AboutDisclaimerBackground}"
+                    BorderBrush="{DynamicResource AboutDisclaimerBorderBrush}"
+                    BorderThickness="2">
                 <Grid ColumnDefinitions="Auto,*">
                     <!-- Warning icon -->
                     <Border Grid.Column="0"
-                            Width="26" Height="26"
-                            CornerRadius="13"
-                            Background="{DynamicResource WarningBannerIconBackground}"
+                            Width="38" Height="38"
+                            CornerRadius="19"
+                            Background="{DynamicResource AboutDisclaimerIconBackground}"
                             VerticalAlignment="Top"
-                            Margin="0,1,12,0">
+                            Margin="0,0,16,0">
                         <TextBlock Text="!"
+                                   Foreground="{DynamicResource AboutDisclaimerIconForeground}"
                                    FontWeight="Bold"
-                                   FontSize="15"
+                                   FontSize="22"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </Border>
                     <!-- Text -->
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="{Binding DisclaimerTitle}"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"/>
+                                   FontSize="17"
+                                   Foreground="{DynamicResource AboutDisclaimerForeground}"
+                                   FontWeight="Bold"/>
                         <TextBlock Text="{Binding DisclaimerMessage}"
-                                   FontSize="14"
+                                   FontSize="16"
+                                   LineHeight="22"
+                                   Foreground="{DynamicResource AboutDisclaimerForeground}"
                                    TextWrapping="Wrap"/>
                     </StackPanel>
                 </Grid>
@@ -70,42 +91,46 @@
 
             <TextBlock Text="{t:Translate Useful links}"
                        FontFamily="Segoe UI Variable Display"
-                       FontSize="24"
+                       FontSize="22"
                        FontWeight="Bold"
-                       Margin="0,10,0,4"/>
+                       Foreground="{DynamicResource AboutDialogBodyForeground}"
+                       Margin="0,0,0,6"/>
 
             <Button Command="{Binding OpenHomepageCommand}"
+                    Classes="about-link"
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="0"
                     HorizontalAlignment="Center"
                     automation:AutomationProperties.Name="{t:Translate Evergreen Endpoint | APPS Homepage}">
                 <TextBlock Classes="hyperlink"
-                           FontSize="14"
+                           FontSize="16"
                            Text="{t:Translate Evergreen Endpoint | APPS Homepage}"
                            automation:AutomationProperties.AccessibilityView="Raw"/>
             </Button>
 
             <Button Command="{Binding OpenIssuesCommand}"
+                    Classes="about-link"
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="0"
                     HorizontalAlignment="Center"
                     automation:AutomationProperties.Name="{t:Translate Report an issue or submit a feature request}">
                 <TextBlock Classes="hyperlink"
-                           FontSize="14"
+                           FontSize="16"
                            Text="{t:Translate Report an issue or submit a feature request}"
                            automation:AutomationProperties.AccessibilityView="Raw"/>
             </Button>
 
             <Button Command="{Binding OpenRepositoryCommand}"
+                    Classes="about-link"
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="0"
                     HorizontalAlignment="Center"
                     automation:AutomationProperties.Name="{t:Translate Evergreen Endpoint Package Manager Repository}">
                 <TextBlock Classes="hyperlink"
-                           FontSize="14"
+                           FontSize="16"
                            Text="{t:Translate Evergreen Endpoint Package Manager Repository}"
                            automation:AutomationProperties.AccessibilityView="Raw"/>
             </Button>

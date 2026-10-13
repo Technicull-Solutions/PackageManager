@@ -398,7 +398,7 @@
   "Go forward": "بڕۆ بۆ پێشەوە",
   "Go to home page": "بڕۆ بۆ پەڕەی سەرەتایی",
   "Reload page": "پەڕەکە بارکەرەوە",
-  "View page on browser": "لاپەڕەکە لە وێبگەڕدا ببینە",
+  "View page in browser": "لاپەڕەکە لە وێبگەڕدا ببینە",
   "The built-in browser is not supported on Linux yet.": "وێبگەڕی ناوخۆ هێشتا لەسەر Linux پشتگیری ناکرێت.",
   "Open in browser": "لە وێبگەڕدا بکەرەوە",
   "Copy to clipboard": "کۆپی بکە بۆ کلیپبۆرد",

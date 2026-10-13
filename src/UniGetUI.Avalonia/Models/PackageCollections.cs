@@ -175,6 +175,8 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
         }
     }
     public bool HasCustomIcon => _iconBitmap is not null;
+    public bool IconLoadCompleted { get; private set; }
+    public bool HasUserFriendlyName { get; }
     public string IconFallbackText { get; }
 
     public bool IsChecked
@@ -226,6 +228,13 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
     private readonly CancellationTokenSource _lifetimeCts = new();
 
     public string SourceIconPath => IconTypeToSvgPath(Package.Source.IconId);
+    public string FriendlySourceName => Package.Source.IconId == IconType.MsStore
+        ? "Microsoft Store"
+        : Package.Manager.DisplayName;
+
+    public string FriendlyProviderText => CoreTools.Translate(
+        "Provided through {0}",
+        FriendlySourceName);
 
     private static string IconTypeToSvgPath(IconType icon)
     {
@@ -248,6 +257,7 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
     {
         Package = package;
         _page = page;
+        HasUserFriendlyName = PackagePresentationFilter.HasUserFriendlyName(package.Name, package.Id);
         IconFallbackText = CreateIconFallbackText(package.Name, package.Id);
         VersionComboString = package.VersionString;
         InstalledVersionTooltip = InstalledVersionNotice.BuildTooltip(package);
@@ -294,9 +304,24 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
     /// <summary>Loads this row's icon at most once and returns the shared load operation.</summary>
     public Task EnsureIconLoadedAsync()
     {
-        if (Settings.Get(Settings.K.DisableIconsOnPackageLists)) return Task.CompletedTask;
+        if (Settings.Get(Settings.K.DisableIconsOnPackageLists))
+        {
+            lock (_iconLoadLock)
+                return _iconLoadTask ??= MarkIconLoadCompletedAsync();
+        }
         lock (_iconLoadLock)
             return _iconLoadTask ??= LoadIconAsync();
+    }
+
+    private async Task MarkIconLoadCompletedAsync()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (IconLoadCompleted) return;
+            IconLoadCompleted = true;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IconLoadCompleted)));
+            _page.NotifyPackageIconResolved();
+        });
     }
 
     private int _installerHostLoadStarted;
@@ -697,6 +722,13 @@ public sealed class PackageWrapper : INotifyPropertyChanged, IDisposable, IPacka
         }
         catch (OperationCanceledException) { /* row discarded before its icon finished loading */ }
         catch { MarkIconFailed(hash); }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                await MarkIconLoadCompletedAsync();
+            }
+        }
     }
 
     private static Task<Bitmap?> GetSharedIconLoad(long hash, IPackage package)

@@ -55,12 +55,9 @@ public partial class SidebarViewModel : ViewModelBase
     public bool BuildStatusIsCriticallyBehind => BuildStatusLevel is BuildFreshnessLevel.CriticallyBehind;
 
     // ─── Pane open/closed ─────────────────────────────────────────────────────
-    // NavMenuMode: Automatic mirrors WinUI (dock ≥1600px, else rail+overlay), Docked = always
-    // inline, Overlay = always rail+overlay. IsPaneOpen = labeled pane showing, in any mode.
+    // NavMenuMode: Automatic and Docked keep the pane inline so page content always reflows with
+    // navigation changes. Overlay remains available as an explicit managed configuration.
     public enum NavMode { Automatic, Docked, Overlay }
-
-    private const double ExpandedThreshold = 1600; // WinUI ExpandedModeThresholdWidth
-    private const double CompactThreshold = 800;    // WinUI CompactModeThresholdWidth
 
     // Live window width, pushed by MainWindow's bounds observer.
     [ObservableProperty]
@@ -84,14 +81,12 @@ public partial class SidebarViewModel : ViewModelBase
     {
         NavMode.Docked => true,
         NavMode.Overlay => false,
-        _ => WindowWidth >= ExpandedThreshold,
+        _ => true,
     };
-
-    private bool RailAllowed => WindowWidth >= CompactThreshold;
 
     // Icon rail vs docked labeled pane vs sliding overlay — mutually exclusive.
     public bool NavDockVisible => Docked && IsPaneOpen;
-    public bool RailVisible => (Docked && !IsPaneOpen) || (!Docked && RailAllowed);
+    public bool RailVisible => Docked && !IsPaneOpen;
     public bool OverlayActive => !Docked && IsPaneOpen;
 
     private bool _wasDocked;
@@ -170,8 +165,13 @@ public partial class SidebarViewModel : ViewModelBase
     private static Task CheckForUpdates() =>
         AvaloniaAutoUpdater.CheckAndInstallUpdatesAsync(autoLaunch: false, manualCheck: true);
 
-    public void SelectNavButtonForPage(PageType page) =>
-        SelectedPageType = page;
+    public void SelectNavButtonForPage(PageType page)
+    {
+        if (SelectedPageType == page)
+            OnPropertyChanged(nameof(SelectedPageType));
+        else
+            SelectedPageType = page;
+    }
 
     public void SetNavItemLoading(PageType page, bool isLoading)
     {

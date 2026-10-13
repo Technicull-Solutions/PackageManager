@@ -173,7 +173,12 @@ if (-not $SkipInstaller) {
             $IssContentNoSign = $IssContentNoSign -Replace '(?m)^SignedUninstaller=yes', 'SignedUninstaller=no'
             Set-Content $IssPath $IssContentNoSign -NoNewline
 
-            $IsccArgs = @($IssPath, "/F$InstallerBaseName", "/O$OutputPath")
+            $IsccArgs = @(
+                "/DMyBuildNumber=$BuildNumber",
+                $IssPath,
+                "/F$InstallerBaseName",
+                "/O$OutputPath"
+            )
             if ($MaxInstallerCompression) {
                 Write-Host "Using lzma/ultra64 installer compression."
                 $IsccArgs = @('/DInstallerCompression=lzma/ultra64') + $IsccArgs

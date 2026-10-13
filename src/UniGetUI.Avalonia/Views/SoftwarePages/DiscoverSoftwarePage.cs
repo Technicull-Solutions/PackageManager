@@ -29,9 +29,10 @@ public class DiscoverSoftwarePage : AbstractPackagesPage
     public DiscoverSoftwarePage(CatalogEditorViewModel? catalogEditor = null) : base(new PackagesPageData
     {
         PageName = "SoftwarePages.DiscoverSoftwarePage",
-        PageTitle = CoreTools.Translate("Discover Packages"),
+        PageTitle = CoreTools.Translate("Apps"),
         IconName = "DiscoverPackage",
         PageRole = OperationType.Install,
+        EnableUserFriendlyDefaultView = true,
         Loader = DiscoverablePackagesLoader.Instance ?? new DiscoverablePackagesLoader([]),
         MegaQueryBlockEnabled = true,
         DisableSuggestedResultsRadio = false,
@@ -42,7 +43,7 @@ public class DiscoverSoftwarePage : AbstractPackagesPage
         DisableReload = false,
         NoPackages_BackgroundText = CoreTools.Translate("No results were found matching the input criteria"),
         NoPackages_SourcesText = CoreTools.Translate("No packages were found"),
-        NoPackages_SubtitleText_Base = CoreTools.Translate("No packages were found"),
+        NoPackages_SubtitleText_Base = CoreTools.Translate("Find trusted software approved for this device."),
         MainSubtitle_StillLoading = CoreTools.Translate("Loading packages"),
         NoMatches_BackgroundText = CoreTools.Translate("No results were found matching the input criteria"),
     }, vm => AddCatalogToolbar(vm, catalogEditor))

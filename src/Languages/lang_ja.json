@@ -398,7 +398,7 @@
   "Go forward": "進む",
   "Go to home page": "ホームページに移動",
   "Reload page": "ページを再読み込み",
-  "View page on browser": "ページをブラウザーで表示する",
+  "View page in browser": "ページをブラウザーで表示する",
   "The built-in browser is not supported on Linux yet.": "組み込みブラウザーは、Linuxではまだサポートされていません。",
   "Open in browser": "ブラウザーで開く",
   "Copy to clipboard": "クリップボードにコピー",

@@ -90,7 +90,8 @@
         </DataTemplate>
         <DataTemplate x:Key="CatalogInstallAction" x:DataType="vm:CatalogTileViewModel">
             <Panel>
-                <Button Content="{t:Translate Install}" IsVisible="{Binding ShowInstall}" IsEnabled="{Binding CanInstall}"
+                <Button Classes="package-primary-action package-install-action"
+                        Content="{t:Translate Install}" IsVisible="{Binding ShowInstall}" IsEnabled="{Binding CanInstall}"
                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                         ToolTip.Tip="{Binding StatusText}" ToolTip.ShowOnDisabled="True"
                         Command="{Binding $parent[UserControl].((vm:SoftwareCatalogViewModel)DataContext).InstallCommand}"

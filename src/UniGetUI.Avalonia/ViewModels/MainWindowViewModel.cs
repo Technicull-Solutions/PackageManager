@@ -660,10 +660,10 @@ public partial class MainWindowViewModel : ViewModelBase
             "discover" => PageType.Discover,
             "updates" => PageType.Updates,
             "installed" => PageType.Installed,
-            "bundles" => PageType.Bundles,
+            "bundles" => PageType.Discover,
             "catalog" when Sidebar.SoftwareCatalogEnabled => PageType.Catalog,
             "catalog-editor" when Sidebar.SoftwareCatalogEnabled => PageType.CatalogEditor,
-            "settings" => PageType.Settings,
+            "settings" => PageType.Discover,
             _ => UpgradablePackagesLoader.Instance is { } l && l.Count() > 0 ? PageType.Updates : PageType.Discover,
         };
         NavigateTo(type);
@@ -700,15 +700,16 @@ public partial class MainWindowViewModel : ViewModelBase
     public static PageType GetNextPage(PageType type) =>
         GetNextPage(type, Settings.Get(Settings.K.EnableSoftwareCatalog));
 
-    internal static PageType GetNextPage(PageType type, bool catalogEnabled) =>
+    internal static PageType GetNextPage(PageType type, bool _) =>
         type switch
         {
             PageType.Discover => PageType.Updates,
             PageType.Updates => PageType.Installed,
-            PageType.Installed => PageType.Bundles,
-            PageType.Bundles => catalogEnabled ? PageType.Catalog : PageType.Settings,
-            PageType.Catalog => catalogEnabled ? PageType.CatalogEditor : PageType.Settings,
-            PageType.CatalogEditor => PageType.Settings,
+            PageType.Installed => PageType.OperationHistory,
+            PageType.OperationHistory => PageType.Discover,
+            PageType.Bundles => PageType.Discover,
+            PageType.Catalog => PageType.Discover,
+            PageType.CatalogEditor => PageType.Discover,
             PageType.Settings => PageType.Discover,
             PageType.Managers => PageType.Discover,
             _ => PageType.Discover,
@@ -717,17 +718,18 @@ public partial class MainWindowViewModel : ViewModelBase
     public static PageType GetPreviousPage(PageType type) =>
         GetPreviousPage(type, Settings.Get(Settings.K.EnableSoftwareCatalog));
 
-    internal static PageType GetPreviousPage(PageType type, bool catalogEnabled) =>
+    internal static PageType GetPreviousPage(PageType type, bool _) =>
         type switch
         {
-            PageType.Discover => PageType.Settings,
+            PageType.Discover => PageType.OperationHistory,
             PageType.Updates => PageType.Discover,
             PageType.Installed => PageType.Updates,
+            PageType.OperationHistory => PageType.Installed,
             PageType.Bundles => PageType.Installed,
-            PageType.Catalog => PageType.Bundles,
-            PageType.CatalogEditor => catalogEnabled ? PageType.Catalog : PageType.Bundles,
-            PageType.Settings => catalogEnabled ? PageType.CatalogEditor : PageType.Bundles,
-            PageType.Managers => PageType.Settings,
+            PageType.Catalog => PageType.Installed,
+            PageType.CatalogEditor => PageType.Installed,
+            PageType.Settings => PageType.Installed,
+            PageType.Managers => PageType.Installed,
             _ => PageType.Discover,
         };
 
@@ -741,10 +743,13 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (newPage_t is PageType.Managers)
         {
-            Logger.Warn(
-                "Package-manager settings navigation was rejected because configuration is administrator-managed."
-            );
-            return false;
+            Logger.Info("Package manager configuration is administrator-managed.");
+            MainWindow.Instance?.ShowBanner(
+                CoreTools.Translate("Managed by your organization"),
+                CoreTools.Translate("Package managers and sources are configured through Group Policy or JSON."),
+                MainWindow.RuntimeNotificationLevel.Informational);
+            Sidebar.SelectNavButtonForPage(_currentPage);
+            return true;
         }
 
         if (newPage_t is PageType.Catalog or PageType.CatalogEditor && !Sidebar.SoftwareCatalogEnabled)
@@ -837,9 +842,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private static string GetPageAnnouncement(PageType pageType) => pageType switch
     {
-        PageType.Discover => CoreTools.Translate("Discover Packages"),
-        PageType.Updates => CoreTools.Translate("Software Updates"),
-        PageType.Installed => CoreTools.Translate("Installed Packages"),
+        PageType.Discover => CoreTools.Translate("Apps"),
+        PageType.Updates => CoreTools.Translate("Updates"),
+        PageType.Installed => CoreTools.Translate("Installed"),
         PageType.Bundles => CoreTools.Translate("Package Bundles"),
         PageType.Catalog => CoreTools.Translate("Software Catalog"),
         PageType.CatalogEditor => CoreTools.Translate("Catalog Editor"),
@@ -847,7 +852,7 @@ public partial class MainWindowViewModel : ViewModelBase
         PageType.Managers => CoreTools.Translate("Package Managers"),
         PageType.OwnLog => CoreTools.Translate("Application log"),
         PageType.ManagerLog => CoreTools.Translate("Package Manager logs"),
-        PageType.OperationHistory => CoreTools.Translate("Operation history"),
+        PageType.OperationHistory => CoreTools.Translate("Activity"),
         PageType.Help => CoreTools.Translate("Help"),
         PageType.ReleaseNotes => CoreTools.Translate("Release notes"),
         _ => CoreData.ApplicationDisplayName,

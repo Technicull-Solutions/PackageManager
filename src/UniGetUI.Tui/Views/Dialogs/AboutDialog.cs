@@ -2,7 +2,6 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Consolonia;
 using UniGetUI.Core.Data;
-using UniGetUI.Core.Language;
 using UniGetUI.Core.Tools;
 using UniGetUI.Tui.FakeData;
 using UniGetUI.Tui.Infrastructure;
@@ -12,7 +11,7 @@ using UniGetUI.Tui.Views.Pages;
 
 namespace UniGetUI.Tui.Views.Dialogs;
 
-/// <summary>About (desktop About window): version, links, terminal diagnostics, contributors, translators and
+/// <summary>About (desktop About window): version, links, terminal diagnostics, contributors and
 /// third-party licenses, in a scrollable dialog over the current page.</summary>
 internal sealed class AboutDialog : TuiDialog
 {
@@ -46,8 +45,6 @@ internal sealed class AboutDialog : TuiDialog
 
         _form.AddHeader(CoreTools.Translate("Contributors"));
         _form.AddNote(Safe(() => string.Join(", ", ContributorsData.Contributors)));
-        _form.AddHeader(CoreTools.Translate("Translators"));
-        _form.AddNote(Safe(() => string.Join(", ", LanguageData.TranslatorsList.Select(p => $"{p.Name} ({p.Language})"))));
         _form.AddHeader(CoreTools.Translate("Third-party licenses"));
         foreach (var (name, license) in LicenseData.LicenseNames.OrderBy(k => k.Key, StringComparer.OrdinalIgnoreCase))
             _form.AddNote($"{name}: {license}" + (LicenseData.HomepageUrls.TryGetValue(name, out var url) ? $"  {url}" : ""));

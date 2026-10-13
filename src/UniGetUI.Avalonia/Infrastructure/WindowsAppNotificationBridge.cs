@@ -196,7 +196,11 @@ internal static class WindowsAppNotificationBridge
         try
         {
             Show(
-                CoreTools.Translate("{0} can be updated to version {1}", "UniGetUI", newVersion),
+                CoreTools.Translate(
+                    "{0} can be updated to version {1}",
+                    CoreData.ApplicationDisplayName,
+                    newVersion
+                ),
                 CoreTools.Translate("You have currently version {0} installed", CoreData.VersionName),
                 MainWindow.RuntimeNotificationLevel.Success,
                 launchAction: NotificationArguments.Show);

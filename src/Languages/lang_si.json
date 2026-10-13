@@ -398,7 +398,7 @@
   "Go forward": "ඉදිරියට යන්න",
   "Go to home page": "මුල් පිටුවට යන්න",
   "Reload page": "පිටුව නැවත පූරණය කරන්න",
-  "View page on browser": "browser එකේ පිටුව බලන්න",
+  "View page in browser": "browser එකේ පිටුව බලන්න",
   "The built-in browser is not supported on Linux yet.": "ඇතුළත් browser එක Linux මත තවමත් සහය නොදක්වයි.",
   "Open in browser": "browser එකේ විවෘත කරන්න",
   "Copy to clipboard": "clipboard වෙත පිටපත් කරන්න",

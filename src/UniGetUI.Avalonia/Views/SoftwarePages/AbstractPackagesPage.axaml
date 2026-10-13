@@ -143,7 +143,7 @@
       <!-- Focus: accent underline (declared after hover so it wins when both apply). -->
       <Style Selector="Border#MegaQueryContainer:focus-within Border#MegaQueryUnderline">
          <Setter Property="Opacity" Value="1"/>
-         <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}"/>
+         <Setter Property="Background" Value="{DynamicResource BrandOrangeBrush}"/>
       </Style>
       <Style Selector="Border#MegaQueryContainer:focus-within">
          <Setter Property="Background" Value="{DynamicResource SearchBoxFocusedBackground}"/>
@@ -200,14 +200,14 @@
       </ResourceDictionary>
    </UserControl.Resources>
 
-   <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="8,6,8,8">
+   <Grid RowDefinitions="Auto,0,0,*,0" Margin="36,24,36,16">
 
         <!-- ==================== HEADER ==================== -->
         <Grid Name="MainHeader"
               Grid.Row="0"
-              ColumnDefinitions="80,*"
+              ColumnDefinitions="0,*"
               ColumnSpacing="8"
-              Margin="0,0,0,8">
+              Margin="0,0,0,24">
 
             <controls:SvgIcon x:Name="HeaderIcon"
                               Grid.Column="0"
@@ -217,13 +217,14 @@
                               automation:AutomationProperties.AccessibilityView="Raw"
                               VerticalAlignment="Center"
                               HorizontalAlignment="Center"
+                              IsVisible="False"
                               Path="{Binding PageIconPath}"/>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="0">
                 <TextBlock x:Name="MainTitle"
                            MaxHeight="60"
                            HorizontalAlignment="Left"
-                           FontSize="28"
+                           FontSize="38"
                            FontWeight="SemiBold"
                            FontFamily="Segoe UI Variable Display"
                            TextWrapping="Wrap"
@@ -231,7 +232,7 @@
                 <TextBlock x:Name="MainSubtitle"
                            MaxHeight="40"
                            HorizontalAlignment="Left"
-                           FontSize="12"
+                           FontSize="17"
                            FontWeight="Normal"
                            Opacity="0.6"
                            TextWrapping="Wrap"
@@ -243,6 +244,7 @@
         <!-- ==================== TOOLBAR ROW ==================== -->
         <Grid Name="ToolbarRow"
               Grid.Row="1"
+              IsVisible="False"
               ColumnDefinitions="Auto,Auto,*"
               ColumnSpacing="4"
               Margin="0">
@@ -323,12 +325,12 @@
         </Grid>
 
         <!-- ==================== MAIN CONTENT (filter pane + package list) ==================== -->
-        <ContentControl x:Name="PageOptions" Grid.Row="2"/>
+        <ContentControl x:Name="PageOptions" Grid.Row="2" IsVisible="False"/>
 
         <Grid x:Name="FilteringPanel"
               Grid.Row="3"
               ClipToBounds="True"
-              ColumnDefinitions="220,12,*">
+              ColumnDefinitions="0,0,*">
 
             <!-- Both presentations use this single content definition. Their containers remain
                  isolated so compact compositor state cannot leak into the inline pane. -->
@@ -648,22 +650,96 @@
                 <!-- Package list container. Hidden while the Discover hero search (MegaQuery) is
                      shown: the list is empty then, and its column headers would otherwise collide
                      with the centred search box when a banner + operations pane shrink the area (#5014). -->
-                <Border Margin="0,6,0,6"
+                <Border Margin="0"
                         IsVisible="{Binding !MegaQueryVisible}"
-                        CornerRadius="8"
-                        BorderBrush="{DynamicResource PackageListBorderBrush}"
-                        BorderThickness="1"
-                        Background="{DynamicResource PackageListBackground}">
+                        CornerRadius="0"
+                        BorderThickness="0"
+                        Background="Transparent">
                 <Grid RowDefinitions="Auto,*">
-                    <!-- Header bar for grid/icons views (select-all) — hidden in list mode, which has its own DataGrid header -->
                     <Border Grid.Row="0"
-                            IsVisible="{Binding !IsListViewMode}"
+                            IsVisible="{Binding !MegaQueryVisible}"
                             BorderThickness="0"
-                            Padding="10,0">
-                        <CheckBox IsChecked="{Binding AllPackagesChecked, Mode=TwoWay}"
-                                  Content="{t:Translate Select all}"
-                                  Height="32"
-                                  VerticalAlignment="Center"/>
+                            Margin="0,0,8,12"
+                            Padding="4,0">
+                        <Grid ColumnDefinitions="Auto,*,Auto" MinHeight="42">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="18"
+                                        VerticalAlignment="Center">
+                                <CheckBox IsChecked="{Binding AllPackagesChecked, Mode=TwoWay}"
+                                          Content="{t:Translate Select all}"
+                                          VerticalAlignment="Center"
+                                          automation:AutomationProperties.Name="{t:Translate Select all}"/>
+                                <CheckBox IsChecked="{Binding AdvancedView, Mode=TwoWay}"
+                                          IsVisible="{Binding ShowAdvancedViewToggle}"
+                                          Content="{t:Translate Advanced view}"
+                                          VerticalAlignment="Center"
+                                          automation:AutomationProperties.Name="{t:Translate Advanced view}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <ListBox SelectionMode="Single"
+                                         SelectedIndex="{Binding ViewModeIndex, Mode=TwoWay}"
+                                         Background="Transparent"
+                                         BorderThickness="1"
+                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                         CornerRadius="7"
+                                         Padding="0"
+                                         automation:AutomationProperties.Name="{t:Translate View modes}">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBoxItem Classes="segment-item" Padding="9,7" ToolTip.Tip="{t:Translate List}"
+                                                 automation:AutomationProperties.Name="{t:Translate List}">
+                                        <Path Width="18" Height="18"
+                                              Data="M2,3 H4 M7,3 H16 M2,9 H4 M7,9 H16 M2,15 H4 M7,15 H16"
+                                              Stroke="{DynamicResource TextFillColorPrimaryBrush}"
+                                              StrokeThickness="1.7"
+                                              StrokeLineCap="Round"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem Classes="segment-item" Padding="9,7" ToolTip.Tip="{t:Translate Cards}"
+                                                 automation:AutomationProperties.Name="{t:Translate Cards}">
+                                        <Path Width="18" Height="18"
+                                              Data="M2,2 H16 V7 H2 Z M2,11 H16 V16 H2 Z"
+                                              Stroke="{DynamicResource TextFillColorPrimaryBrush}"
+                                              StrokeThickness="1.3"
+                                              Fill="Transparent"/>
+                                    </ListBoxItem>
+                                    <ListBoxItem Classes="segment-item" Padding="9,7" ToolTip.Tip="{t:Translate Icons}"
+                                                 automation:AutomationProperties.Name="{t:Translate Icons}">
+                                        <Path Width="18" Height="18"
+                                              Data="M2,2 H7 V7 H2 Z M11,2 H16 V7 H11 Z M2,11 H7 V16 H2 Z M11,11 H16 V16 H11 Z"
+                                              Stroke="{DynamicResource TextFillColorPrimaryBrush}"
+                                              StrokeThickness="1.3"
+                                              Fill="Transparent"/>
+                                    </ListBoxItem>
+                                </ListBox>
+
+                                <Button x:Name="UpdateAllButton"
+                                        IsVisible="{Binding ShowUpdateAllButton}"
+                                        MinWidth="118"
+                                        Height="38"
+                                        Padding="18,6"
+                                        CornerRadius="8"
+                                        Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Click="BulkActionButton_Click"
+                                        automation:AutomationProperties.Name="{Binding UpdateAllLabel}">
+                                    <TextBlock Text="{Binding UpdateAllLabel}"
+                                               FontWeight="SemiBold"
+                                               TextAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </Border>
 
                     <!-- Package list (list/grid/icons views) -->
@@ -738,6 +814,7 @@
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Tag="Id" SortMemberPath="Package.Id"
                                                         Header="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).IdHeaderText}"
+                                                        IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).ShowPackageIdColumn}"
                                                         Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="pkg:PackageWrapper">
@@ -797,6 +874,7 @@
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Tag="Source" SortMemberPath="Package.Source.AsString_DisplayName"
                                                         Header="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).SourceHeaderText}"
+                                                        IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).ShowPackageSource}"
                                                         Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="pkg:PackageWrapper">
@@ -858,7 +936,7 @@
                              Mirrors the row checkbox layout exactly: a 40px box at the column
                              origin with the checkbox centered + the same Margin as the rows, so
                              the boxes line up regardless of cell metrics. -->
-                        <Border IsVisible="{Binding IsListViewMode}"
+                        <Border IsVisible="False"
                                 Width="40" Height="44"
                                 Margin="8,0,0,0"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -871,100 +949,131 @@
                                       Margin="9,0,0,0"/>
                         </Border>
 
-                        <!-- ===== GRID VIEW ===== -->
+                        <!-- ===== EMPLOYEE APP LIST ===== -->
                         <ScrollViewer IsVisible="{Binding IsGridViewMode}"
-                                      HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl x:Name="GridViewItems" ItemsSource="{Binding FilteredPackages}">
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="GridViewItems"
+                                          ItemsSource="{Binding FilteredPackages}"
+                                          Margin="0,0,8,16">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal"
-                                                   ItemWidth="{Binding GridCardWidth}"/>
+                                        <StackPanel Orientation="Vertical" Spacing="12"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="pkg:PackageWrapper">
-                                        <Border CornerRadius="4" Margin="4" Height="70"
-                                            HorizontalAlignment="Stretch"
-                                            automation:AutomationProperties.Name="{Binding Package.AutomationName}"
-                                            automation:AutomationProperties.ItemType="{t:Translate Package}"
-                                                Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                                BorderBrush="Transparent" BorderThickness="1" Padding="4">
-                                            <Grid ColumnDefinitions="48,*,28" ColumnSpacing="4">
-                                                <Panel Grid.Column="0" Width="44" Height="44"
-                                                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        <Border CornerRadius="14"
+                                                MinHeight="116"
+                                                HorizontalAlignment="Stretch"
+                                                Background="{DynamicResource SettingsCardBackground}"
+                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                Padding="20,16"
+                                                automation:AutomationProperties.Name="{Binding Package.AutomationName}"
+                                                automation:AutomationProperties.ItemType="{t:Translate App}">
+                                            <Grid ColumnDefinitions="72,*,Auto" ColumnSpacing="18">
+                                                <Panel Grid.Column="0"
+                                                       Width="64" Height="64"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center"
                                                        controls:PackageIconLoader.Track="True">
-                                                    <Image Source="{Binding IconBitmap}" Width="44" Height="44"
-                                                           Stretch="Uniform" IsVisible="{Binding HasCustomIcon}"
+                                                    <Image Source="{Binding IconBitmap}"
+                                                           Width="64" Height="64"
+                                                           Stretch="Uniform"
+                                                           IsVisible="{Binding HasCustomIcon}"
                                                            RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                                                    <Border Width="44" Height="44" CornerRadius="8"
-                                                            Background="{DynamicResource PackageInitialBackgroundBrush}" IsVisible="{Binding !HasCustomIcon}">
-                                                        <TextBlock Text="{Binding IconFallbackText}" Foreground="{DynamicResource PackageInitialForegroundBrush}"
-                                                                   FontSize="16" FontWeight="Bold"
-                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <Border Width="64" Height="64"
+                                                            CornerRadius="14"
+                                                            Background="{DynamicResource PackageInitialBackgroundBrush}"
+                                                            IsVisible="{Binding !HasCustomIcon}">
+                                                        <TextBlock Text="{Binding IconFallbackText}"
+                                                                   Foreground="{DynamicResource PackageInitialForegroundBrush}"
+                                                                   FontSize="22"
+                                                                   FontWeight="Bold"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
                                                     </Border>
-                                                    <controls:SvgIcon Path="{Binding TagBackdropIconPath}"
-                                                                      Foreground="{DynamicResource PackageTagBadgeBackgroundBrush}"
-                                                                      Width="28" Height="28"
-                                                                      Margin="0,0,-4,-4"
-                                                                      IsVisible="{Binding TagIconVisible}"
-                                                                      HorizontalAlignment="Right"
-                                                                      VerticalAlignment="Bottom"/>
-                                                    <controls:SvgIcon Path="{Binding TagSymbolIconPath}"
-                                                                      Foreground="{DynamicResource PackageTagBadgeForegroundBrush}"
-                                                                      Width="28" Height="28"
-                                                                      Margin="0,0,-4,-4"
-                                                                      IsVisible="{Binding TagIconVisible}"
-                                                                      HorizontalAlignment="Right"
-                                                                      VerticalAlignment="Bottom"/>
-                                                    <controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/warning_filled.svg"
-                                                                      Width="17" Height="17"
-                                                                      Foreground="#F59E0B"
-                                                                      IsVisible="{Binding InstallerHostChanged}"
-                                                                      ToolTip.Tip="{Binding InstallerHostChangeTooltip}"
-                                                                      HorizontalAlignment="Right"
-                                                                      VerticalAlignment="Top"/>
                                                 </Panel>
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
+
+                                                <StackPanel Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="7">
                                                     <TextBlock Text="{Binding Package.Name}"
-                                                               FontWeight="SemiBold" FontSize="14"
-                                                               TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding Package.Id}"
-                                                               FontSize="11" Opacity="0.7"
-                                                               TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding VersionComboString}"
-                                                               FontSize="11" Opacity="0.5"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="20"
                                                                TextTrimming="CharacterEllipsis"
-                                                               ToolTip.Tip="{Binding InstalledVersionTooltip}"/>
+                                                               MaxLines="1"/>
+                                                    <TextBlock Text="{Binding FriendlyProviderText}"
+                                                               FontSize="13"
+                                                               IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).ShowPackageSource}"
+                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                                        <Border CornerRadius="12"
+                                                                Padding="10,3"
+                                                                IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).ShowPackageSource}"
+                                                                Background="#183B8068">
+                                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                <controls:SvgIcon Path="{Binding SourceIconPath}"
+                                                                                  Width="15" Height="15"
+                                                                                  VerticalAlignment="Center"/>
+                                                                <TextBlock Text="{Binding FriendlySourceName}"
+                                                                           FontSize="12"
+                                                                           FontWeight="SemiBold"
+                                                                           VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <TextBlock Text="{Binding VersionComboString}"
+                                                                   FontSize="12"
+                                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   ToolTip.Tip="{Binding InstalledVersionTooltip}"/>
+                                                    </StackPanel>
                                                 </StackPanel>
-                                                <!-- Col 2: checkbox (top) + overflow button (bottom). The taller card leaves
-                                                     room to stack them without overlap. -->
-                                                <Panel Grid.Column="2">
-                                                    <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                                                              Classes="package-selector"
-                                                              automation:AutomationProperties.Name="{Binding Package.AutomationName}"
-                                                              VerticalAlignment="Top"
-                                                              HorizontalAlignment="Center"
-                                                              MinHeight="0"
-                                                              Padding="0"/>
+
+                                                <StackPanel Grid.Column="2"
+                                                            Orientation="Horizontal"
+                                                            Spacing="8"
+                                                            VerticalAlignment="Center">
                                                     <Button Click="CardOverflowButton_Click"
-                                                            Width="26" Height="26" Padding="0"
-                                                            MinWidth="0" MinHeight="0"
-                                                            VerticalAlignment="Bottom"
-                                                            HorizontalAlignment="Center"
-                                                            Background="Transparent" BorderThickness="0"
-                                                            automation:AutomationProperties.Name="{t:Translate More options}">
-                                                        <TextBlock Text="···" FontSize="20"
+                                                            MinWidth="76"
+                                                            Height="42"
+                                                            Padding="14,6"
+                                                            Background="Transparent"
+                                                            HorizontalContentAlignment="Center"
+                                                            VerticalContentAlignment="Center"
+                                                            automation:AutomationProperties.Name="{t:Translate Options}">
+                                                        <TextBlock Text="{t:Translate Options}"
+                                                                   FontWeight="SemiBold"
+                                                                   TextAlignment="Center"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center"/>
                                                     </Button>
-                                                </Panel>
+                                                    <Button Click="PrimaryPackageAction_Click"
+                                                            Classes="package-primary-action"
+                                                            Classes.package-install-action="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).RoleIsInstall}"
+                                                            MinWidth="104"
+                                                            Height="42"
+                                                            Padding="18,6"
+                                                            CornerRadius="9"
+                                                            HorizontalContentAlignment="Center"
+                                                            VerticalContentAlignment="Center"
+                                                            automation:AutomationProperties.Name="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).PrimaryActionLabel}">
+                                                        <TextBlock Text="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).PrimaryActionLabel}"
+                                                                   FontWeight="SemiBold"
+                                                                   TextAlignment="Center"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Button>
+                                                </StackPanel>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
-
                         <!-- ===== ICONS VIEW ===== -->
                         <ScrollViewer IsVisible="{Binding IsIconsViewMode}"
                                       HorizontalScrollBarVisibility="Disabled">
@@ -1066,12 +1175,10 @@
                         <StackPanel VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     Spacing="16">
-                            <Image Source="avares://UniGetUI/Assets/Images/launcher.png"
-                                   MaxWidth="{Binding #PackageListHost.Bounds.Width, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.4|180}"
-                                   MaxHeight="{Binding #PackageListHost.Bounds.Height, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.4|180}"
-                                   Stretch="Uniform"
+                            <controls:BrodyRunner
+                                   MaxWidth="{Binding #PackageListHost.Bounds.Width, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.5|240}"
+                                   MaxHeight="{Binding #PackageListHost.Bounds.Height, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.3|120}"
                                    HorizontalAlignment="Center"
-                                   RenderOptions.BitmapInterpolationMode="HighQuality"
                                    IsVisible="{Binding LoadingImageVisible}"/>
                             <Image Source="{Binding NoPackagesImage}"
                                    MaxWidth="{Binding #PackageListHost.Bounds.Width, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.4|180}"
@@ -1097,14 +1204,16 @@
                 <!-- Mega query block (for Discover page) -->
                 <Grid x:Name="MegaQueryBlockGrid"
                       IsVisible="{Binding MegaQueryVisible}"
-                      RowDefinitions="*,64,*"
-                      ColumnDefinitions="*,8*,64,*">
+                      RowDefinitions="*,72,*"
+                      ColumnDefinitions="*">
                     <!-- Single outer border unifies the search field and search button so the seam between them is invisible. -->
                     <Border x:Name="MegaQueryContainer"
                             Grid.Row="1"
-                            Grid.Column="1"
-                            Grid.ColumnSpan="2"
-                            CornerRadius="8"
+                            Grid.Column="0"
+                            MaxWidth="900"
+                            Margin="40,0"
+                            HorizontalAlignment="Stretch"
+                            CornerRadius="12"
                             BorderThickness="1"
                             ClipToBounds="True">
                         <Panel>
@@ -1116,11 +1225,11 @@
                                          CornerRadius="0"
                                          BorderThickness="0"
                                          Background="Transparent"
-                                         FontSize="28"
+                                          FontSize="22"
                                          FontWeight="Normal"
                                          PlaceholderForeground="{DynamicResource MegaQueryPlaceholderForeground}"
-                                         PlaceholderText="{t:Translate Search for packages}"
-                                         automation:AutomationProperties.Name="{t:Translate Search for packages}"
+                                          PlaceholderText="{t:Translate Text='Search apps, publishers, or tools'}"
+                                          automation:AutomationProperties.Name="{t:Translate Text='Search apps, publishers, or tools'}"
                                          Text="{Binding MegaQueryText, Mode=TwoWay}"
                                          KeyDown="MegaQueryBlock_KeyDown">
                                     <!-- Keep the field on the container fill (no focused/hover black swap)
@@ -1141,9 +1250,9 @@
                                         CornerRadius="0"
                                         BorderThickness="0"
                                         Background="Transparent"
-                                        automation:AutomationProperties.Name="{t:Translate Search for packages}"
+                                        automation:AutomationProperties.Name="{t:Translate Text='Search apps, publishers, or tools'}"
                                         Command="{Binding SubmitSearch}">
-                                    <controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/search.svg" Width="40" Height="40"/>
+                                    <controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/search.svg" Width="30" Height="30"/>
                                 </Button>
                             </Grid>
                             <!-- WinUI focus underline: accent line across the bottom of the whole box -->
@@ -1160,7 +1269,7 @@
         </Grid>
 
     <!-- ==================== FOOTER STATUS BAR ==================== -->
-    <Border Grid.Row="4" Margin="0,-4,0,-8" VerticalAlignment="Center"
+    <Border Grid.Row="4" Margin="0,-4,0,-8" VerticalAlignment="Center" IsVisible="False"
             BorderThickness="0"
             Padding="0,4,0,0">
         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
@@ -1187,11 +1296,11 @@
                     <Button.Flyout>
                         <MenuFlyout Placement="TopEdgeAlignedRight">
                             <MenuItem x:Name="OrderByName_Menu"       Header="{t:Translate Name}"        Command="{Binding SortByNameCommand}"/>
-                            <MenuItem x:Name="OrderById_Menu"         Header="{t:Translate Id}"          Command="{Binding SortByIdCommand}"/>
+                            <MenuItem x:Name="OrderById_Menu"         Header="{t:Translate Id}"          Command="{Binding SortByIdCommand}" IsVisible="{Binding ShowPackageIdColumn}"/>
                             <MenuItem x:Name="OrderByVersion_Menu"    Header="{t:Translate Version}"     Command="{Binding SortByVersionCommand}"/>
                             <MenuItem x:Name="OrderByNewVersion_Menu" Header="{t:Translate New version}" Command="{Binding SortByNewVersionCommand}"/>
-                            <MenuItem x:Name="OrderBySource_Menu"     Header="{t:Translate Source}"      Command="{Binding SortBySourceCommand}"/>
-                            <MenuItem x:Name="OrderByDownloadSize_Menu" Header="{t:Translate Download size}" Command="{Binding SortByDownloadSizeCommand}"/>
+                            <MenuItem x:Name="OrderBySource_Menu"     Header="{t:Translate Source}"      Command="{Binding SortBySourceCommand}" IsVisible="{Binding ShowPackageSource}"/>
+                            <MenuItem x:Name="OrderByDownloadSize_Menu" Header="{t:Translate Download size}" Command="{Binding SortByDownloadSizeCommand}" IsVisible="{Binding DownloadSizeColumnVisible}"/>
                             <Separator/>
                             <MenuItem x:Name="OrderByAscending_Menu"  Header="{t:Translate Ascendant}"   Command="{Binding SetSortAscendingCommand}"/>
                             <MenuItem x:Name="OrderByDescending_Menu" Header="{t:Translate Descendant}"  Command="{Binding SetSortDescendingCommand}"/>

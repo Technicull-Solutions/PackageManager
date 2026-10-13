@@ -398,7 +398,7 @@
   "Go forward": "ไปข้างหน้า",
   "Go to home page": "ไปยังหน้าหลัก",
   "Reload page": "โหลดหน้าใหม่",
-  "View page on browser": "ดูหน้านี้บนเบราว์เซอร์",
+  "View page in browser": "ดูหน้านี้บนเบราว์เซอร์",
   "The built-in browser is not supported on Linux yet.": "เบราว์เซอร์ในตัวยังไม่รองรับบน Linux",
   "Open in browser": "เปิดในเบราว์เซอร์",
   "Copy to clipboard": "คัดลอกไปยังคลิปบอร์ด",

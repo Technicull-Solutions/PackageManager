@@ -159,6 +159,7 @@ public partial class MainWindow : Window
     public enum RuntimeNotificationLevel
     {
         Progress,
+        Informational,
         Success,
         Error,
     }
@@ -191,6 +192,8 @@ public partial class MainWindow : Window
         SetupTitleBar();
         SetupTitleBarFocusOpacity();
         SetupResponsiveRail();
+        ActualThemeVariantChanged += (_, _) => UpdateThemeToggleState();
+        UpdateThemeToggleState();
 
         RestoreGeometry();
 
@@ -338,7 +341,7 @@ public partial class MainWindow : Window
         {
             (ViewModel.CurrentPageContent as IKeyboardShortcutListener)?.SelectAllTriggered();
         }
-        else if (isCtrl && !isShift && e.Key is Key.D1 or Key.D2 or Key.D3 or Key.D4 or Key.D5)
+        else if (isCtrl && !isShift && e.Key is Key.D1 or Key.D2 or Key.D3 or Key.D4)
         {
             _focusSidebarSelectionOnNextPageChange = true;
             ViewModel.NavigateTo(e.Key switch
@@ -346,8 +349,7 @@ public partial class MainWindow : Window
                 Key.D1 => PageType.Discover,
                 Key.D2 => PageType.Updates,
                 Key.D3 => PageType.Installed,
-                Key.D4 => PageType.Bundles,
-                _ => PageType.Settings,
+                _ => PageType.OperationHistory,
             });
             e.Handled = true;
         }
@@ -542,16 +544,16 @@ public partial class MainWindow : Window
     private void FlyoutDismiss_PointerPressed(object? sender, PointerPressedEventArgs e)
         => ViewModel.Sidebar.IsPaneOpen = false;
 
-    // Title-bar caption follows window focus (WinUI behaviour): full opacity — white title — when active, dimmed when not.
+    // Branded title-bar controls keep the same accessible contrast when the window loses focus.
     private void SetupTitleBarFocusOpacity()
         => this.GetObservable(IsActiveProperty).SubscribeValue(active =>
         {
-            HamburgerPanel.Opacity = active ? 1.0 : 0.6;
-            WindowButtons.Opacity = active ? 1.0 : 0.55;
+            HamburgerPanel.Opacity = 1.0;
+            WindowButtons.Opacity = 1.0;
 
             // WinUI replaces inactive Mica with SolidBackgroundFillColorBase rather than leaving
             // a partially wallpaper-tinted backdrop. AppWindowBackground is that token
-            // (#F3F3F3 light / #202020 dark), so make the fallback fully opaque while inactive.
+            // Use the opaque branded page surface while the window is inactive.
             InactiveMicaFallback.Opacity =
                 MicaWindowHelper.IsMicaEnabled() && !active ? 1.0 : 0.0;
         });
@@ -1008,6 +1010,24 @@ public partial class MainWindow : Window
 
     private void MinimizeButton_Click(object? sender, RoutedEventArgs e)
         => WindowState = WindowState.Minimized;
+
+    private void ThemeToggleButton_Click(object? sender, RoutedEventArgs e)
+    {
+        string theme = ActualThemeVariant == ThemeVariant.Dark ? "light" : "dark";
+        Settings.SetValue(Settings.K.PreferredTheme, theme);
+        App.ApplyTheme(theme);
+    }
+
+    private void UpdateThemeToggleState()
+    {
+        bool isDark = ActualThemeVariant == ThemeVariant.Dark;
+        SunThemeIcon.IsVisible = isDark;
+        MoonThemeIcon.IsVisible = !isDark;
+
+        string label = CoreTools.Translate(isDark ? "Switch to light theme" : "Switch to dark theme");
+        ToolTip.SetTip(ThemeToggleButton, label);
+        AutomationProperties.SetName(ThemeToggleButton, label);
+    }
 
     private void MaximizeButton_Click(object? sender, RoutedEventArgs e)
     {
@@ -1885,6 +1905,7 @@ public partial class MainWindow : Window
 
     private void PresentModal(ImmersiveDialog dialog)
     {
+        ModalSurface.Classes.Set("about-dialog", dialog is AboutWindow);
         _modalMinimumSizeHistory.TryAdd(dialog, (dialog.MinWidth, dialog.MinHeight));
         _modalTitleSubscription?.Dispose();
         _modalTitleSubscription = dialog.GetObservable(ImmersiveDialog.TitleProperty)
@@ -2052,6 +2073,8 @@ public partial class MainWindow : Window
             Title = title,
             Message = message,
             Severity = severity,
+            UseDisclaimerPalette = level == RuntimeNotificationLevel.Success
+                && launchAction == UniGetUI.Interface.Enums.NotificationArguments.ShowOnUpdatesTab,
             IsClosable = true,
             IsOpen = true,
         };

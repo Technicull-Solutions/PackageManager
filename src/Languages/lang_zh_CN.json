@@ -398,7 +398,7 @@
   "Go forward": "前进",
   "Go to home page": "转到主页",
   "Reload page": "重新加载页面",
-  "View page on browser": "在浏览器中查看页面",
+  "View page in browser": "在浏览器中查看页面",
   "The built-in browser is not supported on Linux yet.": "内置浏览器尚不支持 Linux。",
   "The built-in browser requires the Microsoft Edge WebView2 Runtime, which is not installed on this computer.": "内置浏览器需要 Microsoft Edge WebView2 Runtime，但您未安装它。",
   "The built-in browser could not be loaded on this computer.": "内置浏览器无法在此电脑上加载。",

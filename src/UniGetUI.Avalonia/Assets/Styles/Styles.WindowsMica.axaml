@@ -7,20 +7,20 @@
         On macOS, Linux, Windows 10, or when transparency is off, this is never merged,
         so the app keeps the solid surfaces defined in Styles.Common.axaml.
 
-        These keys make the window/page/dialog/card surfaces translucent so the Mica
-        backdrop shows through and the surfaces inherit its (wallpaper-derived) tint.
+        Branded page surfaces stay opaque so the Evergreen Endpoint palette remains
+        consistent. Secondary flyout and dialog layers can still use translucency.
     -->
     <ResourceDictionary.ThemeDictionaries>
 
         <ResourceDictionary x:Key="Light">
-            <!-- Window/page surface goes transparent so Mica shows behind chrome + page -->
-            <SolidColorBrush x:Key="MicaPageBackground"          Color="Transparent"/>
-            <!-- Cards / panels: translucent white layers over the (light) Mica -->
-            <SolidColorBrush x:Key="SettingsCardBackground"      Color="#B3FFFFFF"/>
+            <!-- Preserve the branded faded-mint page surface when Mica is available. -->
+            <SolidColorBrush x:Key="MicaPageBackground"          Color="#E2F5E9"/>
+            <!-- Paper cards remain distinct from the faded-mint page surface. -->
+            <SolidColorBrush x:Key="SettingsCardBackground"      Color="#F7FAF8"/>
             <SolidColorBrush x:Key="SettingsCardBorderBrush"     Color="#0F000000"/>
-            <!-- Package list: near-transparent so Mica shows through, matching WinUI's SystemFillColorNeutralBackground -->
-            <SolidColorBrush x:Key="PackageListBackground"       Color="#06000000"/>
-            <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#99FFFFFF"/>
+            <!-- Package lists use the same paper surface as cards. -->
+            <SolidColorBrush x:Key="PackageListBackground"       Color="#F7FAF8"/>
+            <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="AppSplitterBackground"       Color="#18000000"/>
             <SolidColorBrush x:Key="AppOperationsPanelBackground" Color="Transparent"/>
             <SolidColorBrush x:Key="AppBorderBrush"              Color="#18000000"/>
@@ -59,13 +59,13 @@
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="MicaPageBackground"          Color="Transparent"/>
-            <!-- Cards / panels: WinUI's translucent card layer over the Mica backdrop -->
-            <SolidColorBrush x:Key="SettingsCardBackground"      Color="#0DFFFFFF"/>
+            <SolidColorBrush x:Key="MicaPageBackground"          Color="#27332D"/>
+            <!-- Forest-night page with a slightly raised card layer. -->
+            <SolidColorBrush x:Key="SettingsCardBackground"      Color="#303E37"/>
             <SolidColorBrush x:Key="SettingsCardBorderBrush"     Color="#19000000"/>
-            <!-- Package list: near-transparent so Mica shows through, matching WinUI's SystemFillColorNeutralBackground -->
-            <SolidColorBrush x:Key="PackageListBackground"       Color="#08FFFFFF"/>
-            <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#15FFFFFF"/>
+            <!-- Package lists use the same raised dark surface as cards. -->
+            <SolidColorBrush x:Key="PackageListBackground"       Color="#303E37"/>
+            <SolidColorBrush x:Key="SettingsCardHoverBackground" Color="#37483F"/>
             <SolidColorBrush x:Key="AppSplitterBackground"       Color="#66000000"/>
             <SolidColorBrush x:Key="AppOperationsPanelBackground" Color="Transparent"/>
             <SolidColorBrush x:Key="AppBorderBrush"              Color="#15FFFFFF"/>

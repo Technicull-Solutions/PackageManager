@@ -81,8 +81,8 @@
             <Button Grid.Column="2"
                     Height="35"
                     Command="{Binding OpenInBrowserCommand}"
-                    automation:AutomationProperties.Name="{t:Translate View page on browser}">
-                <TextBlock Text="{t:Translate View page on browser}"
+                    automation:AutomationProperties.Name="{t:Translate View page in browser}">
+                <TextBlock Text="{t:Translate View page in browser}"
                            automation:AutomationProperties.AccessibilityView="Raw"/>
             </Button>
 

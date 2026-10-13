@@ -440,7 +440,7 @@
     "Go forward": "Oldinga o‘tish",
     "Go to home page": "Bosh sahifaga o‘tish",
     "Reload page": "Sahifani qayta yuklash",
-    "View page on browser": "Sahifani brauzerda ko‘rish",
+    "View page in browser": "Sahifani brauzerda ko‘rish",
     "The built-in browser is not supported on Linux yet.": "Ichki brauzer Linux'da hali qo‘llab-quvvatlanmaydi.",
     "The built-in browser requires the Microsoft Edge WebView2 Runtime, which is not installed on this computer.": "Ichki brauzer Microsoft Edge WebView2 Runtime'ni talab qiladi, u bu kompyuterda o‘rnatilmagan.",
     "The built-in browser could not be loaded on this computer.": "Ichki brauzerni bu kompyuterda yuklab bo‘lmadi.",

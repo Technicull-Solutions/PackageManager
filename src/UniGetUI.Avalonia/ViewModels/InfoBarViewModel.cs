@@ -12,6 +12,7 @@ public partial class InfoBarViewModel : ObservableObject
     [ObservableProperty] private string _title = "";
     [ObservableProperty] private string _message = "";
     [ObservableProperty] private InfoBarSeverity _severity = InfoBarSeverity.Informational;
+    [ObservableProperty] private bool _useDisclaimerPalette;
     [ObservableProperty] private bool _isClosable = true;
     [ObservableProperty] private string _actionButtonText = "";
     [ObservableProperty] private ICommand? _actionButtonCommand;

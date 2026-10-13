@@ -3,11 +3,16 @@
 
 #define MyAppVersion "0.1.0"
 #define MyAppName "Evergreen Endpoint Package Manager"
+#define MyShortcutName "Evergreen Endpoint APPS"
+#define MyShortcutComment "Evergreen Endpoint | APPS"
 #define MyAppPublisher "Technicull Solutions"
 #define MyAppURL "https://github.com/Technicull-Solutions/PackageManager"
 #define MyAppExeName "UniGetUI.exe"
 #define MyAppPublisherURL "https://github.com/Technicull-Solutions"
 #define MyAppCopyright "Copyright 2026 " + MyAppPublisher
+#ifndef MyBuildNumber
+#define MyBuildNumber "0"
+#endif
 #ifndef InstallerCompression
 #define InstallerCompression "lzma"
 #endif
@@ -23,7 +28,7 @@ UninstallDisplayName={#MyAppName}
 AppId={{4C0F2700-664B-4AD6-9633-67C5EEECC132}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppVerName={#MyAppName} {#MyAppVersion}
+AppVerName={#MyAppName} {#MyAppVersion} (Build {#MyBuildNumber})
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppPublisherURL}
 AppSupportURL={#MyAppURL}
@@ -62,8 +67,8 @@ SolidCompression=yes
 WizardStyle=modern dynamic
 WizardImageFile=InstallerExtras\installer-banner.png
 WizardImageFileDynamicDark=InstallerExtras\installer-banner.png
-WizardSmallImageFile=InstallerExtras\unigetui-256.png
-WizardSmallImageFileDynamicDark=InstallerExtras\unigetui-256.png
+WizardSmallImageFile=InstallerExtras\evergreen-package-manager-256.png
+WizardSmallImageFileDynamicDark=InstallerExtras\evergreen-package-manager-256.png
 DisableWelcomePage=no
 AllowUNCPath=no
 UsePreviousTasks=yes
@@ -105,8 +110,7 @@ procedure InitializeWizard;
 begin
   WizardForm.Bevel.Visible := False;
   WizardForm.Bevel1.Visible := True;
-  // DisableWelcomePage=no makes Inno caption use AppName alone; put the version back in.
-  WizardForm.Caption := FmtMessage(SetupMessage(msgSetupWindowTitle), ['{#MyAppName} {#MyAppVersion}']);
+  WizardForm.Caption := 'Setup - {#MyAppName} {#MyAppVersion} (Build {#MyBuildNumber})';
 end;
 
 procedure CurPageChanged(CurPageID: Integer);
@@ -354,6 +358,13 @@ Type: files; Name: "{app}\WingetUI.exe"
 Type: files; Name: "{app}\UniGetUI.Avalonia.exe"
 Type: files; Name: "{app}\*.pri"
 Type: files; Name: "{app}\*.xbf"
+; Remove shortcut names used by earlier Evergreen builds before writing the
+; employee-facing Evergreen Endpoint APPS shortcuts.
+Type: files; Name: "{autostartmenu}\{#MyAppName}.lnk"; Tasks: regularinstall
+Type: files; Name: "{autodesktop}\{#MyAppName}.lnk"; Tasks: regularinstall
+; A previous portable install can leave this marker behind. A regular install must
+; remove it so settings, logs, and update state use the normal per-user locations.
+Type: files; Name: "{app}\ForceUniGetUIPortable"; Tasks: regularinstall
 
 [Files]
 ; Deploy installer for autorepair jobs (unless disabled)
@@ -370,8 +381,8 @@ Source: "InstallerExtras\ForceUniGetUIPortable"; DestDir: "{app}"; Tasks: portab
 
 
 [Icons]
-Name: "{autostartmenu}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; AppUserModelID: "Technicull.EvergreenEndpointApps"; Tasks: regularinstall\startmenuicon
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: regularinstall\desktopicon; Check: not CmdLineParamExists('/NoDesktopShortcut')
+Name: "{autostartmenu}\{#MyShortcutName}"; Filename: "{app}\{#MyAppExeName}"; Comment: "{#MyShortcutComment}"; AppUserModelID: "Technicull.EvergreenEndpointApps"; Tasks: regularinstall\startmenuicon
+Name: "{autodesktop}\{#MyShortcutName}"; Filename: "{app}\{#MyAppExeName}"; Comment: "{#MyShortcutComment}"; Tasks: regularinstall\desktopicon; Check: not CmdLineParamExists('/NoDesktopShortcut')
 
 [Run]
 ; Filename: "powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File -NonInteractive ""{tmp}\EnsureWinGet.ps1"""; StatusMsg: "Ensuring WinGet is properly installed... (this may take a while)"; WorkingDir: {app}; Check: not CmdLineParamExists('/NoWinGet'); Flags: runhidden

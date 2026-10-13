@@ -11,7 +11,22 @@
              mc:Ignorable="d"
              x:Name="SidebarRoot"
              x:DataType="vm:SidebarViewModel"
-             MinWidth="64">
+             MinWidth="64"
+             Background="{DynamicResource SidebarBackground}"
+             Foreground="{DynamicResource SidebarForeground}">
+
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem.nav-item">
+            <Setter Property="Foreground" Value="{DynamicResource SidebarForeground}"/>
+        </Style>
+        <Style Selector="ListBoxItem.nav-item:selected">
+            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource SidebarForeground}"/>
+        </Style>
+        <Style Selector="ListBoxItem.nav-item:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SidebarHoverBackground}"/>
+        </Style>
+    </UserControl.Styles>
 
     <Grid x:Name="SidebarLayout" RowDefinitions="*,Auto">
 
@@ -27,15 +42,15 @@
                  automation:AutomationProperties.Name="{t:Translate Navigation}"
                  Padding="8,10,8,0">
 
-            <!-- Discover Packages -->
+            <!-- Employee app catalog -->
             <ListBoxItem x:Name="DiscoverNavBtn" Tag="Discover" Classes="nav-item" Padding="4,2" CornerRadius="6"
-                         automation:AutomationProperties.Name="{t:Translate Discover Packages}"
+                         automation:AutomationProperties.Name="{t:Translate Apps}"
                          automation:AutomationProperties.AcceleratorKey="Ctrl+1"
-                         ToolTip.Tip="{t:Translate Discover Packages}">
+                         ToolTip.Tip="{t:Translate Apps}">
                 <Panel>
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
-                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/DiscoverPackage.svg" Width="24" Height="24" VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="1" Text="{t:Translate Discover Packages}"
+                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/DiscoverPackage.svg" Width="24" Height="24" VerticalAlignment="Center" Foreground="{DynamicResource SidebarForeground}" />
+                        <TextBlock Grid.Column="1" Text="{t:Translate Apps}"
                                    FontSize="14"
                                    FontWeight="Normal"
                                    VerticalAlignment="Center"
@@ -54,13 +69,13 @@
 
             <!-- Software Updates -->
             <ListBoxItem x:Name="UpdatesNavBtn" Tag="Updates" Classes="nav-item" Padding="4,2" CornerRadius="6"
-                         automation:AutomationProperties.Name="{t:Translate Software Updates}"
+                         automation:AutomationProperties.Name="{t:Translate Updates}"
                          automation:AutomationProperties.AcceleratorKey="Ctrl+2"
-                         ToolTip.Tip="{t:Translate Software Updates}">
+                         ToolTip.Tip="{t:Translate Updates}">
                 <Panel>
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
-                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/update.svg" Width="24" Height="24" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="1" Text="{t:Translate Software Updates}"
+                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/update.svg" Width="24" Height="24" VerticalAlignment="Center" Foreground="{DynamicResource SidebarForeground}"/>
+                        <TextBlock Grid.Column="1" Text="{t:Translate Updates}"
                                    FontSize="14"
                                    FontWeight="Normal"
                                    VerticalAlignment="Center"
@@ -96,13 +111,13 @@
 
             <!-- Installed Packages -->
             <ListBoxItem x:Name="InstalledNavBtn" Tag="Installed" Classes="nav-item" Padding="4,2" CornerRadius="6"
-                         automation:AutomationProperties.Name="{t:Translate Installed Packages}"
+                         automation:AutomationProperties.Name="{t:Translate Installed}"
                          automation:AutomationProperties.AcceleratorKey="Ctrl+3"
-                         ToolTip.Tip="{t:Translate Installed Packages}">
+                         ToolTip.Tip="{t:Translate Installed}">
                 <Panel>
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
-                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/InstalledPackages.svg" Width="24" Height="24" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="1" Text="{t:Translate Installed Packages}"
+                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/InstalledPackages.svg" Width="24" Height="24" VerticalAlignment="Center" Foreground="{DynamicResource SidebarForeground}"/>
+                        <TextBlock Grid.Column="1" Text="{t:Translate Installed}"
                                    FontSize="14"
                                    FontWeight="Normal"
                                    VerticalAlignment="Center"
@@ -119,38 +134,31 @@
                 </Panel>
             </ListBoxItem>
 
-            <!-- Package Bundles -->
-            <ListBoxItem x:Name="BundlesNavBtn" Tag="Bundles" Classes="nav-item" Padding="4,2" CornerRadius="6"
-                         automation:AutomationProperties.Name="{t:Translate Package Bundles}"
+            <!-- Employee-visible activity history -->
+            <ListBoxItem x:Name="BundlesNavBtn" Tag="OperationHistory" Classes="nav-item" Padding="4,2" CornerRadius="6"
+                         automation:AutomationProperties.Name="{t:Translate Activity}"
                          automation:AutomationProperties.AcceleratorKey="Ctrl+4"
-                         ToolTip.Tip="{t:Translate Package Bundles}">
+                         ToolTip.Tip="{t:Translate Activity}">
                 <Panel>
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
-                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/PackagesBundle.svg" Width="24" Height="24" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Column="1" Text="{t:Translate Package Bundles}"
+                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/history.svg" Width="24" Height="24" VerticalAlignment="Center" Foreground="{DynamicResource SidebarForeground}"/>
+                        <TextBlock Grid.Column="1" Text="{t:Translate Activity}"
                                    FontSize="14"
                                    FontWeight="Normal"
                                    VerticalAlignment="Center"
                                    IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
                     </Grid>
-                    <!-- Unsaved changes dot, anchored to the icon's top-right in both rail and flyout -->
-                    <Border Background="{DynamicResource SystemFillColorCautionBrush}"
-                            CornerRadius="5"
-                            Width="10"
-                            Height="10"
-                            IsVisible="{Binding BundlesBadgeVisible}"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Margin="28,7,0,0"/>
                 </Panel>
             </ListBoxItem>
 
             <ListBoxItem x:Name="CatalogNavBtn" Tag="Catalog" Classes="nav-item" Padding="4,2" CornerRadius="6"
+                         IsVisible="False"
                          automation:AutomationProperties.Name="{t:Translate Software Catalog}"
                          ToolTip.Tip="{t:Translate Software Catalog}">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
                     <controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/catalog.svg"
-                                      Width="24" Height="24" VerticalAlignment="Center"/>
+                                      Width="24" Height="24" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource SidebarForeground}"/>
                     <TextBlock Grid.Column="1" Text="{t:Translate Software Catalog}" FontSize="14"
                                VerticalAlignment="Center"
                                IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
@@ -158,11 +166,13 @@
             </ListBoxItem>
 
             <ListBoxItem x:Name="CatalogEditorNavBtn" Tag="CatalogEditor" Classes="nav-item" Padding="4,2" CornerRadius="6"
+                        IsVisible="False"
                         automation:AutomationProperties.Name="{t:Translate Catalog Editor}"
                         ToolTip.Tip="{t:Translate Catalog Editor}">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
                     <controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/add_to.svg"
-                                      Width="24" Height="24" VerticalAlignment="Center"/>
+                                      Width="24" Height="24" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource SidebarForeground}"/>
                     <TextBlock Grid.Column="1" Text="{t:Translate Catalog Editor}" FontSize="14"
                                VerticalAlignment="Center"
                                IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
@@ -173,7 +183,7 @@
 
         <!-- Footer items -->
         <StackPanel Grid.Row="1" Margin="8,0,8,12" Spacing="2">
-            <controls:UserAvatarControl HorizontalAlignment="Left" Margin="8,4,0,4"/>
+            <controls:UserAvatarControl IsVisible="False" HorizontalAlignment="Left" Margin="8,4,0,4"/>
 
             <!-- Settings & Package Managers are nav targets too, so they live in their own ListBox
                  (selection coordinated with the main one in code-behind) and share the nav-item look. -->
@@ -192,7 +202,7 @@
                              automation:AutomationProperties.AcceleratorKey="Ctrl+5"
                              ToolTip.Tip="{t:Translate Settings}">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
-                        <controls:SvgIcon Grid.Column="0" x:Name="SettingsIcon" Path="avares://UniGetUI/Assets/Symbols/settings.svg" Width="24" Height="24" VerticalAlignment="Center" RenderTransformOrigin="50%,50%"/>
+                        <controls:SvgIcon Grid.Column="0" x:Name="SettingsIcon" Path="avares://UniGetUI/Assets/Symbols/settings.svg" Width="24" Height="24" VerticalAlignment="Center" RenderTransformOrigin="50%,50%" Foreground="{DynamicResource SidebarForeground}"/>
                         <TextBlock Grid.Column="1" Text="{t:Translate Settings}" FontSize="14" VerticalAlignment="Center"
                                    IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
                     </Grid>
@@ -201,13 +211,11 @@
                 <!-- Retained as a named compatibility target while manager configuration moves to
                      administrator-owned Group Policy / JSON. It is never shown to end users. -->
                 <ListBoxItem x:Name="ManagersNavBtn" Tag="Managers" Classes="nav-item" Padding="4,2" CornerRadius="6"
-                             IsVisible="False"
-                             IsEnabled="False"
                              automation:AutomationProperties.Name="{t:Translate Package Managers}"
                              automation:AutomationProperties.AcceleratorKey="Ctrl+6"
                              ToolTip.Tip="{t:Translate Package Managers}">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Margin="8,8">
-                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/package_managers.svg" Width="24" Height="24" VerticalAlignment="Center"/>
+                        <controls:SvgIcon Grid.Column="0" Path="avares://UniGetUI/Assets/Symbols/package_managers.svg" Width="24" Height="24" VerticalAlignment="Center" Foreground="{DynamicResource SidebarForeground}"/>
                         <TextBlock Grid.Column="1" Text="{t:Translate Package Managers}" FontSize="14" VerticalAlignment="Center"
                                    IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
                     </Grid>
@@ -231,9 +239,6 @@
                         </MenuItem>
                         <MenuItem Header="{t:Translate Package Manager logs}" Command="{Binding RequestNavigationCommand}" CommandParameter="ManagerLog">
                             <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/console.svg" Width="16" Height="16"/></MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{t:Translate Operation history}" Command="{Binding RequestNavigationCommand}" CommandParameter="OperationHistory">
-                            <MenuItem.Icon><controls:SvgIcon Path="avares://UniGetUI/Assets/Symbols/history.svg" Width="16" Height="16"/></MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
                         <MenuItem Header="{Binding VersionLabel}" IsEnabled="False">
@@ -262,38 +267,42 @@
 
             </ListBox>
 
-            <StackPanel Margin="12,8,8,0"
-                        HorizontalAlignment="Left">
+            <Grid Margin="0,8,0,0"
+                  ColumnDefinitions="48,*"
+                  RowDefinitions="Auto,Auto"
+                  HorizontalAlignment="Stretch"
+                  automation:AutomationProperties.Name="{Binding BuildStatusText}">
                 <ToolTip.Tip>
                     <StackPanel Spacing="2">
                         <TextBlock Text="{Binding BuildStatusText}"/>
                         <TextBlock Text="{Binding VersionLabel}"/>
                     </StackPanel>
                 </ToolTip.Tip>
-                <Grid ColumnDefinitions="12,*"
-                      ColumnSpacing="8"
-                      automation:AutomationProperties.Name="{Binding BuildStatusText}">
-                    <Panel Width="10" Height="10" VerticalAlignment="Center">
-                        <Ellipse Fill="{DynamicResource BuildStatusCurrentBrush}" IsVisible="{Binding BuildStatusIsCurrent}"/>
-                        <Ellipse Fill="{DynamicResource BuildStatusSlightlyBehindBrush}" IsVisible="{Binding BuildStatusIsSlightlyBehind}"/>
-                        <Ellipse Fill="{DynamicResource BuildStatusBehindBrush}" IsVisible="{Binding BuildStatusIsBehind}"/>
-                        <Ellipse Fill="{DynamicResource BuildStatusCriticalBrush}" IsVisible="{Binding BuildStatusIsCriticallyBehind}"/>
-                    </Panel>
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding BuildStatusText}"
-                               FontSize="12"
-                               VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
-                </Grid>
-                <TextBlock Text="{Binding VersionLabel}"
-                           Margin="20,2,0,0"
+                <Panel Grid.RowSpan="2"
+                       Width="12" Height="12"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+                    <Ellipse Fill="{DynamicResource BuildStatusCurrentBrush}" IsVisible="{Binding BuildStatusIsCurrent}"/>
+                    <Ellipse Fill="{DynamicResource BuildStatusSlightlyBehindBrush}" IsVisible="{Binding BuildStatusIsSlightlyBehind}"/>
+                    <Ellipse Fill="{DynamicResource BuildStatusBehindBrush}" IsVisible="{Binding BuildStatusIsBehind}"/>
+                    <Ellipse Fill="{DynamicResource BuildStatusCriticalBrush}" IsVisible="{Binding BuildStatusIsCriticallyBehind}"/>
+                </Panel>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding BuildStatusText}"
+                           FontSize="12"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"/>
+                <TextBlock Grid.Row="1"
+                           Grid.Column="1"
+                           Text="{Binding VersionLabel}"
+                           Margin="0,2,0,0"
                            FontSize="11"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Foreground="{DynamicResource SidebarSecondaryForeground}"
                            TextTrimming="CharacterEllipsis"
                            IsVisible="{Binding $parent[local:SidebarView].ShowLabels}"
                            automation:AutomationProperties.Name="{Binding VersionLabel}"/>
-            </StackPanel>
+            </Grid>
 
         </StackPanel>
 
@@ -310,19 +319,19 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Top"
                          RenderTransformOrigin="0%,0%"
-                         Fill="{DynamicResource AccentFillColorDefaultBrush}"/>
+                         Fill="{DynamicResource BrandOrangeBrush}"/>
                 <Border x:Name="NavigationPillStem"
                         Width="3" Height="1"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         RenderTransformOrigin="0%,0%"
-                        Background="{DynamicResource AccentFillColorDefaultBrush}"/>
+                        Background="{DynamicResource BrandOrangeBrush}"/>
                 <Ellipse x:Name="NavigationPillBottomCap"
                          Width="3" Height="3"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Top"
                          RenderTransformOrigin="0%,0%"
-                         Fill="{DynamicResource AccentFillColorDefaultBrush}"/>
+                         Fill="{DynamicResource BrandOrangeBrush}"/>
             </Panel>
         </Canvas>
     </Grid>

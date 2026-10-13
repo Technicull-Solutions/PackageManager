@@ -7,7 +7,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:DataType="vm:ThirdPartyLicensesViewModel">
+             x:DataType="vm:ThirdPartyLicensesViewModel"
+             Background="{DynamicResource AboutDialogBodyBackground}"
+             Foreground="{DynamicResource AboutDialogBodyForeground}">
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled">
         <StackPanel Orientation="Vertical" Spacing="4" Margin="16,8">

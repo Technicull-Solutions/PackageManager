@@ -38,6 +38,44 @@ public enum SearchMode { Both, Name, Id, Exact, Similar }
 
 public enum PackageViewMode { List = 0, Grid = 1, Icons = 2 }
 
+internal static class PackagePresentationFilter
+{
+    private static readonly char[] TechnicalNameCharacters = ['\\', '/', '@', '{', '}', '|', '=', '_'];
+
+    public static bool HasUserFriendlyName(string? name, string? id)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return false;
+
+        string candidate = name.Trim();
+        if (candidate.Length is < 2 or > 80) return false;
+        if (!candidate.Any(char.IsLetter)) return false;
+        if (candidate.Any(char.IsControl)) return false;
+        if (candidate.IndexOfAny(TechnicalNameCharacters) >= 0) return false;
+        if (candidate.Contains("://", StringComparison.Ordinal)
+            || candidate.Contains("::", StringComparison.Ordinal))
+            return false;
+
+        if (string.Equals(candidate, id?.Trim(), StringComparison.OrdinalIgnoreCase)
+            && LooksLikeReverseDomainIdentifier(candidate))
+            return false;
+
+        return true;
+    }
+
+    private static bool LooksLikeReverseDomainIdentifier(string value)
+    {
+        string[] parts = value.Split('.', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length < 3) return false;
+
+        return parts[0].Equals("com", StringComparison.OrdinalIgnoreCase)
+            || parts[0].Equals("org", StringComparison.OrdinalIgnoreCase)
+            || parts[0].Equals("net", StringComparison.OrdinalIgnoreCase)
+            || parts[0].Equals("io", StringComparison.OrdinalIgnoreCase)
+            || parts[0].Equals("dev", StringComparison.OrdinalIgnoreCase)
+            || parts[0].Equals("app", StringComparison.OrdinalIgnoreCase);
+    }
+}
+
 public enum ReloadReason
 {
     FirstRun,
@@ -55,6 +93,7 @@ public struct PackagesPageData
     public bool DisableSuggestedResultsRadio;
     public bool DisableFilterOnQueryChange;
     public bool DisableReload;
+    public bool EnableUserFriendlyDefaultView;
 
     public OperationType PageRole;
     public AbstractPackageLoader Loader;
@@ -151,10 +190,22 @@ public partial class PackagesPageViewModel : ViewModelBase
     public readonly bool DisableFilterOnQueryChange;
     public readonly bool DisableReload;
     public readonly bool LoadsOnStart;
+    public bool RoleIsInstall { get; }
     public readonly bool RoleIsUpdateLike;
+    public bool UsesUserFriendlyDefaultView { get; }
+    public bool ShowAdvancedViewToggle => UsesUserFriendlyDefaultView;
+    public bool ShowPackageIdColumn => !UsesUserFriendlyDefaultView || AdvancedView;
+    public bool ShowPackageSource => !UsesUserFriendlyDefaultView || AdvancedView;
+    public string PrimaryActionLabel { get; }
+    public bool ShowUpdateAllButton => RoleIsUpdateLike;
+    public string UpdateAllLabel => CoreTools.Translate("Update all");
     public bool SimilarSearchEnabled { get; private set; }
-    public bool InstallerHostColumnVisible { get; }
-    public bool DownloadSizeColumnVisible { get; }
+    private readonly bool _installerHostColumnConfigured;
+    private readonly bool _downloadSizeColumnConfigured;
+    public bool InstallerHostColumnVisible => _installerHostColumnConfigured
+        && (!UsesUserFriendlyDefaultView || AdvancedView);
+    public bool DownloadSizeColumnVisible => _downloadSizeColumnConfigured
+        && (!UsesUserFriendlyDefaultView || AdvancedView);
     public readonly string NoPackagesText;
     public readonly string NoMatchesText;
     public readonly string SearchBoxPlaceholder;
@@ -185,6 +236,8 @@ public partial class PackagesPageViewModel : ViewModelBase
     [ObservableProperty] private bool _reloadButtonVisible;
     [ObservableProperty] private string _reloadButtonTooltip = "";
     [ObservableProperty] private bool _isFilterPaneOpen;
+    [ObservableProperty] private bool _advancedView;
+    [ObservableProperty] private bool _isCuratingSimpleView;
     [ObservableProperty] private PackageViewMode _viewMode;
     [ObservableProperty] private int _sortFieldIndex;
     [ObservableProperty] private bool _sortAscending = true;
@@ -218,6 +271,7 @@ public partial class PackagesPageViewModel : ViewModelBase
     private readonly ObservableCollection<PackageWrapper> _wrappedPackages = new();
     private CancellationTokenSource? _iconPreloadCts;
     private CancellationTokenSource? _downloadSizePreloadCts;
+    private bool _simpleViewRefreshQueued;
     protected List<IPackageManager> UsedManagers = [];
     protected ConcurrentDictionary<IPackageManager, List<IManagerSource>> UsedSourcesForManager = new();
     protected ConcurrentDictionary<IPackageManager, SourceTreeNode> RootNodeForManager = new();
@@ -259,14 +313,23 @@ public partial class PackagesPageViewModel : ViewModelBase
         _noPackagesSubtitleBase = data.NoPackages_SubtitleText_Base;
         _stillLoadingSubtitle = data.MainSubtitle_StillLoading;
         SimilarSearchEnabled = !data.DisableSuggestedResultsRadio;
+        RoleIsInstall = data.PageRole == OperationType.Install;
         RoleIsUpdateLike = data.PageRole == OperationType.Update;
+        UsesUserFriendlyDefaultView = data.EnableUserFriendlyDefaultView;
+        _advancedView = !UsesUserFriendlyDefaultView;
         NewVersionHeaderVisible = RoleIsUpdateLike;
-        InstallerHostColumnVisible = Settings.Get(Settings.K.ShowInstallerHostColumn)
+        _installerHostColumnConfigured = Settings.Get(Settings.K.ShowInstallerHostColumn)
             && data.PageRole != OperationType.Uninstall;
-        DownloadSizeColumnVisible = Settings.Get(Settings.K.ShowDownloadSizeColumn)
+        _downloadSizeColumnConfigured = Settings.Get(Settings.K.ShowDownloadSizeColumn)
             && data.PageRole != OperationType.Uninstall;
         ReloadButtonVisible = !DisableReload;
-        SearchBoxPlaceholder = CoreTools.Translate("Search for packages");
+        SearchBoxPlaceholder = CoreTools.Translate("Search apps, publishers, or tools");
+        PrimaryActionLabel = data.PageRole switch
+        {
+            OperationType.Update => CoreTools.Translate("Update"),
+            OperationType.Uninstall => CoreTools.Translate("Uninstall"),
+            _ => CoreTools.Translate("Install"),
+        };
 
         AllPackagesChecked = data.PackagesAreCheckedByDefault;
         FilteredPackages.SelectionStateChanged += (_, _) =>
@@ -284,14 +347,14 @@ public partial class PackagesPageViewModel : ViewModelBase
 
         InstantSearch = !Settings.GetDictionaryItem<string, bool>(Settings.K.DisableInstantSearch, PageName);
 
-        var savedMode = Settings.GetDictionaryItem<string, int>(Settings.K.PackageListViewMode, PageName);
-        ViewMode = Enum.IsDefined(typeof(PackageViewMode), savedMode)
-            ? (PackageViewMode)savedMode
-            : PackageViewMode.List;
+        int savedViewMode = Settings.GetDictionaryItem<string, int>(Settings.K.PackageListViewMode, PageName);
+        ViewMode = Settings.DictionaryContainsKey<string, int>(Settings.K.PackageListViewMode, PageName)
+            && savedViewMode is >= (int)PackageViewMode.List and <= (int)PackageViewMode.Icons
+            ? (PackageViewMode)savedViewMode
+            : PackageViewMode.Grid;
 
-        // Restore per-page filter pane open/closed state (default: open).
-        // Use backing field to avoid writing to settings during construction.
-        _isFilterPaneOpen = !Settings.GetDictionaryItem<string, bool>(Settings.K.HideToggleFilters, PageName);
+        // Source selection and matching rules are owned by policy, not by employees.
+        _isFilterPaneOpen = false;
 
         // Restore per-page sort preferences (default: Name, ascending).
         int savedSortField = Settings.GetDictionaryItem<string, int>(Settings.K.PackageListSortFieldIndex, PageName);
@@ -509,9 +572,7 @@ public partial class PackagesPageViewModel : ViewModelBase
         _iconPreloadCts?.Cancel();
         _iconPreloadCts?.Dispose();
         _iconPreloadCts = new CancellationTokenSource();
-        _ = PreloadPackageIconsAsync(
-            FilteredPackages.Take(MaximumPreloadedIcons).ToArray(),
-            _iconPreloadCts.Token);
+        _ = PreloadPackageIconsAsync(GetIconPreloadCandidates(), _iconPreloadCts.Token);
         if (FilteredPackages.CurrentSorter is ObservablePackageCollection.Sorter.DownloadSize)
             StartDownloadSizePreload();
         PackagesLoaded?.Invoke(ReloadReason.External);
@@ -580,6 +641,26 @@ public partial class PackagesPageViewModel : ViewModelBase
             }
         }
         catch (OperationCanceledException) { }
+    }
+
+    private PackageWrapper[] GetIconPreloadCandidates()
+    {
+        IEnumerable<PackageWrapper> candidates = UsesUserFriendlyDefaultView && !AdvancedView
+            ? _wrappedPackages.Where(wrapper => wrapper.HasUserFriendlyName)
+            : FilteredPackages;
+        return candidates.Take(MaximumPreloadedIcons).ToArray();
+    }
+
+    internal void NotifyPackageIconResolved()
+    {
+        if (!UsesUserFriendlyDefaultView || AdvancedView || _simpleViewRefreshQueued) return;
+
+        _simpleViewRefreshQueued = true;
+        Dispatcher.UIThread.Post(() =>
+        {
+            _simpleViewRefreshQueued = false;
+            if (!AdvancedView) FilterPackages();
+        }, DispatcherPriority.Background);
     }
 
     private void Loader_StartedLoading(object? sender, EventArgs e)
@@ -673,9 +754,24 @@ public partial class PackagesPageViewModel : ViewModelBase
                         && visibleManagers.Contains(pkg.Manager)
                     );
 
-        var results = FilteredPackages.ApplyToList(
-            _wrappedPackages.Where(w => matchFunc(w.Package) && sourceFilter(w.Package))
-        ).ToList();
+        IEnumerable<PackageWrapper> matchingPackages =
+            _wrappedPackages.Where(w => matchFunc(w.Package) && sourceFilter(w.Package));
+
+        if (UsesUserFriendlyDefaultView && !AdvancedView)
+        {
+            PackageWrapper[] simpleViewCandidates = matchingPackages
+                .Where(wrapper => wrapper.HasUserFriendlyName)
+                .Take(MaximumPreloadedIcons)
+                .ToArray();
+            IsCuratingSimpleView = simpleViewCandidates.Any(wrapper => !wrapper.IconLoadCompleted);
+            matchingPackages = simpleViewCandidates.Where(wrapper => wrapper.HasCustomIcon);
+        }
+        else
+        {
+            IsCuratingSimpleView = false;
+        }
+
+        var results = FilteredPackages.ApplyToList(matchingPackages).ToList();
 
         FilteredPackages.Clear();
         foreach (var w in results) FilteredPackages.Add(w);
@@ -683,7 +779,9 @@ public partial class PackagesPageViewModel : ViewModelBase
         UpdateSubtitle();
         PackageCountUpdated?.Invoke();
 
-        bool loadingOrPending = Loader.IsLoading || (LoadsOnStart && Loader.HasPendingInitialLoad);
+        bool loadingOrPending = Loader.IsLoading
+            || (LoadsOnStart && Loader.HasPendingInitialLoad)
+            || IsCuratingSimpleView;
 
         if (loadingOrPending && FilteredPackages.Count == 0)
         {
@@ -756,6 +854,26 @@ public partial class PackagesPageViewModel : ViewModelBase
     // ─── Selection ────────────────────────────────────────────────────────────
     partial void OnInstantSearchChanged(bool value)
         => Settings.SetDictionaryItem(Settings.K.DisableInstantSearch, PageName, !value);
+
+    partial void OnAdvancedViewChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ShowPackageIdColumn));
+        OnPropertyChanged(nameof(ShowPackageSource));
+        OnPropertyChanged(nameof(InstallerHostColumnVisible));
+        OnPropertyChanged(nameof(DownloadSizeColumnVisible));
+        if (!value && SortFieldIndex is 1 or 4 or 5)
+            SortFieldIndex = 0;
+        else
+            FilterPackages();
+
+        if (!value)
+        {
+            _iconPreloadCts?.Cancel();
+            _iconPreloadCts?.Dispose();
+            _iconPreloadCts = new CancellationTokenSource();
+            _ = PreloadPackageIconsAsync(GetIconPreloadCandidates(), _iconPreloadCts.Token);
+        }
+    }
 
     partial void OnUpperLowerCaseChanged(bool value) => FilterPackages();
     partial void OnIgnoreSpecialCharsChanged(bool value) => FilterPackages();
@@ -1022,7 +1140,9 @@ public partial class PackagesPageViewModel : ViewModelBase
     // ─── Subtitle ─────────────────────────────────────────────────────────────
     public void UpdateSubtitle()
     {
-        if (Loader.IsLoading || (LoadsOnStart && Loader.HasPendingInitialLoad))
+        if (Loader.IsLoading
+            || (LoadsOnStart && Loader.HasPendingInitialLoad)
+            || (IsCuratingSimpleView && FilteredPackages.Count == 0))
         {
             Subtitle = _stillLoadingSubtitle;
             return;
@@ -1033,8 +1153,8 @@ public partial class PackagesPageViewModel : ViewModelBase
             int selected = FilteredPackages.GetCheckedPackages().Count;
             string r = CoreTools.Translate(
                 "{0} packages were found, {1} of which match the specified filters.",
-                FilteredPackages.Count,
-                _wrappedPackages.Count
+                _wrappedPackages.Count,
+                FilteredPackages.Count
             ) + " (" + CoreTools.Translate("{0} selected", selected) + ")";
 
             if (_showLastCheckedTime)

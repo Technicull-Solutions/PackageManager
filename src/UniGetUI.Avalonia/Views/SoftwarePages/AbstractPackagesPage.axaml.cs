@@ -67,7 +67,6 @@ public abstract partial class AbstractPackagesPage : UserControl,
 
         // "New version" sort option is only relevant on the updates page
         OrderByNewVersion_Menu.IsVisible = ViewModel.RoleIsUpdateLike;
-        OrderByDownloadSize_Menu.IsVisible = ViewModel.DownloadSizeColumnVisible;
 
         // Stamp initial checkmarks, then keep them in sync with sort-property changes
         UpdateSortMenuChecks();
@@ -335,6 +334,8 @@ public abstract partial class AbstractPackagesPage : UserControl,
     };
 
     // ─── Protected access to main toolbar controls for subclasses ─────────────
+    private Action? _primaryPackageAction;
+
     /// <summary>Sets the icon and text of the primary action button.</summary>
     protected void SetMainButton(string svgName, string label, Action onClick)
     {
@@ -342,6 +343,27 @@ public abstract partial class AbstractPackagesPage : UserControl,
         MainToolbarButtonText.Text = label;
         AutomationProperties.SetName(MainToolbarButton, label);
         MainToolbarButton.Click += (_, _) => onClick();
+        _primaryPackageAction = onClick;
+    }
+
+    private void PrimaryPackageAction_Click(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: PackageWrapper wrapper })
+            return;
+
+        foreach (PackageWrapper package in ViewModel.FilteredPackages)
+            package.IsChecked = ReferenceEquals(package, wrapper);
+
+        PackageList.SelectedItem = wrapper;
+        _primaryPackageAction?.Invoke();
+        e.Handled = true;
+    }
+
+    private void BulkActionButton_Click(object? sender, RoutedEventArgs e)
+    {
+        ViewModel.AllPackagesChecked = true;
+        _primaryPackageAction?.Invoke();
+        e.Handled = true;
     }
 
     /// <summary>Sets the dropdown flyout of the primary action button.</summary>

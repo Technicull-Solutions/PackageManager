@@ -11,17 +11,30 @@
             <Setter Property="Background"   Value="{DynamicResource StatusSuccessBackground}"/>
             <Setter Property="BorderBrush"  Value="{DynamicResource StatusSuccessBorderBrush}"/>
         </Style>
+        <Style Selector="Border.severity-success.disclaimer-palette">
+            <Setter Property="Background"   Value="{DynamicResource AboutDisclaimerBackground}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource AboutDisclaimerBorderBrush}"/>
+        </Style>
         <Style Selector="Border.severity-error">
             <Setter Property="Background"   Value="{DynamicResource StatusErrorBackground}"/>
             <Setter Property="BorderBrush"  Value="{DynamicResource StatusErrorBorderBrush}"/>
         </Style>
         <Style Selector="Border.severity-warning">
-            <Setter Property="Background"   Value="{DynamicResource WarningBannerBackground}"/>
-            <Setter Property="BorderBrush"  Value="{DynamicResource WarningBannerBorderBrush}"/>
+            <Setter Property="Background"   Value="{DynamicResource AboutDisclaimerBackground}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource AboutDisclaimerBorderBrush}"/>
         </Style>
         <Style Selector="Border.severity-info">
-            <Setter Property="Background"   Value="{DynamicResource StatusInfoBackground}"/>
-            <Setter Property="BorderBrush"  Value="{DynamicResource StatusInfoBorderBrush}"/>
+            <Setter Property="Background"   Value="{DynamicResource AboutDisclaimerBackground}"/>
+            <Setter Property="BorderBrush"  Value="{DynamicResource AboutDisclaimerBorderBrush}"/>
+        </Style>
+        <Style Selector="Border.severity-warning TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource AboutDisclaimerForeground}"/>
+        </Style>
+        <Style Selector="Border.severity-info TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource AboutDisclaimerForeground}"/>
+        </Style>
+        <Style Selector="Border.severity-success.disclaimer-palette TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource AboutDisclaimerForeground}"/>
         </Style>
         <Style Selector="Border#BodyBorder.clickable">
             <Setter Property="Cursor" Value="Hand"/>

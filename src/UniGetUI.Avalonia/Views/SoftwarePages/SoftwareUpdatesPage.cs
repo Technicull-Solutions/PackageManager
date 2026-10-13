@@ -32,7 +32,7 @@ public class SoftwareUpdatesPage : AbstractPackagesPage
     public SoftwareUpdatesPage() : base(new PackagesPageData
     {
         PageName = "SoftwarePages.SoftwareUpdatesPage",
-        PageTitle = CoreTools.Translate("Software Updates"),
+        PageTitle = CoreTools.Translate("Updates"),
         IconName = "update",
         PageRole = OperationType.Update,
         Loader = UpgradablePackagesLoader.Instance ?? new UpgradablePackagesLoader([]),

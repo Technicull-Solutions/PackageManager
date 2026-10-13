@@ -42,7 +42,7 @@ public class InstalledPackagesPage : AbstractPackagesPage
     public InstalledPackagesPage() : base(new PackagesPageData
     {
         PageName = "SoftwarePages.InstalledPackagesPage",
-        PageTitle = CoreTools.Translate("Installed Packages"),
+        PageTitle = CoreTools.Translate("Installed"),
         IconName = "InstalledPackages",
         PageRole = OperationType.Uninstall,
         Loader = InstalledPackagesLoader.Instance ?? new InstalledPackagesLoader([]),

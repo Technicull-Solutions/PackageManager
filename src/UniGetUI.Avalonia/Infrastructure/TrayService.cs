@@ -157,13 +157,13 @@ internal sealed class TrayService : IDisposable
     {
         var menu = new NativeMenu();
 
-        var discover = new NativeMenuItem(CoreTools.Translate("Discover Packages"));
+        var discover = new NativeMenuItem(CoreTools.Translate("Apps"));
         discover.Click += (_, _) => Dispatcher.UIThread.Post(() => { owner.Navigate(PageType.Discover); owner.ShowFromTray(); });
 
         var updates = new NativeMenuItem(CoreTools.Translate("Available Updates"));
         updates.Click += (_, _) => Dispatcher.UIThread.Post(() => { owner.Navigate(PageType.Updates); owner.ShowFromTray(); });
 
-        var installed = new NativeMenuItem(CoreTools.Translate("Installed Packages"));
+        var installed = new NativeMenuItem(CoreTools.Translate("Installed"));
         installed.Click += (_, _) => Dispatcher.UIThread.Post(() => { owner.Navigate(PageType.Installed); owner.ShowFromTray(); });
 
         menu.Add(discover);

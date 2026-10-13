@@ -398,7 +398,7 @@
   "Go forward": "Siirry eteenpäin",
   "Go to home page": "Siirry etusivulle",
   "Reload page": "Lataa sivu uudelleen",
-  "View page on browser": "Näytä sivu selaimessa",
+  "View page in browser": "Näytä sivu selaimessa",
   "The built-in browser is not supported on Linux yet.": "Sisäänrakennettua selainta ei vielä tueta Linuxissa.",
   "Open in browser": "Avaa selaimessa",
   "Copy to clipboard": "Kopioi leikepöydälle",

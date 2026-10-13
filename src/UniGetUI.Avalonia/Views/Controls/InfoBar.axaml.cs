@@ -53,6 +53,8 @@ public partial class InfoBar : UserControl
     {
         if (e.PropertyName == nameof(InfoBarViewModel.Severity) && _vm is not null)
             ApplySeverity(_vm.Severity);
+        else if (e.PropertyName == nameof(InfoBarViewModel.UseDisclaimerPalette) && _vm is not null)
+            ApplySeverity(_vm.Severity);
         else if (e.PropertyName == nameof(InfoBarViewModel.IsBodyClickable))
             ApplyClickable();
     }
@@ -105,15 +107,16 @@ public partial class InfoBar : UserControl
         BodyBorder.Classes.Set("severity-error", severity == InfoBarSeverity.Error);
         BodyBorder.Classes.Set("severity-warning", severity == InfoBarSeverity.Warning);
         BodyBorder.Classes.Set("severity-info", severity == InfoBarSeverity.Informational);
+        BodyBorder.Classes.Set("disclaimer-palette", _vm?.UseDisclaimerPalette == true);
 
         _severityStripBinding?.Dispose();
         _severityIconBinding?.Dispose();
         _severityStripBinding = null;
         _severityIconBinding = null;
 
-        Color? stripColor = severity switch
+        bool useDisclaimerPalette = _vm?.UseDisclaimerPalette == true;
+        Color? stripColor = useDisclaimerPalette ? null : severity switch
         {
-            InfoBarSeverity.Warning => Color.Parse("#F7A800"),
             InfoBarSeverity.Error => Color.Parse("#C42B1C"),
             InfoBarSeverity.Success => Color.Parse("#107C10"),
             _ => null,
@@ -139,10 +142,10 @@ public partial class InfoBar : UserControl
             SeverityIcon.ClearValue(ForegroundProperty);
             _severityStripBinding = SeverityStrip.Bind(
                 Border.BackgroundProperty,
-                this.GetResourceObservable("AccentFillColorDefaultBrush"));
+                this.GetResourceObservable("AboutDisclaimerIconBackground"));
             _severityIconBinding = SeverityIcon.Bind(
                 ForegroundProperty,
-                this.GetResourceObservable("AccentFillColorDefaultBrush"));
+                this.GetResourceObservable("AboutDisclaimerIconBackground"));
         }
     }
 }

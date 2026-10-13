@@ -7,15 +7,18 @@ namespace UniGetUI.Tests;
 public sealed class AutoUpdaterTests
 {
     [Fact]
-    public void InstallerArguments_LeaveARegularInstallToTheInstallersOwnDirectoryLogic()
+    public void InstallerArguments_PinARegularUpdateToTheRunningInstallDirectory()
     {
         string arguments = AutoUpdaterInstallerArguments.ForWindows(
             false,
-            @"C:\Program Files\UniGetUI",
+            @"C:\Program Files\Technicull Solutions\Evergreen Endpoint Package Manager",
             WindowsInstallScope.Unknown
         );
 
-        Assert.DoesNotContain("/DIR=", arguments);
+        Assert.Contains(
+            @"/DIR=""C:\Program Files\Technicull Solutions\Evergreen Endpoint Package Manager""",
+            arguments
+        );
         Assert.DoesNotContain("/TASKS=", arguments);
         Assert.Contains("/SILENT", arguments);
     }
@@ -246,11 +249,13 @@ public sealed class AutoUpdaterTests
     }
 
     [Theory]
-    [InlineData("https://devolutions.net/productinfo.json", false, true)]
-    [InlineData("https://updates.devolutions.net/productinfo.json", false, true)]
-    [InlineData("https://notdevolutions.net/productinfo.json", false, false)]
-    [InlineData("https://github.com/Devolutions/UniGetUI/releases", false, true)]
-    [InlineData("http://devolutions.net/productinfo.json", false, false)]
+    [InlineData("https://raw.githubusercontent.com/Technicull-Solutions/PackageManager/main/update/productinfo.json", false, true)]
+    [InlineData("https://github.com/Technicull-Solutions/PackageManager/releases/download/v0.1.0/setup.exe", false, true)]
+    [InlineData("https://api.github.com/repos/Technicull-Solutions/PackageManager/releases/latest", false, true)]
+    [InlineData("https://devolutions.net/productinfo.json", false, false)]
+    [InlineData("https://github.com/Devolutions/UniGetUI/releases", false, false)]
+    [InlineData("https://raw.githubusercontent.com/attacker/PackageManager/main/productinfo.json", false, false)]
+    [InlineData("http://github.com/Technicull-Solutions/PackageManager/releases", false, false)]
     [InlineData("http://contoso.invalid/file.exe", true, true)]
     public void IsSourceUrlAllowed_RestrictsUnsafeOrUnexpectedHosts(
         string url,
@@ -259,6 +264,30 @@ public sealed class AutoUpdaterTests
     )
     {
         Assert.Equal(expected, AutoUpdaterHelpers.IsSourceUrlAllowed(url, allowUnsafeUrls));
+    }
+
+    [Theory]
+    [InlineData("0.1.0", 2, "0.1.0", 3, true)]
+    [InlineData("0.1.0", 3, "0.1.0", 3, false)]
+    [InlineData("0.1.0", 5, "0.2.0", 1, true)]
+    [InlineData("0.2.0", 1, "0.1.0", 99, false)]
+    public void IsUpdateAvailable_UsesReleaseVersionThenMonotonicBuild(
+        string currentVersion,
+        int currentBuild,
+        string availableVersion,
+        int availableBuild,
+        bool expected
+    )
+    {
+        Assert.Equal(
+            expected,
+            AutoUpdaterHelpers.IsUpdateAvailable(
+                currentVersion,
+                currentBuild,
+                availableVersion,
+                availableBuild
+            )
+        );
     }
 
     [Fact]
@@ -320,14 +349,20 @@ public sealed class AutoUpdaterTests
     [Fact]
     public void RegistryHelpers_ParseTrimmedStringsAndTruthyValues()
     {
-        string keyPath = $@"Software\Devolutions\UniGetUI.Tests\{Guid.NewGuid():N}";
+        string keyPath = $@"Software\Technicull Solutions\Evergreen Endpoint.Tests\{Guid.NewGuid():N}";
         using RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath)!;
-        key.SetValue("ProductInfoUrl", " https://devolutions.net/custom.json ");
+        key.SetValue(
+            "ProductInfoUrl",
+            " https://raw.githubusercontent.com/Technicull-Solutions/PackageManager/main/update/productinfo.json "
+        );
         key.SetValue("AllowUnsafe", "yes");
 
         try
         {
-            Assert.Equal("https://devolutions.net/custom.json", AutoUpdaterHelpers.GetRegistryString(key, "ProductInfoUrl"));
+            Assert.Equal(
+                "https://raw.githubusercontent.com/Technicull-Solutions/PackageManager/main/update/productinfo.json",
+                AutoUpdaterHelpers.GetRegistryString(key, "ProductInfoUrl")
+            );
             Assert.True(AutoUpdaterHelpers.GetRegistryBool(key, "AllowUnsafe"));
             Assert.Null(AutoUpdaterHelpers.GetRegistryString(key, "Missing"));
             Assert.False(AutoUpdaterHelpers.GetRegistryBool(key, "Missing"));
