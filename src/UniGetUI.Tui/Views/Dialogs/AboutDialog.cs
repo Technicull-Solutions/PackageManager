@@ -18,16 +18,20 @@ internal sealed class AboutDialog : TuiDialog
     private readonly TuiForm _form = new();
 
     private AboutDialog()
-        : base(CoreTools.Translate("About UniGetUI TUI"))
+        : base(CoreTools.Translate("About Evergreen Endpoint Package Manager TUI"))
     {
         SetFrameWidth(96);
         SetFrameHeight(32);
         Body.Content = _form;
 
-        _form.AddHeader("UniGetUI");
+        _form.AddHeader("Evergreen Endpoint Package Manager");
         _form.AddNote($"{CoreTools.Translate("Version")}: {CoreData.VersionName}");
         _form.AddNote(CoreTools.Translate("The main goal of this project is to create an intuitive UI to manage the most common CLI package managers for Windows, such as Winget and Scoop."));
-        _form.AddNote(CoreTools.Translate("UniGetUI is not related to the compatible package managers. UniGetUI is an independent project."));
+        _form.AddNote(
+            CoreTools.Translate(
+                "Evergreen Endpoint Package Manager is not related to the compatible package managers. It is an independent project."
+            )
+        );
         _form.AddButton("https://devolutions.net/unigetui", () => TuiPackageActions.OpenExternally("https://devolutions.net/unigetui"));
         _form.AddButton(HelpDialog.HelpUrl, () => TuiPackageActions.OpenExternally(HelpDialog.HelpUrl));
         _form.AddButton(CoreTools.Translate("Report an issue or submit a feature request"), () => TuiPackageActions.OpenExternally(HelpDialog.IssuesUrl));

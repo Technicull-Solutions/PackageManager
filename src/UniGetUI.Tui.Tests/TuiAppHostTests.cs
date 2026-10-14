@@ -148,7 +148,7 @@ public class TuiAppHostTests
     [Fact]
     public void SubprocessUsesMainExecutableAndTerminalPrefix()
     {
-        string exe = Path.Join(Path.GetTempPath(), "host with spaces", "UniGetUI.exe");
+        string exe = Path.Join(Path.GetTempPath(), "host with spaces", "Evergreen Endpoint Package Manager.exe");
         var (path, prefix) = TuiProcessHost.Resolve(exe, Path.GetTempPath(), windows: true);
         Assert.Equal(exe, path);
         Assert.Equal(["tui"], prefix);
@@ -195,7 +195,7 @@ public class TuiAppHostTests
     {
         string directory = Path.Join(Path.GetTempPath(), $"tui managed host {Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        string exe = Path.Join(directory, "UniGetUI.exe");
+        string exe = Path.Join(directory, "Evergreen Endpoint Package Manager.exe");
         File.WriteAllText(exe, "");
         try
         {

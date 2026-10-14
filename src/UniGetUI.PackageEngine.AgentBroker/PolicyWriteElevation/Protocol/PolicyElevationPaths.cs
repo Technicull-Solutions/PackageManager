@@ -2,8 +2,9 @@ namespace UniGetUI.PackageEngine.AgentBroker.PolicyWriteElevation;
 
 /// <summary>
 /// The exact packaged layout both peers agree on. The helper is never searched for: it is only
-/// ever accepted at <c>&lt;install root&gt;\Assets\Utilities\UniGetUI.PolicyElevator.exe</c>, and
-/// the host is only ever accepted at <c>&lt;install root&gt;\UniGetUI.exe</c>.
+/// ever accepted at <c>&lt;install root&gt;\Assets\Utilities\EEPM Policy Elevator.exe</c>, and
+/// the host is only ever accepted at
+/// <c>&lt;install root&gt;\Evergreen Endpoint Package Manager.exe</c>.
 /// </summary>
 public static class PolicyElevationPaths
 {

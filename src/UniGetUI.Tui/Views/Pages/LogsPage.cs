@@ -283,7 +283,10 @@ internal sealed class LogsPage : UserControl, ITuiPage
     private async Task ExportAsync()
     {
         string? path = await TuiPrompts.AskTextAsync(CoreTools.Translate("Export to a file"), CoreTools.Translate("Save to file:"),
-            Path.Join(TuiPackageActions.DefaultDownloadDirectory(), "UniGetUI log.txt"));
+            Path.Join(
+                TuiPackageActions.DefaultDownloadDirectory(),
+                "Evergreen Endpoint Package Manager log.txt"
+            ));
         if (string.IsNullOrWhiteSpace(path)) return;
         try
         {

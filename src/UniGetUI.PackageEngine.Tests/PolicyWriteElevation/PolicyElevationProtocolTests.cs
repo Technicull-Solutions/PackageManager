@@ -109,8 +109,8 @@ public class PolicyElevationProtocolTests
     [Fact]
     public void PackagedLayout_IsTheOnlyAcceptedHelperLocation()
     {
-        Assert.Equal("UniGetUI.PolicyElevator.exe", PolicyElevationProtocol.HelperFileName);
-        Assert.Equal("UniGetUI.exe", PolicyElevationProtocol.HostFileName);
+        Assert.Equal("EEPM Policy Elevator.exe", PolicyElevationProtocol.HelperFileName);
+        Assert.Equal("Evergreen Endpoint Package Manager.exe", PolicyElevationProtocol.HostFileName);
         Assert.Equal("Assets", PolicyElevationProtocol.HelperRelativeDirectory);
         Assert.Equal("Utilities", PolicyElevationProtocol.HelperRelativeSubDirectory);
     }

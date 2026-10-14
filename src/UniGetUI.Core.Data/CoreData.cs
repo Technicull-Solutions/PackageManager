@@ -39,7 +39,7 @@ namespace UniGetUI.Core.Data
             }
         }
         public const string VersionName = "0.1.0"; // Do not modify this line, use file scripts/set-version.ps1
-        public const int BuildNumber = 27; // Do not modify this line, use file scripts/set-version.ps1
+        public const int BuildNumber = 30; // Do not modify this line, use file scripts/set-version.ps1
         public const string ProductName = "Evergreen Endpoint Package Manager";
         public const string ApplicationDisplayName = "Evergreen Endpoint | APPS";
         public const string UpstreamBaseVersion = "3.3.7";
@@ -404,7 +404,10 @@ namespace UniGetUI.Core.Data
                 );
 
                 return OperatingSystem.IsWindows()
-                    ? Path.Join(UniGetUIExecutableDirectory, "UniGetUI.exe")
+                    ? Path.Join(
+                        UniGetUIExecutableDirectory,
+                        "Evergreen Endpoint Package Manager.exe"
+                    )
                     : NormalizeExecutablePath(Path.Join(UniGetUIExecutableDirectory, "UniGetUI"));
             }
         }

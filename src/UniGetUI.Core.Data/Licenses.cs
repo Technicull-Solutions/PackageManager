@@ -29,7 +29,7 @@ namespace UniGetUI.Core.Data
             { "vcpkg", "MIT" },
             // Other
             { "GSudo", "MIT" },
-            { "UniGetUI Elevator", "MIT" },
+            { "EEPM Elevator", "MIT" },
             { "Icons", "By Icons8" },
             { "Inter", "SIL OFL 1.1" },
         };
@@ -93,7 +93,7 @@ namespace UniGetUI.Core.Data
             // Other
             { "GSudo", new Uri("https://github.com/gerardog/gsudo/blob/master/LICENSE.txt") },
             {
-                "UniGetUI Elevator",
+                "EEPM Elevator",
                 new Uri("https://github.com/Devolutions/gsudo-distro/blob/master/LICENSE")
             },
             { "Icons", new Uri("https://icons8.com/license") },
@@ -133,7 +133,7 @@ namespace UniGetUI.Core.Data
             { "vcpkg", new Uri("https://github.com/microsoft/vcpkg") },
             // Other
             { "GSudo", new Uri("https://github.com/gerardog/gsudo/") },
-            { "UniGetUI Elevator", new Uri("https://github.com/Devolutions/gsudo-distro") },
+            { "EEPM Elevator", new Uri("https://github.com/gerardog/gsudo") },
             { "Icons", new Uri("https://icons8.com") },
             { "Inter", new Uri("https://rsms.me/inter/") },
         };

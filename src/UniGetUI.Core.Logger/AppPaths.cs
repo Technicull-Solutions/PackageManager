@@ -9,7 +9,7 @@ namespace UniGetUI.Core.Logging
         private const string FirstRunMarkerFileName = "FirstRun.pending";
         private const string ScratchDirectoryName = "UniGetUI";
         private const string BundledModernAppDirectoryName = "Avalonia";
-        private const string WindowsExecutableName = "UniGetUI.exe";
+        private const string WindowsExecutableName = "Evergreen Endpoint Package Manager.exe";
         private const string BundledPingetExecutableName = "pinget.exe";
 
         private static readonly Lock PortableModeLock = new();

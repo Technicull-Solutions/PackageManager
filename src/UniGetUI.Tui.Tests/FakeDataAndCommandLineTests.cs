@@ -200,7 +200,7 @@ public class FakePackageManagerProcessTests : IDisposable
     public void FakeElevatorDelegatesWithoutElevating()
     {
         Assert.True(FakePackageManagerProcess.TryRun(
-            [FakePackageManagerProcess.ElevateFlag, "UniGetUI.exe", "tui", FakePackageManagerProcess.PmFlag, "--state", _state, "Npm", "install", "--id", "tailspin-bundler"],
+            [FakePackageManagerProcess.ElevateFlag, "Evergreen Endpoint Package Manager.exe", "tui", FakePackageManagerProcess.PmFlag, "--state", _state, "Npm", "install", "--id", "tailspin-bundler"],
             out int code));
         Assert.Equal(0, code);
         Assert.Equal("5.4.10", Version("Npm", "tailspin-bundler"));

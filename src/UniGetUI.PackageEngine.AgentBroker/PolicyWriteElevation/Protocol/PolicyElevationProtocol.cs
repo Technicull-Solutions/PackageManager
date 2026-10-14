@@ -13,10 +13,10 @@ public static class PolicyElevationProtocol
     public const string Version = "2.0";
 
     /// <summary>File name of the elevated helper as staged inside the packaged install tree.</summary>
-    public const string HelperFileName = "UniGetUI.PolicyElevator.exe";
+    public const string HelperFileName = "EEPM Policy Elevator.exe";
 
     /// <summary>File name of the non-elevated host that is allowed to drive the helper.</summary>
-    public const string HostFileName = "UniGetUI.exe";
+    public const string HostFileName = "Evergreen Endpoint Package Manager.exe";
 
     /// <summary>First directory segment, relative to the install root, the helper is staged into.</summary>
     public const string HelperRelativeDirectory = "Assets";

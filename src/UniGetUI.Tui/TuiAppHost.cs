@@ -141,8 +141,12 @@ public static class TuiAppHost
         Console.Error.WriteLine($"Failed to start the terminal console: {exception.Message}");
         if (OperatingSystem.IsWindows())
         {
-            Console.Error.WriteLine("In PowerShell, run the adjacent uniget.exe tui instead of launching UniGetUI.exe directly.");
-            Console.Error.WriteLine("To launch UniGetUI.exe itself, use Start-Process with -NoNewWindow -Wait.");
+            Console.Error.WriteLine(
+                "In PowerShell, run the adjacent uniget.exe tui instead of launching Evergreen Endpoint Package Manager.exe directly."
+            );
+            Console.Error.WriteLine(
+                "To launch Evergreen Endpoint Package Manager.exe itself, use Start-Process with -NoNewWindow -Wait."
+            );
         }
     }
 
@@ -160,7 +164,7 @@ public static class TuiAppHost
     private static void PrintBanner()
     {
         Console.WriteLine();
-        Console.WriteLine("  UniGetUI — Terminal UI");
+        Console.WriteLine("  Evergreen Endpoint Package Manager — Terminal UI");
         Console.WriteLine($"  Version {CoreData.VersionName}");
         Console.WriteLine();
     }

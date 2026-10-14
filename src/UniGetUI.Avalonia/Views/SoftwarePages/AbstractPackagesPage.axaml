@@ -44,7 +44,7 @@
       <Style Selector="DataGridColumnHeader">
          <Setter Property="Background" Value="{DynamicResource PackageListHeaderBackground}"/>
          <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
-         <Setter Property="HorizontalContentAlignment" Value="Center"/>
+         <Setter Property="HorizontalContentAlignment" Value="Left"/>
          <Setter Property="SeparatorBrush" Value="Transparent"/>
          <Setter Property="BorderThickness" Value="0"/>
          <Setter Property="CornerRadius" Value="0"/>
@@ -667,6 +667,7 @@
                                         Spacing="18"
                                         VerticalAlignment="Center">
                                 <CheckBox IsChecked="{Binding AllPackagesChecked, Mode=TwoWay}"
+                                          IsVisible="{Binding ShowSelectAllControl}"
                                           Content="{t:Translate Select all}"
                                           VerticalAlignment="Center"
                                           automation:AutomationProperties.Name="{t:Translate Select all}"/>
@@ -721,7 +722,7 @@
                                 </ListBox>
 
                                 <Button x:Name="UpdateAllButton"
-                                        IsVisible="{Binding ShowUpdateAllButton}"
+                                        IsVisible="{Binding ShowTopBulkActionButton}"
                                         MinWidth="118"
                                         Height="38"
                                         Padding="18,6"
@@ -731,8 +732,8 @@
                                         HorizontalContentAlignment="Center"
                                         VerticalContentAlignment="Center"
                                         Click="BulkActionButton_Click"
-                                        automation:AutomationProperties.Name="{Binding UpdateAllLabel}">
-                                    <TextBlock Text="{Binding UpdateAllLabel}"
+                                        automation:AutomationProperties.Name="{Binding TopBulkActionLabel}">
+                                    <TextBlock Text="{Binding TopBulkActionLabel}"
                                                FontWeight="SemiBold"
                                                TextAlignment="Center"
                                                HorizontalAlignment="Center"
@@ -814,7 +815,6 @@
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Tag="Id" SortMemberPath="Package.Id"
                                                         Header="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).IdHeaderText}"
-                                                        IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).ShowPackageIdColumn}"
                                                         Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="pkg:PackageWrapper">
@@ -874,7 +874,6 @@
                                 </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Tag="Source" SortMemberPath="Package.Source.AsString_DisplayName"
                                                         Header="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).SourceHeaderText}"
-                                                        IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).ShowPackageSource}"
                                                         Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="pkg:PackageWrapper">
@@ -888,10 +887,10 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn CanUserSort="False"
+                                <DataGridTemplateColumn Tag="InstallerHost"
+                                                        CanUserSort="False"
                                                         Header="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).InstallerHostHeaderText}"
-                                                        Width="*"
-                                                        IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).InstallerHostColumnVisible}">
+                                                        Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="pkg:PackageWrapper">
                                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6" VerticalAlignment="Center" Margin="4,0"
@@ -912,10 +911,10 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn CanUserSort="False"
+                                <DataGridTemplateColumn Tag="DownloadSize"
+                                                        CanUserSort="False"
                                                         Header="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).DownloadSizeHeaderText}"
-                                                        Width="*"
-                                                        IsVisible="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).DownloadSizeColumnVisible}">
+                                                        Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate x:DataType="pkg:PackageWrapper">
                                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6" VerticalAlignment="Center" Margin="4,0"
@@ -926,6 +925,44 @@
                                                 <TextBlock Grid.Column="1" Text="{Binding DownloadSizeText}" VerticalAlignment="Center"
                                                            TextTrimming="CharacterEllipsis"/>
                                             </Grid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn CanUserSort="False" Width="224">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="pkg:PackageWrapper">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="8"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center"
+                                                        Margin="8,0,12,0">
+                                                <Button Click="CardOverflowButton_Click"
+                                                        MinWidth="82"
+                                                        Height="36"
+                                                        Padding="14,5"
+                                                        Background="Transparent"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        automation:AutomationProperties.Name="{t:Translate Options}">
+                                                    <TextBlock Text="{t:Translate Options}"
+                                                               FontWeight="SemiBold"
+                                                               TextAlignment="Center"/>
+                                                </Button>
+                                                <Button Click="PrimaryPackageAction_Click"
+                                                        Classes="package-primary-action"
+                                                        Classes.package-install-action="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).RoleIsInstall}"
+                                                        MinWidth="104"
+                                                        Height="36"
+                                                        Padding="18,5"
+                                                        CornerRadius="8"
+                                                        HorizontalContentAlignment="Center"
+                                                        VerticalContentAlignment="Center"
+                                                        automation:AutomationProperties.Name="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).PrimaryActionLabel}">
+                                                    <TextBlock Text="{Binding $parent[UserControl].((vm:PackagesPageViewModel)DataContext).PrimaryActionLabel}"
+                                                               FontWeight="SemiBold"
+                                                               TextAlignment="Center"/>
+                                                </Button>
+                                            </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -972,8 +1009,14 @@
                                                 Padding="20,16"
                                                 automation:AutomationProperties.Name="{Binding Package.AutomationName}"
                                                 automation:AutomationProperties.ItemType="{t:Translate App}">
-                                            <Grid ColumnDefinitions="72,*,Auto" ColumnSpacing="18">
-                                                <Panel Grid.Column="0"
+                                            <Grid ColumnDefinitions="Auto,72,*,Auto" ColumnSpacing="18">
+                                                <CheckBox Grid.Column="0"
+                                                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                          Classes="package-selector"
+                                                          automation:AutomationProperties.Name="{Binding Package.AutomationName}"
+                                                          HorizontalAlignment="Center"
+                                                          VerticalAlignment="Center"/>
+                                                <Panel Grid.Column="1"
                                                        Width="64" Height="64"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Center"
@@ -996,7 +1039,7 @@
                                                     </Border>
                                                 </Panel>
 
-                                                <StackPanel Grid.Column="1"
+                                                <StackPanel Grid.Column="2"
                                                             VerticalAlignment="Center"
                                                             Spacing="7">
                                                     <TextBlock Text="{Binding Package.Name}"
@@ -1033,7 +1076,7 @@
                                                     </StackPanel>
                                                 </StackPanel>
 
-                                                <StackPanel Grid.Column="2"
+                                                <StackPanel Grid.Column="3"
                                                             Orientation="Horizontal"
                                                             Spacing="8"
                                                             VerticalAlignment="Center">

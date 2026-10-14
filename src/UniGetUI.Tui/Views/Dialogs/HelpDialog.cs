@@ -12,9 +12,9 @@ namespace UniGetUI.Tui.Views.Dialogs;
 /// command-line reference, in a scrollable dialog over the current page (F1).</summary>
 internal sealed class HelpDialog : TuiDialog
 {
-    public const string HelpUrl = "https://github.com/Devolutions/UniGetUI";
-    public const string CliDocsUrl = "https://github.com/Devolutions/UniGetUI/blob/main/docs/CLI.md";
-    public const string IssuesUrl = "https://github.com/Devolutions/UniGetUI/issues/new/choose";
+    public const string HelpUrl = "https://github.com/Technicull-Solutions/PackageManager";
+    public const string CliDocsUrl = "https://github.com/Technicull-Solutions/PackageManager/blob/main/docs/CLI.md";
+    public const string IssuesUrl = "https://github.com/Technicull-Solutions/PackageManager/issues/new/choose";
 
     private readonly TuiForm _form = new();
     private readonly Button _close;
@@ -31,7 +31,10 @@ internal sealed class HelpDialog : TuiDialog
             _form.AddNote(line, TuiPalette.Text);
 
         _form.AddHeader(CoreTools.Translate("Documentation"));
-        _form.AddButton(CoreTools.Translate("Open UniGetUI help") + $"  ({HelpUrl})", () => TuiPackageActions.OpenExternally(HelpUrl));
+        _form.AddButton(
+            CoreTools.Translate("Open Evergreen Endpoint Package Manager help") + $"  ({HelpUrl})",
+            () => TuiPackageActions.OpenExternally(HelpUrl)
+        );
         _form.AddButton(CoreTools.Translate("Command-line reference") + $"  ({CliDocsUrl})", () => TuiPackageActions.OpenExternally(CliDocsUrl));
         _form.AddButton(CoreTools.Translate("Release notes") + $"  ({CoreData.ReleaseNotesUrl})", () => TuiPackageActions.OpenExternally(CoreData.ReleaseNotesUrl));
         _form.AddButton(CoreTools.Translate("Report an issue or submit a feature request"), () => TuiPackageActions.OpenExternally(IssuesUrl));

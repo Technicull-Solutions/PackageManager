@@ -13,12 +13,12 @@ public class PolicyElevationPathsTests
     [Fact]
     public void HelperPath_IsTheExactPackagedLayout()
         => Assert.Equal(
-            Path.Combine(Root, "Assets", "Utilities", "UniGetUI.PolicyElevator.exe"),
+            Path.Combine(Root, "Assets", "Utilities", "EEPM Policy Elevator.exe"),
             PolicyElevationPaths.GetHelperPath(Root));
 
     [Fact]
     public void HostPath_IsTheExactPackagedLayout()
-        => Assert.Equal(Path.Combine(Root, "UniGetUI.exe"), PolicyElevationPaths.GetHostPath(Root));
+        => Assert.Equal(Path.Combine(Root, "Evergreen Endpoint Package Manager.exe"), PolicyElevationPaths.GetHostPath(Root));
 
     [Fact]
     public void InstallRoot_IsRecoveredFromTheHelperPath()
@@ -33,11 +33,11 @@ public class PolicyElevationPathsTests
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    [InlineData(@"C:\Program Files\UniGetUI\UniGetUI.PolicyElevator.exe")]
-    [InlineData(@"C:\Program Files\UniGetUI\Assets\UniGetUI.PolicyElevator.exe")]
-    [InlineData(@"C:\Program Files\UniGetUI\Assets\Utilities\UniGetUI.exe")]
-    [InlineData(@"C:\Program Files\UniGetUI\Utilities\Assets\UniGetUI.PolicyElevator.exe")]
-    [InlineData(@"Assets\Utilities\UniGetUI.PolicyElevator.exe")]
+    [InlineData(@"C:\Program Files\UniGetUI\EEPM Policy Elevator.exe")]
+    [InlineData(@"C:\Program Files\UniGetUI\Assets\EEPM Policy Elevator.exe")]
+    [InlineData(@"C:\Program Files\UniGetUI\Assets\Utilities\Evergreen Endpoint Package Manager.exe")]
+    [InlineData(@"C:\Program Files\UniGetUI\Utilities\Assets\EEPM Policy Elevator.exe")]
+    [InlineData(@"Assets\Utilities\EEPM Policy Elevator.exe")]
     public void AnyOtherLayout_IsRejected(string? helperPath)
     {
         Assert.False(PolicyElevationPaths.TryGetInstallRootFromHelperPath(helperPath, out string? recovered));

@@ -439,7 +439,7 @@ public class WindowsPolicyWriteElevatorTests
         PolicyElevationResult result = await Build(
                 launcher,
                 trustVerifier: verifier,
-                selfImagePathProvider: () => Path.Combine(Path.GetTempPath(), "Rogue", "UniGetUI.exe"))
+                selfImagePathProvider: () => Path.Combine(Path.GetTempPath(), "Rogue", "Evergreen Endpoint Package Manager.exe"))
             .ReplacePolicyAsync(BuildRequest(), CancellationToken.None);
 
         Assert.Equal(PolicyElevationOutcome.HelperUntrusted, result.Outcome);

@@ -65,7 +65,7 @@ if ($Version) {
 $AssemblyInfoPath = Join-Path $SrcDir "SharedAssemblyInfo.cs"
 $VersionMatch = Select-String -Path $AssemblyInfoPath -Pattern 'AssemblyInformationalVersion\("([^"]+)"\)'
 $PackageVersion = if ($VersionMatch) { $VersionMatch.Matches[0].Groups[1].Value } else { "0.0.0" }
-Write-Host "Building UniGetUI version: $PackageVersion"
+Write-Host "Building Evergreen Endpoint Package Manager version: $PackageVersion"
 
 # --- Test ---
 if (-not $SkipTests) {
@@ -88,10 +88,16 @@ if ($LASTEXITCODE -ne 0) {
 # --- Stage binaries ---
 if (Test-Path $BinDir) { Remove-Item $BinDir -Recurse -Force }
 New-Item $BinDir -ItemType Directory | Out-Null
-# Move published output into unigetui_bin
+# Move published output into unigetui_bin, then give the Windows app host its
+# customer-facing product name without changing the internal assembly identity.
 Get-ChildItem $PublishDir | Move-Item -Destination $BinDir -Force
 
-$WindowsAppHostPath = Join-Path $BinDir "UniGetUI.exe"
+$PublishedWindowsAppHostPath = Join-Path $BinDir "UniGetUI.exe"
+$WindowsAppHostPath = Join-Path $BinDir "Evergreen Endpoint Package Manager.exe"
+if (-not (Test-Path $PublishedWindowsAppHostPath)) {
+    throw "Windows app host was not produced at $PublishedWindowsAppHostPath"
+}
+Move-Item -LiteralPath $PublishedWindowsAppHostPath -Destination $WindowsAppHostPath -Force
 if (-not (Test-Path $WindowsAppHostPath)) {
     throw "Windows app host was not produced at $WindowsAppHostPath"
 }
@@ -103,7 +109,7 @@ if (-not (Test-Path -LiteralPath $CliLauncherPath -PathType Leaf)) {
 
 # The elevated policy-write helper is authenticated by exact path at runtime, so a missing or
 # misplaced helper must fail the build rather than silently ship an install that cannot elevate.
-$PolicyElevatorPath = Join-Path $BinDir "Assets\Utilities\UniGetUI.PolicyElevator.exe"
+$PolicyElevatorPath = Join-Path $BinDir "Assets\Utilities\EEPM Policy Elevator.exe"
 if (-not (Test-Path $PolicyElevatorPath)) {
     throw "Elevated policy helper was not staged at $PolicyElevatorPath"
 }

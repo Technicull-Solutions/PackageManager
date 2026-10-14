@@ -52,7 +52,7 @@ public sealed class WindowsPipePeerAuthenticator : IPolicyElevationPipePeerAuthe
             || !WindowsProcessInspector.PathsAreEqual(selfImagePath, location.CanonicalHostPath))
         {
             return PolicyElevationPeerAuthenticationResult.Rejected(
-                "This UniGetUI process is not the packaged host binary.",
+                "This Evergreen Endpoint Package Manager process is not the packaged host binary.",
                 $"The running image '{selfImagePath}' is not '{location.CanonicalHostPath}'.");
         }
 
@@ -258,7 +258,7 @@ public sealed class WindowsPolicyWriteElevator : IPolicyWriteElevator
             return Fail(
                 request,
                 PolicyElevationOutcome.LaunchFailed,
-                "The identity of the calling UniGetUI process could not be established.");
+                "The identity of the calling Evergreen Endpoint Package Manager process could not be established.");
         }
 
         string pipeName = PolicyElevationPipeServer.CreatePipeName();

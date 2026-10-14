@@ -135,11 +135,11 @@ internal static class TuiBootstrapper
             }
 
             string bundled = Path.Join(CoreData.UniGetUIExecutableDirectory,
-                "Assets", "Utilities", "UniGetUI Elevator.exe");
+                "Assets", "Utilities", "EEPM Elevator.exe");
             if (File.Exists(bundled))
             {
                 CoreData.ElevatorPath = bundled;
-                Logger.Debug($"Using built-in UniGetUI Elevator at {bundled}.");
+                Logger.Debug($"Using built-in EEPM Elevator at {bundled}.");
                 return;
             }
 
@@ -151,7 +151,7 @@ internal static class TuiBootstrapper
             }
             else
             {
-                Logger.Warn("No bundled UniGetUI Elevator or 'gsudo.exe' on PATH; elevated operations will fail.");
+                Logger.Warn("No bundled EEPM Elevator or 'gsudo.exe' on PATH; elevated operations will fail.");
             }
         }
         catch (Exception ex)

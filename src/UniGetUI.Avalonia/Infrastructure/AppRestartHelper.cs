@@ -7,7 +7,7 @@ namespace UniGetUI.Avalonia.Infrastructure;
 
 internal static class AppRestartHelper
 {
-    private const string LauncherExecutableName = "UniGetUI.exe";
+    private const string LauncherExecutableName = "Evergreen Endpoint Package Manager.exe";
 
     private sealed class RelaunchNotScheduledException : Exception;
 
@@ -30,7 +30,9 @@ internal static class AppRestartHelper
             }
             catch (RelaunchNotScheduledException)
             {
-                Logger.Warn("Restart cancelled: the relaunch helper could not be started, UniGetUI stays open");
+                Logger.Warn(
+                    "Restart cancelled: the relaunch helper could not be started, Evergreen Endpoint Package Manager stays open"
+                );
             }
 
             return;
@@ -38,7 +40,9 @@ internal static class AppRestartHelper
 
         if (!CoreTools.TryScheduleRelaunchAfterExit(executablePath))
         {
-            Logger.Warn("Restart cancelled: the relaunch helper could not be started, UniGetUI stays open");
+            Logger.Warn(
+                "Restart cancelled: the relaunch helper could not be started, Evergreen Endpoint Package Manager stays open"
+            );
             return;
         }
 
@@ -60,7 +64,7 @@ internal static class AppRestartHelper
 
         return Environment.ProcessPath
             ?? throw new FileNotFoundException(
-                $"Could not find the UniGetUI launcher '{LauncherExecutableName}'."
+                $"Could not find the Evergreen Endpoint Package Manager launcher '{LauncherExecutableName}'."
             );
     }
 

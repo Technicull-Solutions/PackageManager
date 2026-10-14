@@ -83,7 +83,12 @@ public abstract partial class AbstractPackagesPage : UserControl,
                 SyncFiltersButtonName();
                 UpdateFilterPaneColumn(ViewModel.IsFilterPaneOpen, animate: true);
             }
+            if (args.PropertyName is nameof(PackagesPageViewModel.AdvancedView))
+            {
+                RefreshPackageColumnLayout();
+            }
         };
+        RefreshPackageColumnLayout();
         SyncFiltersButtonName();
         SyncOrderByButtonName();
 
@@ -346,6 +351,27 @@ public abstract partial class AbstractPackagesPage : UserControl,
         _primaryPackageAction = onClick;
     }
 
+    private void RefreshPackageColumnLayout()
+    {
+        foreach (DataGridColumn column in PackageList.Columns)
+        {
+            column.IsVisible = (column.Tag as string) switch
+            {
+                "Id" => ViewModel.ShowPackageIdColumn,
+                "Source" => ViewModel.ShowPackageSource,
+                "InstallerHost" => ViewModel.InstallerHostColumnVisible,
+                "DownloadSize" => ViewModel.DownloadSizeColumnVisible,
+                _ => column.IsVisible,
+            };
+        }
+
+        // DataGridColumn is not part of Avalonia's visual tree. When several star-sized columns
+        // change visibility together, the grid can retain their previous measured widths until a
+        // later resize. Re-measure immediately so switching Advanced view produces one stable row.
+        PackageList.InvalidateMeasure();
+        PackageList.InvalidateArrange();
+    }
+
     private void PrimaryPackageAction_Click(object? sender, RoutedEventArgs e)
     {
         if (sender is not Button { DataContext: PackageWrapper wrapper })
@@ -361,7 +387,8 @@ public abstract partial class AbstractPackagesPage : UserControl,
 
     private void BulkActionButton_Click(object? sender, RoutedEventArgs e)
     {
-        ViewModel.AllPackagesChecked = true;
+        if (ViewModel.ShowUpdateAllButton)
+            ViewModel.AllPackagesChecked = true;
         _primaryPackageAction?.Invoke();
         e.Handled = true;
     }

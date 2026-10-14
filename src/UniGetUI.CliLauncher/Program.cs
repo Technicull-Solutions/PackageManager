@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 string appPath = Path.Combine(
     AppContext.BaseDirectory,
-    OperatingSystem.IsWindows() ? "UniGetUI.exe" : "UniGetUI"
+    OperatingSystem.IsWindows() ? "Evergreen Endpoint Package Manager.exe" : "UniGetUI"
 );
 
 try

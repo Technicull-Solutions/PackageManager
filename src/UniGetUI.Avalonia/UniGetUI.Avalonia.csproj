@@ -60,9 +60,8 @@
     <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <ElevatorPackageArchitecture Condition="'$(Platform)' == 'arm64'">arm64</ElevatorPackageArchitecture>
         <ElevatorPackageArchitecture Condition="'$(ElevatorPackageArchitecture)' == ''">x64</ElevatorPackageArchitecture>
-        <ElevatorPackageNativePath>$(PkgDevolutions_UniGetUI_Elevator)\runtimes\win-$(ElevatorPackageArchitecture)\native</ElevatorPackageNativePath>
-        <ElevatorPackageExePath>$(ElevatorPackageNativePath)\UniGetUI Elevator.exe</ElevatorPackageExePath>
-        <ElevatorPackageDllPath>$(ElevatorPackageNativePath)\getfilesiginforedist.dll</ElevatorPackageDllPath>
+        <ElevatorPackageNativePath>$(Pkggsudo)\runtimes\win-$(ElevatorPackageArchitecture)\native</ElevatorPackageNativePath>
+        <ElevatorPackageExePath>$(ElevatorPackageNativePath)\gsudo.exe</ElevatorPackageExePath>
     </PropertyGroup>
 
     <!-- macOS Debug: build straight into a .app bundle so the Dock icon (and its Default/Dark/
@@ -160,7 +159,7 @@
     <!--
         The elevated policy-write helper is a separate NativeAOT executable. It is published on
         its own and staged at the exact protected packaged path both peers authenticate against
-        (<install root>\Assets\Utilities\UniGetUI.PolicyElevator.exe). Staging happens during
+        (<install root>\Assets\Utilities\EEPM Policy Elevator.exe). Staging happens during
         publish, before the release pipeline code-signs the output tree and before the integrity
         tree is regenerated, so the helper is signed and hashed like every other shipped binary.
     -->
@@ -179,7 +178,7 @@
                 front of a quote is consumed as an escape by the command line parser.
             -->
             <_PolicyHelperIntermediateDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)$(BaseIntermediateOutputPath)policy-elevator\$(Configuration)\$(RuntimeIdentifier)'))</_PolicyHelperIntermediateDir>
-            <_PolicyHelperExecutable>$(_PolicyHelperIntermediateDir)\UniGetUI.PolicyElevator.exe</_PolicyHelperExecutable>
+            <_PolicyHelperExecutable>$(_PolicyHelperIntermediateDir)\EEPM Policy Elevator.exe</_PolicyHelperExecutable>
             <_PolicyHelperDestination>$(PublishDir)Assets\Utilities\</_PolicyHelperDestination>
         </PropertyGroup>
         <Error
@@ -206,8 +205,8 @@
             SkipUnchangedFiles="true"
         />
         <Error
-            Condition="!Exists('$(_PolicyHelperDestination)UniGetUI.PolicyElevator.exe')"
-            Text="The elevated policy helper was not staged at '$(_PolicyHelperDestination)UniGetUI.PolicyElevator.exe'."
+            Condition="!Exists('$(_PolicyHelperDestination)EEPM Policy Elevator.exe')"
+            Text="The elevated policy helper was not staged at '$(_PolicyHelperDestination)EEPM Policy Elevator.exe'."
         />
     </Target>
 
@@ -250,11 +249,7 @@
     >
         <Error
             Condition="!Exists('$(ElevatorPackageExePath)')"
-            Text="NuGet elevator executable not found at '$(ElevatorPackageExePath)'. Ensure package restore has completed for Devolutions.UniGetUI.Elevator."
-        />
-        <Error
-            Condition="!Exists('$(ElevatorPackageDllPath)')"
-            Text="NuGet elevator dependency DLL not found at '$(ElevatorPackageDllPath)'. Ensure package restore has completed for Devolutions.UniGetUI.Elevator."
+            Text="NuGet elevator executable not found at '$(ElevatorPackageExePath)'. Ensure package restore has completed for gsudo."
         />
     </Target>
 
@@ -284,7 +279,7 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*" />
         <PackageReference Include="Avalonia.Controls.WebView" Version="12.0.0" />
         <PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
-        <PackageReference Include="Devolutions.UniGetUI.Elevator" Version="2.6.1.3" GeneratePathProperty="true" ExcludeAssets="build;buildTransitive;native" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
+        <PackageReference Include="gsudo" Version="2.6.0" GeneratePathProperty="true" ExcludeAssets="build;buildTransitive;native" Condition="$([MSBuild]::IsOSPlatform('Windows'))" />
         <PackageReference Include="Devolutions.Pinget.Cli.Rust" Version="0.13.0" GeneratePathProperty="true" ExcludeAssets="build;buildTransitive;native" />
     </ItemGroup>
 
@@ -346,8 +341,7 @@
 
     <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <Content Include="..\SharedAssets\Assets\Utilities\*.cmd" Link="Assets\Utilities\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-        <Content Include="$(ElevatorPackageExePath)" Link="Assets\Utilities\UniGetUI Elevator.exe" Condition="Exists('$(ElevatorPackageExePath)')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" Pack="false" />
-        <Content Include="$(ElevatorPackageDllPath)" Link="Assets\Utilities\getfilesiginforedist.dll" Condition="Exists('$(ElevatorPackageDllPath)')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" Pack="false" />
+        <Content Include="$(ElevatorPackageExePath)" Link="Assets\Utilities\EEPM Elevator.exe" Condition="Exists('$(ElevatorPackageExePath)')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" Pack="false" />
     </ItemGroup>
 
     <ItemGroup>

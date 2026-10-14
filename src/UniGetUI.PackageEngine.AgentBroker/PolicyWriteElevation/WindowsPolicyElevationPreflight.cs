@@ -109,7 +109,7 @@ public sealed class WindowsPolicyElevationPreflight : IPolicyElevationPreflight
                 return PolicyElevationPreflightResult.Rejected(
                     location,
                     PolicyElevationPreflightFailureKind.RunningHostMismatch,
-                    "This UniGetUI process is not the packaged host binary, so it cannot request an elevated policy write.",
+                    "This Evergreen Endpoint Package Manager process is not the packaged host binary, so it cannot request an elevated policy write.",
                     $"The running image '{selfImagePath}' is not the packaged host '{location.CanonicalHostPath}'.");
             }
 

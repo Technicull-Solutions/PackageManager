@@ -43,7 +43,7 @@
 
             <settings:SecureCheckboxCard x:Name="ForceGSudoCard"
                                          SettingName="ForceUserGSudo"
-                                         Text="{t:Translate Use installed GSudo instead of UniGetUI Elevator}"
+                                         Text="{t:Translate Use installed GSudo instead of EEPM Elevator}"
                                          StateChangedCommand="{Binding ShowRestartRequiredCommand}"
                                          CornerRadius="8"
                                          IsVisible="{Binding IsWindows}"/>

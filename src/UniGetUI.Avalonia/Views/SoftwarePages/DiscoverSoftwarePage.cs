@@ -1,11 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using UniGetUI.Avalonia.Infrastructure;
 using UniGetUI.Avalonia.ViewModels;
 using UniGetUI.Avalonia.ViewModels.Pages;
 using UniGetUI.Avalonia.Views;
 using UniGetUI.Avalonia.Views.Controls;
+using UniGetUI.Avalonia.Views.DialogPages;
 using UniGetUI.Core.Logging;
 using UniGetUI.Core.Tools;
 using UniGetUI.Interface.Enums;
@@ -106,16 +108,16 @@ public class DiscoverSoftwarePage : AbstractPackagesPage
         var downloadInstallers = new MenuItem { Header = CoreTools.Translate("Download selected installers") };
 
         SetMainButton("download", CoreTools.Translate("Install selection"), () =>
-            _ = LaunchInstall(vm.FilteredPackages.GetCheckedPackages()));
+            _ = InstallSelectedAsync(vm));
 
         SetMainButtonDropdown(new MenuFlyout
         {
             Items = { installAsAdmin, installSkipHash, installInteractive, new Separator(), downloadInstallers },
         });
 
-        installAsAdmin.Click += (_, _) => _ = LaunchInstall(vm.FilteredPackages.GetCheckedPackages(), elevated: true);
-        installSkipHash.Click += (_, _) => _ = LaunchInstall(vm.FilteredPackages.GetCheckedPackages(), no_integrity: true);
-        installInteractive.Click += (_, _) => _ = LaunchInstall(vm.FilteredPackages.GetCheckedPackages(), interactive: true);
+        installAsAdmin.Click += (_, _) => _ = InstallSelectedAsync(vm, elevated: true);
+        installSkipHash.Click += (_, _) => _ = InstallSelectedAsync(vm, noIntegrity: true);
+        installInteractive.Click += (_, _) => _ = InstallSelectedAsync(vm, interactive: true);
         downloadInstallers.Click += (_, _) => _ = AvaloniaPackageOperationHelper.DownloadSelectedAsync(
             vm.FilteredPackages.GetCheckedPackages(), TEL_InstallReferral.DIRECT_SEARCH);
 
@@ -208,6 +210,65 @@ public class DiscoverSoftwarePage : AbstractPackagesPage
         menu.Items.Add(menuDetails);
 
         return menu;
+    }
+
+    private static async Task InstallSelectedAsync(
+        PackagesPageViewModel viewModel,
+        bool? elevated = null,
+        bool? interactive = null,
+        bool? noIntegrity = null)
+    {
+        IReadOnlyList<IPackage> packages = viewModel.FilteredPackages.GetCheckedPackages();
+        if (packages.Count == 0)
+            return;
+
+        if (packages.Count > 1 && !await ConfirmMultipleInstallAsync(packages))
+            return;
+
+        await LaunchInstall(packages, elevated, interactive, noIntegrity);
+    }
+
+    private static async Task<bool> ConfirmMultipleInstallAsync(IReadOnlyList<IPackage> packages)
+    {
+        if (GetMainWindow() is not { } owner)
+            return false;
+
+        var body = new StackPanel { Spacing = 12 };
+        body.Children.Add(new TextBlock
+        {
+            Text = CoreTools.Translate(
+                "You selected {0} apps. Review the list before starting all installations.",
+                packages.Count),
+            TextWrapping = TextWrapping.Wrap,
+        });
+
+        string packageList = string.Join(
+            Environment.NewLine,
+            packages
+                .OrderBy(package => package.Name, StringComparer.OrdinalIgnoreCase)
+                .Select(package => "• " + package.Name));
+        body.Children.Add(new ScrollViewer
+        {
+            MaxHeight = 240,
+            Content = new TextBlock
+            {
+                Text = packageList,
+                FontFamily = new FontFamily("Segoe UI Variable Text"),
+                TextWrapping = TextWrapping.Wrap,
+            },
+        });
+
+        var dialog = new ImmersiveConfirmationDialog(
+            CoreTools.Translate("Install multiple apps?"),
+            body,
+            CoreTools.Translate("Install {0} apps", packages.Count),
+            CoreTools.Translate("Cancel"))
+        {
+            MaxWidth = 560,
+            MaxHeight = 420,
+        };
+        await dialog.ShowDialog(owner);
+        return dialog.Result is true;
     }
 
     protected override void WhenShowingContextMenu(IPackage package)

@@ -916,7 +916,7 @@ namespace UniGetUI.Core.Tools
 
                 // sudo: -v validates/extends the cached timestamp.
                 // Prepend -A only when the SUDO_ASKPASS helper is configured.
-                // gsudo / UniGetUI Elevator.exe: use the gsudo cache protocol.
+                // gsudo / EEPM Elevator.exe: use the gsudo cache protocol.
                 string cacheArgs = elevatorName == "sudo"
                     ? (CoreData.ElevatorArgs.Contains("-A") ? "-Av" : "-v")
                     : "cache on --pid " + Environment.ProcessId + " -d 1";
@@ -1179,7 +1179,7 @@ namespace UniGetUI.Core.Tools
             }
 
             // sudo: -K removes all cached timestamps.
-            // gsudo / UniGetUI Elevator.exe: use the gsudo cache protocol.
+            // gsudo / EEPM Elevator.exe: use the gsudo cache protocol.
             string resetArgs = elevatorName == "sudo"
                 ? "-K"
                 : "cache off --pid " + Environment.ProcessId;

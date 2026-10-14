@@ -169,7 +169,7 @@ public class AuthenticatedBrokerTransportTests
         Transport = transport,
         RequestedElevation = ApiElevation.Elevated,
         EffectiveUser = @"CONTOSO\tester",
-        ClientExecutablePath = @"C:\Tests\UniGetUI.PolicyElevator.exe",
+        ClientExecutablePath = @"C:\Tests\EEPM Policy Elevator.exe",
         ClientVersion = "tests",
     };
 

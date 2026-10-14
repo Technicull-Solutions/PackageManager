@@ -265,7 +265,7 @@ public sealed class CommandLineReachabilityTests
     {
         string previousElevator = CoreData.ElevatorPath;
         string previousElevatorArgs = CoreData.ElevatorArgs;
-        CoreData.ElevatorPath = @"C:\App\Assets\Utilities\UniGetUI Elevator.exe";
+        CoreData.ElevatorPath = @"C:\App\Assets\Utilities\EEPM Elevator.exe";
         CoreData.ElevatorArgs = "";
 
         try

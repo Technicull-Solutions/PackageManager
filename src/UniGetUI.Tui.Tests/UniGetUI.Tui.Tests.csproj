@@ -45,14 +45,18 @@
             <Output TaskParameter="TargetOutputs" ItemName="_TuiMainAssembly" />
         </MSBuild>
         <PropertyGroup>
-            <_TuiMainHostName Condition="$([MSBuild]::IsOSPlatform('Windows'))">UniGetUI.exe</_TuiMainHostName>
-            <_TuiMainHostName Condition="!$([MSBuild]::IsOSPlatform('Windows'))">UniGetUI</_TuiMainHostName>
+            <_TuiPublishedHostName Condition="$([MSBuild]::IsOSPlatform('Windows'))">UniGetUI.exe</_TuiPublishedHostName>
+            <_TuiPublishedHostName Condition="!$([MSBuild]::IsOSPlatform('Windows'))">UniGetUI</_TuiPublishedHostName>
+            <_TuiStagedHostName Condition="$([MSBuild]::IsOSPlatform('Windows'))">Evergreen Endpoint Package Manager.exe</_TuiStagedHostName>
+            <_TuiStagedHostName Condition="!$([MSBuild]::IsOSPlatform('Windows'))">UniGetUI</_TuiStagedHostName>
         </PropertyGroup>
         <ItemGroup>
-            <_TuiMainHostFiles Include="%(_TuiMainAssembly.RootDir)%(_TuiMainAssembly.Directory)$(_TuiMainHostName)" />
             <_TuiMainHostFiles Include="%(_TuiMainAssembly.RootDir)%(_TuiMainAssembly.Directory)UniGetUI.runtimeconfig.json" />
             <_TuiMainHostFiles Include="%(_TuiMainAssembly.RootDir)%(_TuiMainAssembly.Directory)UniGetUI.deps.json" />
         </ItemGroup>
+        <Copy SourceFiles="%(_TuiMainAssembly.RootDir)%(_TuiMainAssembly.Directory)$(_TuiPublishedHostName)"
+              DestinationFiles="$(TargetDir)$(_TuiStagedHostName)"
+              SkipUnchangedFiles="true" />
         <Copy SourceFiles="@(_TuiMainHostFiles)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
     </Target>
 </Project>

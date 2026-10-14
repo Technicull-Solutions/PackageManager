@@ -194,11 +194,19 @@ public partial class PackagesPageViewModel : ViewModelBase
     public readonly bool RoleIsUpdateLike;
     public bool UsesUserFriendlyDefaultView { get; }
     public bool ShowAdvancedViewToggle => UsesUserFriendlyDefaultView;
+    public bool ShowSelectAllControl => !UsesUserFriendlyDefaultView;
     public bool ShowPackageIdColumn => !UsesUserFriendlyDefaultView || AdvancedView;
     public bool ShowPackageSource => !UsesUserFriendlyDefaultView || AdvancedView;
     public string PrimaryActionLabel { get; }
     public bool ShowUpdateAllButton => RoleIsUpdateLike;
     public string UpdateAllLabel => CoreTools.Translate("Update all");
+    public bool ShowTopBulkActionButton => ShowUpdateAllButton
+        || (RoleIsInstall && FilteredPackages.GetCheckedPackages().Count > 0);
+    public string TopBulkActionLabel => ShowUpdateAllButton
+        ? UpdateAllLabel
+        : CoreTools.Translate(
+            "Install selected ({0})",
+            FilteredPackages.GetCheckedPackages().Count);
     public bool SimilarSearchEnabled { get; private set; }
     private readonly bool _installerHostColumnConfigured;
     private readonly bool _downloadSizeColumnConfigured;
@@ -1134,6 +1142,8 @@ public partial class PackagesPageViewModel : ViewModelBase
     public void UpdatePackageCount()
     {
         UpdateSubtitle();
+        OnPropertyChanged(nameof(ShowTopBulkActionButton));
+        OnPropertyChanged(nameof(TopBulkActionLabel));
         PackageCountUpdated?.Invoke();
     }
 
@@ -1205,6 +1215,9 @@ public partial class PackagesPageViewModel : ViewModelBase
 
     public void ToggleSelectAll()
     {
+        if (!ShowSelectAllControl)
+            return;
+
         if (AllPackagesChecked != true)
         {
             AllPackagesChecked = true;

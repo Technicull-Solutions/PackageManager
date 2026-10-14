@@ -7,7 +7,8 @@
 #define MyShortcutComment "Evergreen Endpoint | APPS"
 #define MyAppPublisher "Technicull Solutions"
 #define MyAppURL "https://github.com/Technicull-Solutions/PackageManager"
-#define MyAppExeName "UniGetUI.exe"
+#define MyAppExeName "Evergreen Endpoint Package Manager.exe"
+#define MyInstallerExeName "Evergreen Endpoint Package Manager Installer.exe"
 #define MyAppPublisherURL "https://github.com/Technicull-Solutions"
 #define MyAppCopyright "Copyright 2026 " + MyAppPublisher
 #ifndef MyBuildNumber
@@ -61,7 +62,7 @@ SignedUninstaller=yes
 SignedUninstallerDir=InstallerExtras\
 MinVersion=10.0
 SetupIconFile=src\SharedAssets\Assets\Images\icon.ico
-UninstallDisplayIcon={app}\UniGetUI.exe
+UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression={#InstallerCompression}
 SolidCompression=yes
 WizardStyle=modern dynamic
@@ -78,7 +79,7 @@ ChangesEnvironment=yes
 SetupLogging=yes
 RestartIfNeededByRun=no
 Uninstallable=WizardIsTaskSelected('regularinstall')
-AppModifyPath="{app}\UniGetUI.Installer.exe" /silent /NoDeployInstaller
+AppModifyPath="{app}\{#MyInstallerExeName}" /silent /NoDeployInstaller
 
 
 ; Include installer's languages and messages
@@ -141,12 +142,14 @@ end;
 procedure KillRunningApps;
 begin
     TaskKillWait('WingetUI.exe');
+    TaskKillWait('{#MyAppExeName}');
     TaskKillWait('UniGetUI.exe');
     TaskKillWait('UniGetUI.Avalonia.exe');
     // Elevator (gsudo cache) and pinget live in {app} and lock their own files.
-    TaskKillWait('UniGetUI Elevator.exe');
+    TaskKillWait('EEPM Elevator.exe');
     TaskKillWait('pinget.exe');
     // The elevated policy helper is short-lived, but it lives in {app} and can hold a file lock.
+    TaskKillWait('EEPM Policy Elevator.exe');
     TaskKillWait('UniGetUI.PolicyElevator.exe');
     Sleep(1000); // let the OS release file handles before copying
 
@@ -328,7 +331,7 @@ Name: "regularinstall\desktopicon"; Description: "{cm:RegDesktopIcon}"; GroupDes
 Name: "regularinstall\addtopath"; Description: "{cm:RegAddToPath}"; Flags: unchecked;
 
 [Registry]
-Root: HKCU; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "EvergreenEndpointApps"; ValueData: """{app}\UniGetUI.exe"" --daemon"; Flags: uninsdeletevalue noerror; Tasks: regularinstall;
+Root: HKCU; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "EvergreenEndpointApps"; ValueData: """{app}\{#MyAppExeName}"" --daemon"; Flags: uninsdeletevalue noerror; Tasks: regularinstall;
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"; ValueType: binary; ValueName: "EvergreenEndpointApps"; ValueData: "03"; Flags: uninsdeletevalue; Tasks: regularinstall; Check: ShouldSuppressRunOnStartup;
 
 // Register the unigetui:// deep link
@@ -356,6 +359,11 @@ Root: HKA; Subkey: "Software\Classes\UniGetUI.PackageBundle\shell\open\command";
 Type: filesandordirs; Name: "{app}\Avalonia"
 Type: files; Name: "{app}\WingetUI.exe"
 Type: files; Name: "{app}\UniGetUI.Avalonia.exe"
+Type: files; Name: "{app}\UniGetUI.exe"
+Type: files; Name: "{app}\UniGetUI.Installer.exe"
+Type: files; Name: "{app}\Assets\Utilities\UniGetUI Elevator.exe"
+Type: files; Name: "{app}\Assets\Utilities\UniGetUI.PolicyElevator.exe"
+Type: files; Name: "{app}\Assets\Utilities\getfilesiginforedist.dll"
 Type: files; Name: "{app}\*.pri"
 Type: files; Name: "{app}\*.xbf"
 ; Remove shortcut names used by earlier Evergreen builds before writing the
@@ -368,7 +376,7 @@ Type: files; Name: "{app}\ForceUniGetUIPortable"; Tasks: regularinstall
 
 [Files]
 ; Deploy installer for autorepair jobs (unless disabled)
-Source: "{srcexe}"; DestDir: "{app}"; DestName: "UniGetUI.Installer.exe"; Flags: external ignoreversion; Tasks: regularinstall; Check: not CmdLineParamExists('/NoDeployInstaller');
+Source: "{srcexe}"; DestDir: "{app}"; DestName: "{#MyInstallerExeName}"; Flags: external ignoreversion; Tasks: regularinstall; Check: not CmdLineParamExists('/NoDeployInstaller');
 ; Deploy integrity tree
 Source: "unigetui_bin\IntegrityTree.json"; DestDir: "{app}"; Flags: createallsubdirs ignoreversion recursesubdirs;
 ; Deploy executable files (running instances already killed in PrepareToInstall).
@@ -394,11 +402,14 @@ Filename: "{app}\{#MyAppExeName}"; Parameters: "--migrate-wingetui-to-unigetui";
 ; Remove WingetUI Notification registries
 ; Filename: "{app}\{#MyAppExeName}"; Parameters: "--uninstall-unigetui"; Flags: skipifdoesntexist runhidden;
 Filename: {sys}\taskkill.exe; Parameters: "/f /im WingetUI.exe"; Flags: skipifdoesntexist runhidden; RunOnceId: "KillWingetUI"
+Filename: {sys}\taskkill.exe; Parameters: "/f /im ""{#MyAppExeName}"""; Flags: skipifdoesntexist runhidden; RunOnceId: "KillEvergreenEndpointPackageManager"
 Filename: {sys}\taskkill.exe; Parameters: "/f /im UniGetUI.exe"; Flags: skipifdoesntexist runhidden; RunOnceId: "KillUniGetUI"
 Filename: {sys}\taskkill.exe; Parameters: "/f /im UniGetUI.Avalonia.exe"; Flags: skipifdoesntexist runhidden; RunOnceId: "KillUniGetUIAvalonia"
-Filename: {sys}\taskkill.exe; Parameters: "/f /im UniGetUI.PolicyElevator.exe"; Flags: skipifdoesntexist runhidden; RunOnceId: "KillUniGetUIPolicyElevator"
+Filename: {sys}\taskkill.exe; Parameters: "/f /im ""EEPM Policy Elevator.exe"""; Flags: skipifdoesntexist runhidden; RunOnceId: "KillEEPMPolicyElevator"
+Filename: {sys}\taskkill.exe; Parameters: "/f /im UniGetUI.PolicyElevator.exe"; Flags: skipifdoesntexist runhidden; RunOnceId: "KillLegacyUniGetUIPolicyElevator"
 
 [UninstallDelete]
 ; The elevated policy helper is authenticated by exact path, so a leftover copy must never
 ; survive an uninstall.
+Type: files; Name: "{app}\Assets\Utilities\EEPM Policy Elevator.exe"
 Type: files; Name: "{app}\Assets\Utilities\UniGetUI.PolicyElevator.exe"

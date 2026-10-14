@@ -112,13 +112,13 @@ public class PolicyElevationHelperLocatorTests
     [Fact]
     public void HelperOutsideThePackagedLayout_FailsClosed()
     {
-        string decoy = Path.Combine(ProtectedRoot, "UniGetUI.PolicyElevator.exe");
+        string decoy = Path.Combine(ProtectedRoot, "EEPM Policy Elevator.exe");
 
         PolicyElevationHelperLocation location = Build(
                 ProtectedRoot,
                 canonicalize: path => path is null
                     ? null
-                    : path.EndsWith("UniGetUI.PolicyElevator.exe", StringComparison.Ordinal) ? decoy : path)
+                    : path.EndsWith("EEPM Policy Elevator.exe", StringComparison.Ordinal) ? decoy : path)
             .Locate();
 
         Assert.False(location.Found);
@@ -128,13 +128,13 @@ public class PolicyElevationHelperLocatorTests
     [Fact]
     public void HostInADifferentRoot_FailsClosed()
     {
-        string foreignHost = Path.Combine(ProtectedRoot, "Other", "UniGetUI.exe");
+        string foreignHost = Path.Combine(ProtectedRoot, "Other", "Evergreen Endpoint Package Manager.exe");
 
         PolicyElevationHelperLocation location = Build(
                 ProtectedRoot,
                 canonicalize: path => path is null
                     ? null
-                    : path.EndsWith(Path.Combine("UniGetUI", "UniGetUI.exe"), StringComparison.Ordinal)
+                    : path.EndsWith(Path.Combine("UniGetUI", "Evergreen Endpoint Package Manager.exe"), StringComparison.Ordinal)
                         ? foreignHost
                         : path)
             .Locate();
@@ -179,7 +179,7 @@ public class PolicyElevationHelperLocatorTests
     {
         // The kernel resolved the handle to a different file than the one that was checked by name.
         var verifier = FakeLocationVerifier.ResolvingHelperElsewhere(
-            @"C:\Program Files\Impostor\Assets\Utilities\UniGetUI.PolicyElevator.exe");
+            @"C:\Program Files\Impostor\Assets\Utilities\EEPM Policy Elevator.exe");
 
         PolicyElevationHelperLocation location = Build(ProtectedRoot, locationVerifier: verifier).Locate();
 
@@ -286,7 +286,7 @@ public class PolicyElevationHelperLocatorTests
         PackagedPolicyWriteElevationEligibility eligibility = BuildEligibility(
             FakeHelperLocator.Found(),
             verifier,
-            () => Path.Combine(Path.GetTempPath(), "Rogue", "UniGetUI.exe"));
+            () => Path.Combine(Path.GetTempPath(), "Rogue", "Evergreen Endpoint Package Manager.exe"));
 
         PolicyWriteElevationEligibility result =
             await eligibility.EvaluateAsync(CancellationToken.None);

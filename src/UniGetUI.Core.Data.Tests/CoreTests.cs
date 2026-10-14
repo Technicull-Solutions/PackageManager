@@ -55,7 +55,7 @@ namespace UniGetUI.Core.Data.Tests
         {
             string installDirectory = Path.GetFullPath(Path.Join("install-root"));
             string avaloniaDirectory = Path.Join(installDirectory, "Avalonia");
-            string classicExecutable = Path.Join(installDirectory, "UniGetUI.exe");
+            string classicExecutable = Path.Join(installDirectory, "Evergreen Endpoint Package Manager.exe");
 
             string resolvedDirectory = CoreData.ResolveInstallationDirectory(
                 avaloniaDirectory,

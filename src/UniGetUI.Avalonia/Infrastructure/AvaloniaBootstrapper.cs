@@ -375,7 +375,7 @@ internal static class AvaloniaBootstrapper
         {
             if (Settings.Get(Settings.K.ProhibitElevation))
             {
-                Logger.Warn("UniGetUI Elevator has been disabled since elevation is prohibited!");
+                Logger.Warn("EEPM Elevator has been disabled since elevation is prohibited!");
                 return;
             }
 
@@ -397,11 +397,11 @@ internal static class AvaloniaBootstrapper
             }
 
 #if DEBUG
-            Logger.Warn($"Using system GSudo since UniGetUI Elevator is not available in DEBUG builds");
+            Logger.Warn("Using system gsudo since EEPM Elevator is not available in DEBUG builds");
             CoreData.ElevatorPath = (await CoreTools.WhichAsync("gsudo.exe")).Item2;
 #else
             CoreData.ElevatorPath = ResolveBundledElevatorPath();
-            Logger.Debug($"Using built-in UniGetUI Elevator at {CoreData.ElevatorPath}");
+            Logger.Debug($"Using built-in EEPM Elevator at {CoreData.ElevatorPath}");
 #endif
         }
         catch (Exception ex)
@@ -419,7 +419,7 @@ internal static class AvaloniaBootstrapper
             executableDirectory,
             "Assets",
             "Utilities",
-            "UniGetUI Elevator.exe"
+            "EEPM Elevator.exe"
         );
 
         if (File.Exists(localPath))
@@ -434,7 +434,7 @@ internal static class AvaloniaBootstrapper
                 parentDirectory,
                 "Assets",
                 "Utilities",
-                "UniGetUI Elevator.exe"
+                "EEPM Elevator.exe"
             );
 
             if (File.Exists(parentPath))

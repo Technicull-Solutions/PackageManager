@@ -33,18 +33,18 @@ public static class CrashHandler
         {
             string installerPath = Path.Join(
                 CoreData.UniGetUIExecutableDirectory,
-                "UniGetUI.Installer.exe"
+                "Evergreen Endpoint Package Manager Installer.exe"
             );
             bool canAutoRepair = File.Exists(installerPath);
 
-            var title = "UniGetUI - Missing Files";
+            var title = "Evergreen Endpoint Package Manager - Missing Files";
 
             if (canAutoRepair)
             {
                 var errorMessage =
-                    "UniGetUI has detected that some required files are missing."
-                    + "\n\nThis might be caused by an incomplete installation or corrupted files. Please reinstall UniGetUI."
-                    + "\n\nPress YES to reinstall UniGetUI right now."
+                    "Evergreen Endpoint Package Manager has detected that some required files are missing."
+                    + "\n\nThis might be caused by an incomplete installation or corrupted files. Please reinstall Evergreen Endpoint Package Manager."
+                    + "\n\nPress YES to reinstall Evergreen Endpoint Package Manager right now."
                     + "\nPress NO to close this prompt."
                     + "\nPress CANCEL to get more details about the crash.";
 
@@ -67,8 +67,8 @@ public static class CrashHandler
             else
             {
                 var errorMessage =
-                    "UniGetUI has detected that some required files are missing."
-                    + "\n\nThis might be caused by an incomplete installation or corrupted files. Please reinstall UniGetUI."
+                    "Evergreen Endpoint Package Manager has detected that some required files are missing."
+                    + "\n\nThis might be caused by an incomplete installation or corrupted files. Please reinstall Evergreen Endpoint Package Manager."
                     + "\n\nPress OK to close this prompt."
                     + "\nPress CANCEL to get more details about the crash.";
 

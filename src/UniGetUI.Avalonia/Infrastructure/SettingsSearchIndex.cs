@@ -126,7 +126,7 @@ public static class SettingsSearchIndex
         // ── Administrator ────────────────────────────────────────────────────
         new("Ask for administrator privileges once for each batch of operations", ["administrator", "admin rights", "elevation", "uac", "batch"], typeof(Administrator), "AdminElevationCard"),
         new("Ask only once for administrator privileges", ["admin once", "cache admin rights"], typeof(Administrator), "CacheAdminOnceCard"),
-        new("Prohibit any kind of Elevation via UniGetUI Elevator or GSudo", ["prohibit elevation", "no elevation"], typeof(Administrator), "ProhibitElevationCard"),
+        new("Prohibit any kind of Elevation via EEPM Elevator or GSudo", ["prohibit elevation", "no elevation"], typeof(Administrator), "ProhibitElevationCard"),
         new("Inspect active package broker policy", ["policy", "package broker", "devolutions agent", "rules", "enforcement"], typeof(AgentPolicyInspector), null, WindowsOnly: true),
         new("Policy management", ["policy management", "policy state", "active", "missing", "invalid", "configured path"], typeof(AgentPolicyInspector), "PolicyManagementHeading", WindowsOnly: true),
         new("Edit the active policy", ["edit policy", "policy editor"], typeof(AgentPolicyInspector), "EditPolicyButton", WindowsOnly: true),
@@ -144,7 +144,7 @@ public static class SettingsSearchIndex
         new("Show UniGetUI's version and build number on the titlebar.", ["version number", "titlebar", "build number"], typeof(Experimental), "ShowVersionNumberOnTitlebar"),
         new("Enable background api (UniGetUI Widgets and Sharing, port 7058)", ["api", "widgets", "sharing", "port"], typeof(Experimental), "BackgroundApiCard"),
         new("Disable the 1-minute timeout for package-related operations", ["timeout"], typeof(Experimental), "DisableTimeoutCard"),
-        new("Use installed GSudo instead of UniGetUI Elevator", ["gsudo", "elevator"], typeof(Experimental), "ForceGSudoCard"),
+        new("Use installed GSudo instead of EEPM Elevator", ["gsudo", "elevator"], typeof(Experimental), "ForceGSudoCard"),
         new("Use a custom icon and screenshot database URL", ["icon database", "screenshot database"], typeof(Experimental), "IconDatabaseURLCard"),
         new("Enable background CPU Usage optimizations (see Pull Request #3278)", ["cpu", "optimizations"], typeof(Experimental), "CpuOptimizationsCard"),
         new("Perform integrity checks at startup", ["integrity checks"], typeof(Experimental), "IntegrityChecksCard"),

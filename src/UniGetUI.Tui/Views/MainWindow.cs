@@ -419,7 +419,8 @@ internal sealed class MainWindow : Window
     {
         RefreshTabs();
         string version = Settings.Get(Settings.K.ShowVersionNumberOnTitlebar) ? $"  v{CoreData.VersionName}" : "";
-        _headerText.Text = $" UniGetUI · Terminal UI{version}" + (TuiEngine.IsFakeData ? "   [FAKE DATA]" : "");
+        _headerText.Text = $" Evergreen Endpoint Package Manager · Terminal UI{version}"
+            + (TuiEngine.IsFakeData ? "   [FAKE DATA]" : "");
         int updates = SafeCount(() => UpgradablePackagesLoader.Instance.Packages.Count);
         int active = TuiOperationRegistry.ActiveCount;
         bool loading = SafeCount(() => (InstalledPackagesLoader.Instance.IsLoading || UpgradablePackagesLoader.Instance.IsLoading) ? 1 : 0) == 1;
@@ -445,8 +446,8 @@ internal sealed class MainWindow : Window
     private void UpdateTitle()
     {
         Title = Settings.Get(Settings.K.ShowVersionNumberOnTitlebar)
-            ? $"UniGetUI TUI v{CoreData.VersionName}"
-            : "UniGetUI TUI";
+            ? $"Evergreen Endpoint Package Manager TUI v{CoreData.VersionName}"
+            : "Evergreen Endpoint Package Manager TUI";
     }
 
     // ─── Keyboard ─────────────────────────────────────────────────────────

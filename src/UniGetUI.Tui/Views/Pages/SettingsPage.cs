@@ -266,7 +266,10 @@ internal sealed class SettingsPage : UserControl, ITuiPage
     private async Task ExportSettingsAsync()
     {
         string? path = await TuiPrompts.AskTextAsync(CoreTools.Translate("Export settings"), CoreTools.Translate("Save to file:"),
-            Path.Join(TuiPackageActions.DefaultDownloadDirectory(), "UniGetUI settings.json"));
+            Path.Join(
+                TuiPackageActions.DefaultDownloadDirectory(),
+                "Evergreen Endpoint Package Manager settings.json"
+            ));
         if (string.IsNullOrWhiteSpace(path)) return;
         string full = path.Trim().Trim('"');
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(full))!);
@@ -624,7 +627,7 @@ internal sealed class SettingsPage : UserControl, ITuiPage
         _form.AddNote(CoreTools.Translate("Warning") + ": " + CoreTools.Translate("The following settings may pose a security risk, hence they are disabled by default."));
         Check("Ask for administrator privileges once for each batch of operations", Settings.K.DoCacheAdminRightsForBatches);
         Check("Ask only once for administrator privileges", Settings.K.DoCacheAdminRights);
-        Check("Prohibit any kind of elevation via UniGetUI Elevator or GSudo", Settings.K.ProhibitElevation);
+        Check("Prohibit any kind of elevation via EEPM Elevator or GSudo", Settings.K.ProhibitElevation);
         _form.AddCheck(CoreTools.Translate("Delegate package operations to the Devolutions Agent"),
             () => Settings.Get(Settings.K.UseAgentBroker), v => Settings.Set(Settings.K.UseAgentBroker, v),
             () => !TuiEngine.IsFakeData);
@@ -676,7 +679,7 @@ internal sealed class SettingsPage : UserControl, ITuiPage
         Check("Enable background API (Widgets for UniGetUI and Sharing, port 7058)" + _desktopOnly, Settings.K.DisableApi, inverted: true);
         _form.AddCheck(CoreTools.Translate("Disable the 1-minute timeout for package-related operations"),
             () => Settings.Get(Settings.K.DisableTimeoutOnPackageListingTasks), v => Settings.Set(Settings.K.DisableTimeoutOnPackageListingTasks, v));
-        SecureCheck("Use installed GSudo instead of UniGetUI Elevator", SecureSettings.K.ForceUserGSudo);
+        SecureCheck("Use installed GSudo instead of EEPM Elevator", SecureSettings.K.ForceUserGSudo);
         _form.AddText(CoreTools.Translate("Use a custom icon and screenshot database URL"), () => Settings.GetValue(Settings.K.IconDataBaseURL),
             v => Settings.SetValue(Settings.K.IconDataBaseURL, v.Trim()));
         Check("Enable background CPU usage optimizations (see Pull Request #3278)" + _desktopOnly, Settings.K.DisableDMWThreadOptimizations, inverted: true);

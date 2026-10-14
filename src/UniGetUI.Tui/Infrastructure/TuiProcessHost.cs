@@ -7,7 +7,7 @@ internal static class TuiProcessHost
 
     internal static (string Path, string[] Prefix) Resolve(string? processPath, string baseDirectory, bool windows)
     {
-        string exeName = windows ? "UniGetUI.exe" : "UniGetUI";
+        string exeName = windows ? "Evergreen Endpoint Package Manager.exe" : "UniGetUI";
         if (processPath is not null
             && Path.GetFileName(processPath).Equals(exeName, StringComparison.OrdinalIgnoreCase))
             return (processPath, [TuiAppHost.Command]);
@@ -16,6 +16,9 @@ internal static class TuiProcessHost
         if (File.Exists(candidate))
             return (candidate, [TuiAppHost.Command]);
 
-        throw new FileNotFoundException("The UniGetUI host is required to launch a terminal subprocess.", candidate);
+        throw new FileNotFoundException(
+            "The Evergreen Endpoint Package Manager host is required to launch a terminal subprocess.",
+            candidate
+        );
     }
 }
