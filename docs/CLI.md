@@ -171,8 +171,8 @@ Related environment variables:
 
 Available keys live in:
 
-- [`src/UniGetUI.Core.Settings/SettingsEngine_Names.cs`](src/Evergreen Endpoint Package Manager.Core.Settings/SettingsEngine_Names.cs)
-- [`src/UniGetUI.Core.SecureSettings/SecureSettings.cs`](src/Evergreen Endpoint Package Manager.Core.SecureSettings/SecureSettings.cs)
+- [`src/UniGetUI.Core.Settings/SettingsEngine_Names.cs`](../src/UniGetUI.Core.Settings/SettingsEngine_Names.cs)
+- [`src/UniGetUI.Core.SecureSettings/SecureSettings.cs`](../src/UniGetUI.Core.SecureSettings/SecureSettings.cs)
 
 ### Shortcuts
 

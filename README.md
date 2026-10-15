@@ -2,7 +2,10 @@
 
 **Evergreen Endpoint Package Manager**, maintained by **Technicull Solutions**, provides the Evergreen Endpoint | APPS experience for organization-managed Windows software.
 
-![Evergreen Endpoint | APPS](src/UniGetUI.Avalonia/Assets/Brand/EEA-Logo-Text_Light-Alternate@2x.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="src/UniGetUI.Avalonia/Assets/Brand/EEA-Logo-Text_Light-Alternate@2x.png">
+  <img alt="Evergreen Endpoint | APPS" src="src/UniGetUI.Avalonia/Assets/Brand/EEA-Logo-Text_Dark@2x.png" width="321">
+</picture>
 
 [Download test releases](https://github.com/Technicull-Solutions/PackageManager/releases) · [Report an issue](https://github.com/Technicull-Solutions/PackageManager/issues/new/choose) · [Contribute](CONTRIBUTING.md)
 
