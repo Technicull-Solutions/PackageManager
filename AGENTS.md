@@ -5,6 +5,7 @@
 - `AGENTS.md` is the authoritative repository instruction file for Codex and other compatible coding agents.
 - Reusable project skills live under `.agents/skills/`; each skill keeps its workflow in `SKILL.md` and any supporting automation in its own `scripts/` directory.
 - Keep agent instructions and skills provider-neutral. Do not add provider-specific mirrors or compatibility links that can drift from these canonical files.
+- Read `docs/EVERGREEN_CONTRIBUTOR_WORKFLOW.md` for shared Evergreen product knowledge and the repository skill index. Select the relevant workflow for the task; roadmap requirements are not evidence of implemented behavior.
 
 ## Project Overview
 

@@ -28,6 +28,8 @@ Feature requests and improvements are reviewed by the maintainers and prioritize
 
 ## Development setup and validation
 
+Start with the [Evergreen contributor workflow](docs/EVERGREEN_CONTRIBUTOR_WORKFLOW.md) for product boundaries, sources of truth, and the seven engineering skills checked into `.agents/skills/`. These workflows are shared by human contributors and coding agents; read the linked `SKILL.md` directly if your tool does not discover repository skills. The existing translation skills remain available for localization work.
+
 Run the pre-commit hook setup once after cloning:
 
 ```powershell
