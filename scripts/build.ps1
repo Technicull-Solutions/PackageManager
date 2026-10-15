@@ -80,7 +80,7 @@ if (-not $SkipTests) {
 Write-Host "`n=== Publishing $Configuration|$Platform ===" -ForegroundColor Cyan
 dotnet clean $WindowsSolution -v m --nologo /p:Platform=$Platform
 
-dotnet publish $PublishProject /noLogo /m:1 /p:Configuration=$Configuration /p:Platform=$Platform -p:RuntimeIdentifier=win-$Platform /p:ILLinkTreatWarningsAsErrors=true /p:IlcTreatWarningsAsErrors=true --ignore-failed-sources -v m
+dotnet publish $PublishProject /noLogo /m:1 /p:Configuration=$Configuration /p:Platform=$Platform -p:RuntimeIdentifier=win-$Platform /p:TrimmerSingleWarn=false /p:ILLinkTreatWarningsAsErrors=true /p:IlcTreatWarningsAsErrors=true --ignore-failed-sources -v m
 if ($LASTEXITCODE -ne 0) {
     throw "dotnet publish Avalonia failed with exit code $LASTEXITCODE"
 }
