@@ -1,4 +1,4 @@
-name: Build and Release
+name: Legacy upstream release (not for Evergreen)
 
 on:
   workflow_dispatch:
@@ -27,6 +27,8 @@ env:
 
 jobs:
   preflight:
+    # The maintained Evergreen pipeline is test-release.yml. Never publish via upstream services.
+    if: github.repository == 'Devolutions/UniGetUI'
     name: Preflight
     runs-on: ubuntu-latest
     outputs:
@@ -85,6 +87,7 @@ jobs:
           echo "::notice::DryRun: $DryRun"
 
   build:
+    if: github.repository == 'Devolutions/UniGetUI'
     name: Build & Sign (${{ matrix.platform }})
     runs-on: windows-latest
     needs: [preflight]
@@ -401,6 +404,7 @@ jobs:
           Remove-Item "unigetui_bin" -Recurse -Force -ErrorAction SilentlyContinue
 
   build-avalonia:
+    if: github.repository == 'Devolutions/UniGetUI'
     name: Build (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
     needs: [preflight]
@@ -761,7 +765,7 @@ jobs:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
     needs: [preflight, build, build-avalonia]
-    if: ${{ fromJSON(needs.preflight.outputs.skip-publish) == false }}
+    if: ${{ github.repository == 'Devolutions/UniGetUI' && fromJSON(needs.preflight.outputs.skip-publish) == false }}
     environment: ${{ needs.preflight.outputs.package-env }}
     permissions:
       contents: write
@@ -939,7 +943,7 @@ jobs:
     name: Consolidated Size Report
     runs-on: ubuntu-latest
     needs: [preflight, build, build-avalonia]
-    if: always() && needs.build.result != 'cancelled' && needs.build-avalonia.result != 'cancelled'
+    if: always() && github.repository == 'Devolutions/UniGetUI' && needs.build.result != 'cancelled' && needs.build-avalonia.result != 'cancelled'
 
     steps:
       - name: Download artifacts

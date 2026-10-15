@@ -495,9 +495,6 @@ public partial class MainWindowViewModel : ViewModelBase
             UpdatesBanner.IsOpen = true;
         });
 
-        AvaloniaAutoUpdater.LatestBuildObserved += latestBuildNumber =>
-            Dispatcher.UIThread.Post(() => Sidebar.UpdateBuildFreshness(latestBuildNumber));
-
         AvaloniaAutoUpdater.StatusChanged += status => Dispatcher.UIThread.Post(() =>
         {
             UpdatesBanner.Severity = status.Severity;

@@ -62,9 +62,20 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Packaged NativeAOT terminal smoke test failed.' }
       - name: Verify installer on disposable runner
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           $Installer = Get-ChildItem output/*.Setup.exe
-          ./testing/automation/native-installer-smoke.ps1 -Installer $Installer.FullName
+          $PreviousTag = gh release list --repo $env:GITHUB_REPOSITORY --limit 1 --json tagName --jq '.[0].tagName'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not resolve the previous published release.' }
+          $Parameters = @{ Installer = $Installer.FullName }
+          if ($PreviousTag) {
+            $PreviousDir = Join-Path $env:RUNNER_TEMP 'eepm-previous-release'
+            gh release download $PreviousTag --repo $env:GITHUB_REPOSITORY --pattern '*.x64.Setup.exe' --dir $PreviousDir
+            if ($LASTEXITCODE -ne 0) { throw 'Could not download the previous installer for upgrade verification.' }
+            $Parameters.PreviousInstaller = (Get-ChildItem $PreviousDir/*.Setup.exe).FullName
+          }
+          ./testing/automation/native-installer-smoke.ps1 @Parameters
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v7
@@ -103,8 +114,11 @@ jobs:
           $Build = (Get-Content scripts/BuildNumber -Raw).Trim()
           if (-not $Version -or $Build -notmatch '^\d+$') { throw 'Invalid release version.' }
           $Tag = "v$Version-build.$Build"
+          $ChangeSummary = git log -1 --format=%s
           $Notes = @"
-          First device-testing package of Evergreen Endpoint Package Manager: version $Version, Build $Build.
+          Device-testing release of Evergreen Endpoint Package Manager: version $Version, Build $Build.
+
+          Changes: $ChangeSummary.
 
           Download the Windows x64 **.Setup.exe** to install, or extract the application **.x64.zip** into a writable folder and run **Evergreen Endpoint Package Manager.exe**. The application is self-contained; a separate .NET installation is not required.
 

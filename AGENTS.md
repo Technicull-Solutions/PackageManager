@@ -9,7 +9,7 @@
 
 ## Project Overview
 
-UniGetUI is an Avalonia desktop app (C#/.NET 10) providing a GUI for CLI package managers (WinGet, Scoop, Chocolatey, Pip, Npm, .NET Tool, PowerShell Gallery, Cargo, Vcpkg).
+Evergreen Endpoint Package Manager is a Technicull Solutions derivative of UniGetUI, built with Avalonia and C#/.NET 10. The Windows endpoint profile supports WinGet (including Microsoft Store), Windows PowerShell, and PowerShell 7 repositories. The inherited engine retains additional adapters; existing `UniGetUI.*` source names are internal implementation identities.
 
 Solution entry points:
 - `src/UniGetUI.Windows.slnx` - official Windows solution; builds the Avalonia app and Windows-specific package-manager integrations

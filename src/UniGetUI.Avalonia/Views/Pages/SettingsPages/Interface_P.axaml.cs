@@ -50,7 +50,7 @@ public sealed partial class Interface_P : UserControl, ISettingsPage
         }
         StartupPageSelector.AddItem(CoreTools.Translate("Settings"), "settings");
         StartupPageSelector.SettingName = CoreSettings.K.StartupPage;
-        StartupPageSelector.Text = CoreTools.Translate("UniGetUI startup page:");
+        StartupPageSelector.Text = CoreTools.Translate("Evergreen Endpoint | APPS startup page:");
         StartupPageSelector.ShowAddedItems();
 
         NavMenuModeSelector.AddItem(CoreTools.Translate("Automatic"), "auto");

@@ -63,7 +63,7 @@ internal static class OperationHistoryLogDialog
             var file = await owner.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = CoreTools.Translate("Export log"),
-                SuggestedFileName = CoreTools.Translate("UniGetUI Log"),
+                SuggestedFileName = CoreTools.Translate("Evergreen Endpoint | APPS Log"),
                 FileTypeChoices = [new FilePickerFileType(CoreTools.Translate("Text")) { Patterns = ["*.txt"] }],
             });
             if (file is not null)

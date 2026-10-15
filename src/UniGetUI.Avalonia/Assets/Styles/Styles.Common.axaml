@@ -419,7 +419,7 @@
                     <SolidColorBrush x:Key="AboutDialogBodyForeground"   Color="#DCE5DF"/>
                     <SolidColorBrush x:Key="AboutDialogDividerBrush"     Color="#74C7A4"/>
                     <SolidColorBrush x:Key="AboutDialogSelectedTabBrush" Color="#D69B2D"/>
-                    <SolidColorBrush x:Key="AboutDisclaimerBackground"   Color="#3374C7A4"/>
+                    <SolidColorBrush x:Key="AboutDisclaimerBackground"   Color="#365145"/>
                     <SolidColorBrush x:Key="AboutDisclaimerBorderBrush"  Color="#74C7A4"/>
                     <SolidColorBrush x:Key="AboutDisclaimerForeground"   Color="#DCE5DF"/>
                     <SolidColorBrush x:Key="AboutDisclaimerIconBackground" Color="#74C7A4"/>

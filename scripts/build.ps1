@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Builds UniGetUI, produces the published output, and packages artifacts.
+    Builds Evergreen Endpoint Package Manager and packages its published output.
 
 .PARAMETER Configuration
     Build configuration (Debug or Release). Default: Release.
@@ -66,6 +66,13 @@ $AssemblyInfoPath = Join-Path $SrcDir "SharedAssemblyInfo.cs"
 $VersionMatch = Select-String -Path $AssemblyInfoPath -Pattern 'AssemblyInformationalVersion\("([^"]+)"\)'
 $PackageVersion = if ($VersionMatch) { $VersionMatch.Matches[0].Groups[1].Value } else { "0.0.0" }
 Write-Host "Building Evergreen Endpoint Package Manager version: $PackageVersion"
+
+$StampedBuild = [int](Get-Content -LiteralPath (Join-Path $PSScriptRoot 'BuildNumber') -Raw).Trim()
+$ProductInfo = Get-Content -LiteralPath (Join-Path $RepoRoot 'update/productinfo.json') -Raw | ConvertFrom-Json
+$Channel = $ProductInfo.'TechnicullSolutions.EvergreenEndpointPackageManager'.Current
+if ($Channel.Version -ne $PackageVersion -or $Channel.BuildNumber -ne $StampedBuild -or $Channel.BuildVersion -ne [string]$StampedBuild) {
+    throw 'Release metadata is out of sync. Run scripts/set-version.ps1 with the intended version and build number.'
+}
 
 # --- Test ---
 if (-not $SkipTests) {

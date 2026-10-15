@@ -108,4 +108,17 @@ foreach ($ManifestPath in $ManifestPaths) {
     }
 }
 
+# Keep the owned update metadata in the same build-number series. Never advertise
+# a previous build's installer as a new version; release assets are attached separately.
+$ProductInfoPath = Join-Path $RepoRoot 'update/productinfo.json'
+$ProductInfo = Get-Content -LiteralPath $ProductInfoPath -Raw | ConvertFrom-Json
+$Channel = $ProductInfo.'TechnicullSolutions.EvergreenEndpointPackageManager'.Current
+if ($Channel.Version -ne $Version -or $Channel.BuildNumber -ne $BuildNumber) {
+    $Channel.Files = @()
+}
+$Channel.Version = $Version
+$Channel.BuildVersion = [string]$BuildNumber
+$Channel.BuildNumber = $BuildNumber
+$ProductInfo | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $ProductInfoPath
+
 Write-Host "Version stamped successfully."

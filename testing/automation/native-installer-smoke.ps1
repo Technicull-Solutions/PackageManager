@@ -1,6 +1,9 @@
 # Run the real installer only on a disposable GitHub-hosted Windows runner.
 [CmdletBinding()]
-param([Parameter(Mandatory)][string]$Installer)
+param(
+    [Parameter(Mandatory)][string]$Installer,
+    [string]$PreviousInstaller
+)
 
 $ErrorActionPreference = 'Stop'
 if ($env:GITHUB_ACTIONS -ne 'true' -or $env:RUNNER_ENVIRONMENT -ne 'github-hosted') {
@@ -45,8 +48,8 @@ function Assert-UpstreamIntact {
     if ($UpstreamProcess.HasExited) { throw 'Evergreen terminated the upstream process.' }
 }
 
-function Invoke-Installer([string]$Directory, [string]$Tasks, [string]$Label) {
-    $Process = Start-Process -FilePath $Installer -WindowStyle Hidden -PassThru -Wait -ArgumentList @(
+function Invoke-Installer([string]$Directory, [string]$Tasks, [string]$Label, [string]$InstallerPath = $Installer) {
+    $Process = Start-Process -FilePath $InstallerPath -WindowStyle Hidden -PassThru -Wait -ArgumentList @(
         '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-', '/CURRENTUSER',
         '/NoAutoStart', '/NoRunOnStartup', '/NoVCRedist', '/NoEdgeWebView', '/NoDeployInstaller',
         "/DIR=`"$Directory`"", "/TASKS=`"$Tasks`"", "/LOG=`"$Root\$Label.log`""
@@ -65,6 +68,7 @@ try {
     }
 } finally { if ($null -ne $Protocol) { $Protocol.Dispose() } }
 Invoke-Installer $InstallDir 'regularinstall' 'same-version-reinstall'
+$CurrentAppHash = (Get-FileHash -LiteralPath (Join-Path $InstallDir 'Evergreen Endpoint Package Manager.exe')).Hash
 
 $Desktop = Start-Process -FilePath (Join-Path $InstallDir 'Evergreen Endpoint Package Manager.exe') -WindowStyle Hidden -PassThru
 try {
@@ -85,19 +89,32 @@ try {
     }
 }
 
-$Uninstallers = @(Get-ChildItem -LiteralPath $InstallDir -Filter 'unins*.exe')
-if ($Uninstallers.Count -ne 1) { throw 'Expected exactly one installed uninstaller.' }
-$Uninstaller = $Uninstallers[0]
-$Process = Start-Process -FilePath $Uninstaller.FullName -WindowStyle Hidden -PassThru -Wait -ArgumentList @(
-    '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/LOG=`"$Root\uninstall.log`""
-)
-if ($Process.ExitCode -ne 0) { throw "Uninstall failed: $($Process.ExitCode)" }
-if (Test-Path -LiteralPath (Join-Path $InstallDir 'Evergreen Endpoint Package Manager.exe')) {
-    throw 'Uninstall left the application executable behind.'
+function Invoke-Uninstall([string]$Label) {
+    $Uninstallers = @(Get-ChildItem -LiteralPath $InstallDir -Filter 'unins*.exe')
+    if ($Uninstallers.Count -ne 1) { throw 'Expected exactly one installed uninstaller.' }
+    $Uninstaller = $Uninstallers[0]
+    $Process = Start-Process -FilePath $Uninstaller.FullName -WindowStyle Hidden -PassThru -Wait -ArgumentList @(
+        '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', "/LOG=`"$Root\$Label.log`""
+    )
+    if ($Process.ExitCode -ne 0) { throw "Uninstall failed: $($Process.ExitCode)" }
+    if (Test-Path -LiteralPath (Join-Path $InstallDir 'Evergreen Endpoint Package Manager.exe')) {
+        throw 'Uninstall left the application executable behind.'
+    }
+    Assert-UpstreamIntact
+    if (Test-Path 'HKCU:\Software\Classes\evergreen-endpoint') {
+        throw 'Uninstall left Evergreen protocol registration behind.'
+    }
 }
-Assert-UpstreamIntact
-if (Test-Path 'HKCU:\Software\Classes\evergreen-endpoint') {
-    throw 'Uninstall left Evergreen protocol registration behind.'
+
+Invoke-Uninstall 'uninstall'
+if ($PreviousInstaller) {
+    Invoke-Installer $InstallDir 'regularinstall' 'previous-release-install' $PreviousInstaller
+    Invoke-Installer $InstallDir 'regularinstall' 'upgrade-from-previous-release'
+    if ((Get-FileHash -LiteralPath (Join-Path $InstallDir 'Evergreen Endpoint Package Manager.exe')).Hash -ne $CurrentAppHash) {
+        throw 'Upgrade did not replace the previous application with the tested current executable.'
+    }
+    Invoke-Uninstall 'uninstall-after-upgrade'
+    Write-Host 'Verified upgrade from the previous published release and subsequent uninstall.'
 }
 
 Invoke-Installer $PortableDir 'portableinstall' 'portable-install'
