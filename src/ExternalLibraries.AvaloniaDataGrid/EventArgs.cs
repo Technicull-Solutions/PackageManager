@@ -1,15 +1,15 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
-using Avalonia.Input;
-using Avalonia.Interactivity;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace Avalonia.Controls
 {
@@ -192,7 +192,7 @@ namespace Avalonia.Controls
         /// <param name="row">The row container of the cell that has been pressed.</param>
         /// <param name="column">The column of the cell that has been pressed.</param>
         /// <param name="e">The pointer action that has been taken.</param>
-        public DataGridCellPointerPressedEventArgs(DataGridCell cell, 
+        public DataGridCellPointerPressedEventArgs(DataGridCell cell,
                                                    DataGridRow row,
                                                    DataGridColumn column,
                                                    PointerPressedEventArgs e)

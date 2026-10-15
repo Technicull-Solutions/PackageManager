@@ -1,24 +1,24 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using Avalonia.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Avalonia.Media;
 
 namespace Avalonia.Controls
 {
     internal class DataGridDisplayData
     {
-        private Stack<DataGridRow> _fullyRecycledRows; // list of Rows that have been fully recycled (Collapsed)
+        private readonly Stack<DataGridRow> _fullyRecycledRows; // list of Rows that have been fully recycled (Collapsed)
         private int _headScrollingElements; // index of the row in _scrollingRows that is the first displayed row
-        private DataGrid _owner;
-        private Stack<DataGridRow> _recyclableRows; // list of Rows which have not been fully recycled (avoids Measure in several cases)
-        private List<Control> _scrollingElements; // circular list of displayed elements
-        private Stack<DataGridRowGroupHeader> _fullyRecycledGroupHeaders; // list of GroupHeaders that have been fully recycled (Collapsed)
-        private Stack<DataGridRowGroupHeader> _recyclableGroupHeaders; // list of GroupHeaders which have not been fully recycled (avoids Measure in several cases)
+        private readonly DataGrid _owner;
+        private readonly Stack<DataGridRow> _recyclableRows; // list of Rows which have not been fully recycled (avoids Measure in several cases)
+        private readonly List<Control> _scrollingElements; // circular list of displayed elements
+        private readonly Stack<DataGridRowGroupHeader> _fullyRecycledGroupHeaders; // list of GroupHeaders that have been fully recycled (Collapsed)
+        private readonly Stack<DataGridRowGroupHeader> _recyclableGroupHeaders; // list of GroupHeaders which have not been fully recycled (avoids Measure in several cases)
 
         public DataGridDisplayData(DataGrid owner)
         {

@@ -5,8 +5,6 @@
 
 #nullable disable
 
-using Avalonia.Controls.Utils;
-using Avalonia.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +15,8 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Avalonia.Controls.Utils;
+using Avalonia.Utilities;
 
 namespace Avalonia.Collections
 {
@@ -93,7 +93,7 @@ namespace Avalonia.Collections
         /// <summary>
         /// Private accessor for the Monitor we use to prevent recursion
         /// </summary>
-        private SimpleMonitor _currentChangedMonitor = new SimpleMonitor();
+        private readonly SimpleMonitor _currentChangedMonitor = new SimpleMonitor();
 
         /// <summary>
         /// Private accessor for the CurrentItem
@@ -128,7 +128,7 @@ namespace Avalonia.Collections
         /// <summary>
         /// Private accessor for the Grouping data
         /// </summary>
-        private CollectionViewGroupRoot _group;
+        private readonly CollectionViewGroupRoot _group;
 
         /// <summary>
         /// Private accessor for the InternalList
@@ -177,7 +177,7 @@ namespace Avalonia.Collections
         /// Whether the source needs to poll for changes
         /// (if it did not implement INotifyCollectionChanged)
         /// </summary>
-        private bool _pollForChanges;
+        private readonly bool _pollForChanges;
 
         /// <summary>
         /// Private accessor for the SortDescriptions
@@ -187,7 +187,7 @@ namespace Avalonia.Collections
         /// <summary>
         /// Private accessor for the SourceCollection
         /// </summary>
-        private IEnumerable _sourceCollection;
+        private readonly IEnumerable _sourceCollection;
 
         /// <summary>
         /// Private accessor for the Grouping data on the entire collection
@@ -667,7 +667,7 @@ namespace Avalonia.Collections
         string IDataGridCollectionView.GetGroupingPropertyNameAtDepth(int level)
         {
             var groups = GroupDescriptions;
-            if(groups != null && level >= 0 && level < groups.Count)
+            if (groups != null && level >= 0 && level < groups.Count)
             {
                 return groups[level].PropertyName;
             }
@@ -1224,10 +1224,7 @@ namespace Avalonia.Collections
                 // doesn't get applied yet
                 SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, false);
 
-                if (SourceList != null)
-                {
-                    SourceList.Add(newItem);
-                }
+                SourceList?.Add(newItem);
             }
             finally
             {
@@ -1382,10 +1379,7 @@ namespace Avalonia.Collections
                 // doesn't get applied yet
                 SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, false);
 
-                if (SourceList != null)
-                {
-                    SourceList.Remove(CurrentAddItem);
-                }
+                SourceList?.Remove(CurrentAddItem);
             }
             finally
             {
@@ -2406,10 +2400,7 @@ namespace Avalonia.Collections
                 // doesn't get applied yet
                 SetFlag(CollectionViewFlags.ShouldProcessCollectionChanged, false);
 
-                if (SourceList != null)
-                {
-                    SourceList.Remove(item);
-                }
+                SourceList?.Remove(item);
             }
             finally
             {
@@ -2481,23 +2472,6 @@ namespace Avalonia.Collections
                         GetItemAt(PageSize - 1),
                         PageSize - 1));
             }
-        }
-
-        /// <summary>
-        /// Helper for SortList to handle nested properties (e.g. Address.Street)
-        /// </summary>
-        /// <param name="item">parent object</param>
-        /// <param name="propertyPath">property names path</param>
-        /// <param name="propertyType">property type that we want to check for</param>
-        /// <returns>child object</returns>
-        private static object InvokePath(object item, string propertyPath, Type propertyType)
-        {
-            object propertyValue = TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out Exception exception);
-            if (exception != null)
-            {
-                throw exception;
-            }
-            return propertyValue;
         }
 
         /// <summary>
@@ -3410,9 +3384,9 @@ namespace Avalonia.Collections
                 RefreshOrDefer();
                 return;
             }
-            
+
             // fire notifications for removes
-            if (args.OldItems != null && 
+            if (args.OldItems != null &&
                 (args.Action == NotifyCollectionChangedAction.Remove ||
                 args.Action == NotifyCollectionChangedAction.Replace))
             {
@@ -3423,7 +3397,7 @@ namespace Avalonia.Collections
             }
 
             // fire notifications for adds
-            if (args.NewItems != null && 
+            if (args.NewItems != null &&
                 (args.Action == NotifyCollectionChangedAction.Add ||
                  args.Action == NotifyCollectionChangedAction.Replace))
             {
@@ -3449,8 +3423,7 @@ namespace Avalonia.Collections
         //TODO Paging
         private void ProcessRemoveEvent(object removedItem, bool isReplace)
         {
-            int internalRemoveIndex = -1;
-
+            int internalRemoveIndex;
             if (IsGrouping)
             {
                 internalRemoveIndex = PageSize > 0 ? _temporaryGroup.LeafIndexOf(removedItem) :
@@ -3887,10 +3860,7 @@ namespace Avalonia.Collections
         /// <param name="descriptions">SortDescriptionCollection to set the property value to</param>
         private void SetSortDescriptions(DataGridSortDescriptionCollection descriptions)
         {
-            if (_sortDescriptions != null)
-            {
-                _sortDescriptions.CollectionChanged -= SortDescriptionsChanged;
-            }
+            _sortDescriptions?.CollectionChanged -= SortDescriptionsChanged;
 
             _sortDescriptions = descriptions;
 
@@ -3944,12 +3914,12 @@ namespace Avalonia.Collections
             Debug.Assert(list != null, "Input list to sort should not be null");
 
             IEnumerable<object> seq = (IEnumerable<object>)list;
-            IComparer<object> comparer = new CultureSensitiveComparer(Culture);
+            _ = new CultureSensitiveComparer(Culture);
             var itemType = ItemType;
 
             foreach (DataGridSortDescription sort in SortDescriptions)
             {
-                sort.Initialize(itemType); 
+                sort.Initialize(itemType);
 
                 if (seq is IOrderedEnumerable<object> orderedEnum)
                 {
@@ -3999,7 +3969,7 @@ namespace Avalonia.Collections
             }
         }
 
-        void IList.Insert(int index, object value) 
+        void IList.Insert(int index, object value)
         {
             SourceList.Insert(index, value);
             if (SourceList is not INotifyCollectionChanged)
@@ -4020,7 +3990,7 @@ namespace Avalonia.Collections
             /// <summary>
             /// Private accessor for the CultureInfo of our comparer
             /// </summary>
-            private CultureInfo _culture;
+            private readonly CultureInfo _culture;
 
             /// <summary>
             /// Creates a comparer which will respect the CultureInfo
@@ -4096,11 +4066,8 @@ namespace Avalonia.Collections
             /// </summary>
             public void Dispose()
             {
-                if (collectionView != null)
-                {
-                    collectionView.EndDefer();
-                    collectionView = null;
-                }
+                collectionView?.EndDefer();
+                collectionView = null;
                 GC.SuppressFinalize(this);
             }
         }
@@ -4248,12 +4215,12 @@ namespace Avalonia.Collections
             /// <summary>
             /// CollectionView that we are creating the enumerator for
             /// </summary>
-            private DataGridCollectionView _collectionView;
+            private readonly DataGridCollectionView _collectionView;
 
             /// <summary>
             /// The Base Enumerator that we are passing in
             /// </summary>
-            private IEnumerator _baseEnumerator;
+            private readonly IEnumerator _baseEnumerator;
 
             /// <summary>
             /// The position we are appending items to the enumerator
@@ -4263,12 +4230,12 @@ namespace Avalonia.Collections
             /// <summary>
             /// Reference to any new item that we want to add to the collection
             /// </summary>
-            private object _newItem;
+            private readonly object _newItem;
 
             /// <summary>
             /// Timestamp to let us know whether there have been updates to the collection
             /// </summary>
-            private int _timestamp;
+            private readonly int _timestamp;
         }
 
         internal class MergedComparer
@@ -4285,7 +4252,7 @@ namespace Avalonia.Collections
 
             private static IComparer<object>[] MakeComparerArray(DataGridSortDescriptionCollection coll)
             {
-                return 
+                return
                     coll.Select(c => c.Comparer)
                         .ToArray();
             }
@@ -4354,6 +4321,6 @@ namespace Avalonia.Collections
 
                 return min;
             }
-        }       
+        }
     }
 }

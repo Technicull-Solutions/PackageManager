@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -82,7 +82,7 @@ namespace Avalonia.Controls.Primitives
 
             if (OwningGrid.RowsPresenterAvailableSize.HasValue)
             {
-                var availableHeight = OwningGrid.RowsPresenterAvailableSize.Value.Height;
+                _ = OwningGrid.RowsPresenterAvailableSize.Value.Height;
             }
 
             OwningGrid.OnFillerColumnWidthNeeded(finalSize.Width);

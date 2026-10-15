@@ -14,7 +14,7 @@ internal static partial class TuiConsolePlatform
     internal static AppBuilder UseEvergreenConsole(this AppBuilder builder)
     {
         IConsole console = OperatingSystem.IsWindows()
-            ? new Win32Console(new AnsiConsoleOutput())
+            ? new EvergreenWindowsConsole(new AnsiConsoleOutput())
             : new CursesConsole();
         return builder.UseConsole(console).UseAutoDetectClipboard().UseAutoDetectConsoleColorMode();
     }

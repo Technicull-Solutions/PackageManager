@@ -1,10 +1,14 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
+using System;
+using System.Diagnostics;
+using Avalonia.Automation;
+using Avalonia.Automation.Peers;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
@@ -15,10 +19,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
-using System;
-using System.Diagnostics;
-using Avalonia.Automation.Peers;
-using Avalonia.Automation;
 
 namespace Avalonia.Controls
 {
@@ -26,10 +26,10 @@ namespace Avalonia.Controls
     /// Represents a <see cref="T:Avalonia.Controls.DataGrid" /> row.
     /// </summary>
     [TemplatePart(DATAGRIDROW_elementBottomGridLine, typeof(Rectangle))]
-    [TemplatePart(DATAGRIDROW_elementCells,          typeof(DataGridCellsPresenter))]
-    [TemplatePart(DATAGRIDROW_elementDetails,        typeof(DataGridDetailsPresenter))]
-    [TemplatePart(DATAGRIDROW_elementRoot,           typeof(Panel))]
-    [TemplatePart(DATAGRIDROW_elementRowHeader,      typeof(DataGridRowHeader))]
+    [TemplatePart(DATAGRIDROW_elementCells, typeof(DataGridCellsPresenter))]
+    [TemplatePart(DATAGRIDROW_elementDetails, typeof(DataGridDetailsPresenter))]
+    [TemplatePart(DATAGRIDROW_elementRoot, typeof(Panel))]
+    [TemplatePart(DATAGRIDROW_elementRowHeader, typeof(DataGridRowHeader))]
     [PseudoClasses(":selected", ":editing", ":invalid")]
 #if !DATAGRID_INTERNAL
     public
@@ -190,10 +190,7 @@ namespace Avalonia.Controls
 
         private void OnHeaderChanged(AvaloniaPropertyChangedEventArgs e)
         {
-            if (_headerElement != null)
-            {
-                _headerElement.Content = e.NewValue;
-            }
+            _headerElement?.Content = e.NewValue;
         }
 
         private void OnDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
@@ -283,14 +280,11 @@ namespace Avalonia.Controls
                         IsVisible = false,
                         OwningRow = this
                     };
-                    if (OwningGrid.CellTheme is {} cellTheme)
+                    if (OwningGrid.CellTheme is { } cellTheme)
                     {
                         _fillerCell.SetValue(ThemeProperty, cellTheme, BindingPriority.Template);
                     }
-                    if (_cellsElement != null)
-                    {
-                        _cellsElement.Children.Add(_fillerCell);
-                    }
+                    _cellsElement?.Children.Add(_fillerCell);
                 }
                 return _fillerCell;
             }
@@ -544,18 +538,9 @@ namespace Avalonia.Controls
             }
 
             //Allow the DataGrid specific components to adjust themselves based on new values
-            if (_headerElement != null)
-            {
-                _headerElement.InvalidateMeasure();
-            }
-            if (_cellsElement != null)
-            {
-                _cellsElement.InvalidateMeasure();
-            }
-            if (_detailsElement != null)
-            {
-                _detailsElement.InvalidateMeasure();
-            }
+            _headerElement?.InvalidateMeasure();
+            _cellsElement?.InvalidateMeasure();
+            _detailsElement?.InvalidateMeasure();
 
             Size desiredSize = base.MeasureOverride(availableSize);
             return desiredSize.WithWidth(Math.Max(desiredSize.Width, OwningGrid.CellsWidth));
@@ -676,19 +661,13 @@ namespace Avalonia.Controls
             {
                 IsRecycled = true;
 
-                if (_cellsElement != null)
-                {
-                    _cellsElement.Recycle();
-                }
+                _cellsElement?.Recycle();
 
                 _checkDetailsContentHeight = false;
 
                 // Clear out the old Details cache so it won't be reused for other data
                 //_detailsDesiredHeight = double.NaN;
-                if (_detailsElement != null)
-                {
-                    _detailsElement.ClearValue(DataGridDetailsPresenter.ContentHeightProperty);
-                }
+                _detailsElement?.ClearValue(DataGridDetailsPresenter.ContentHeightProperty);
             }
 
             Slot = -1;
@@ -701,10 +680,7 @@ namespace Avalonia.Controls
 
         internal void EnsureFillerVisibility()
         {
-            if (_cellsElement != null)
-            {
-                _cellsElement.EnsureFillerVisibility();
-            }
+            _cellsElement?.EnsureFillerVisibility();
         }
 
         internal void EnsureGridLines()
@@ -733,6 +709,7 @@ namespace Avalonia.Controls
 
         internal void EnsureHeaderStyleAndVisibility(Styling.Style previousStyle)
         {
+            _ = previousStyle;
             if (_headerElement != null && OwningGrid != null)
             {
                 _headerElement.IsVisible = OwningGrid.AreRowHeadersVisible;
@@ -749,14 +726,8 @@ namespace Avalonia.Controls
 
         internal void InvalidateHorizontalArrange()
         {
-            if (_cellsElement != null)
-            {
-                _cellsElement.InvalidateArrange();
-            }
-            if (_detailsElement != null)
-            {
-                _detailsElement.InvalidateArrange();
-            }
+            _cellsElement?.InvalidateArrange();
+            _detailsElement?.InvalidateArrange();
         }
 
         internal void InvalidateDesiredHeight()
@@ -786,10 +757,7 @@ namespace Avalonia.Controls
                 return;
             }
 
-            if (OwningGrid != null)
-            {
-                OwningGrid.IsDoubleClickRecordsClickOnCall(this);
-            }
+            OwningGrid?.IsDoubleClickRecordsClickOnCall(this);
         }
 
         private void OnRowDetailsChanged()
@@ -955,6 +923,7 @@ namespace Avalonia.Controls
         // Sets AreDetailsVisible on the row and animates if necessary
         internal void SetDetailsVisibilityInternal(bool isVisible, bool raiseNotification, bool animate)
         {
+            _ = animate;
             Debug.Assert(OwningGrid != null);
             Debug.Assert(Index != -1);
 

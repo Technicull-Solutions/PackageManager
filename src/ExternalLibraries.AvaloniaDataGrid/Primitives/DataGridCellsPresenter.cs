@@ -1,17 +1,17 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
-using Avalonia.LogicalTree;
-using Avalonia.Media;
-using Avalonia.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
+using Avalonia.Utilities;
 
 namespace Avalonia.Controls.Primitives
 {
@@ -299,7 +299,7 @@ namespace Avalonia.Controls.Primitives
             if (OwningGrid.UsesStarSizing && !OwningGrid.AutoSizingColumns)
             {
                 double adjustment = OwningGrid.CellsWidth - totalDisplayWidth;
-                totalDisplayWidth += adjustment - OwningGrid.AdjustColumnWidths(0, adjustment, false);
+                _ = adjustment - OwningGrid.AdjustColumnWidths(0, adjustment, false);
 
                 // Since we didn't know the final widths of the columns until we resized,
                 // we waited until now to measure each cell
@@ -354,7 +354,7 @@ namespace Avalonia.Controls.Primitives
             scrollingLeftEdge += OwningGrid.HorizontalAdjustment;
             double leftEdge = column.IsFrozen ? frozenLeftEdge : scrollingLeftEdge;
             double rightEdge = leftEdge + column.ActualWidth;
-            return 
+            return
                 MathUtilities.GreaterThan(rightEdge, 0) &&
                 MathUtilities.LessThanOrClose(leftEdge, OwningGrid.CellsWidth) &&
                 MathUtilities.GreaterThan(rightEdge, frozenLeftEdge); // scrolling column covered up by frozen column(s)

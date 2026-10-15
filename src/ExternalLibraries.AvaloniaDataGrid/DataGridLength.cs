@@ -1,12 +1,12 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using Avalonia.Utilities;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using Avalonia.Utilities;
 
 namespace Avalonia.Controls
 {
@@ -32,10 +32,10 @@ namespace Avalonia.Controls
     struct DataGridLength : IEquatable<DataGridLength>
     {
 
-        private double _desiredValue;   //  desired value storage
-        private double _displayValue;   //  display value storage
-        private double _unitValue;      //  unit value storage
-        private DataGridLengthUnitType _unitType; //  unit type storage
+        private readonly double _desiredValue;   //  desired value storage
+        private readonly double _displayValue;   //  display value storage
+        private readonly double _unitValue;      //  unit value storage
+        private readonly DataGridLengthUnitType _unitType; //  unit type storage
 
         //  static instances of value invariant DataGridLengths
         private static readonly DataGridLength _auto = new DataGridLength(DATAGRIDLENGTH_DefaultValue, DataGridLengthUnitType.Auto);
@@ -359,9 +359,9 @@ namespace Avalonia.Controls
 #endif
     class DataGridLengthConverter : TypeConverter
     {
-        private static string _starSuffix = "*";
-        private static string[] _valueInvariantUnitStrings = { "auto", "sizetocells", "sizetoheader" };
-        private static DataGridLength[] _valueInvariantDataGridLengths = { DataGridLength.Auto, DataGridLength.SizeToCells, DataGridLength.SizeToHeader };
+        private static readonly string _starSuffix = "*";
+        private static readonly string[] _valueInvariantUnitStrings = { "auto", "sizetocells", "sizetoheader" };
+        private static readonly DataGridLength[] _valueInvariantDataGridLengths = { DataGridLength.Auto, DataGridLength.SizeToCells, DataGridLength.SizeToHeader };
 
         /// <summary>
         /// Checks whether or not this class can convert from a given type.

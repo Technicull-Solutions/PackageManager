@@ -1,15 +1,15 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using Avalonia.Controls.Utils;
-using Avalonia.Data.Converters;
-using Avalonia.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Avalonia.Controls.Utils;
+using Avalonia.Data.Converters;
+using Avalonia.Utilities;
 
 namespace Avalonia.Controls
 {
@@ -30,7 +30,6 @@ namespace Avalonia.Controls
         {
             return ConvertValue(value, targetType, culture);
         }
-
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {

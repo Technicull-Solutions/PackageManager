@@ -1,18 +1,18 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Media;
 using System;
 using System.ComponentModel;
+using Avalonia.Controls.Documents;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
-using Avalonia.Controls.Documents;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace Avalonia.Controls
@@ -27,7 +27,7 @@ namespace Avalonia.Controls
     {
         private readonly Lazy<ControlTheme> _cellTextBoxTheme;
         private readonly Lazy<ControlTheme> _cellTextBlockTheme;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Avalonia.Controls.DataGridTextColumn" /> class.
         /// </summary>
@@ -170,7 +170,7 @@ namespace Avalonia.Controls
         protected override Control GenerateEditingElementDirect(DataGridCell cell, object dataItem)
         {
             var textBox = new TextBox
-            {                
+            {
                 Name = "CellTextBox"
             };
             if (_cellTextBoxTheme.Value is { } theme)
@@ -182,7 +182,7 @@ namespace Avalonia.Controls
 
             return textBox;
         }
-        
+
         /// <summary>
         /// Gets a read-only <see cref="T:Avalonia.Controls.TextBlock" /> element that is bound to the column's <see cref="P:Avalonia.Controls.DataGridBoundColumn.Binding" /> property value.
         /// </summary>

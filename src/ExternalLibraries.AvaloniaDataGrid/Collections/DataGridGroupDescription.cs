@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -66,10 +66,10 @@ namespace Avalonia.Collections
 #endif
     class DataGridPathGroupDescription : DataGridGroupDescription
     {
-        private string _propertyPath;
+        private readonly string _propertyPath;
         private Type _propertyType;
         private IValueConverter _valueConverter;
-        private StringComparison _stringComparison = StringComparison.Ordinal;
+        private readonly StringComparison _stringComparison = StringComparison.Ordinal;
 
         public DataGridPathGroupDescription(string propertyPath)
         {
@@ -80,7 +80,7 @@ namespace Avalonia.Collections
         {
             object GetKey(object o)
             {
-                if(o == null)
+                if (o == null)
                     return null;
 
                 if (_propertyType == null)
@@ -101,7 +101,7 @@ namespace Avalonia.Collections
         }
         public override bool KeysMatch(object groupKey, object itemKey)
         {
-            if(groupKey is string k1 && itemKey is string k2)
+            if (groupKey is string k1 && itemKey is string k2)
             {
                 return String.Equals(k1, k2, _stringComparison);
             }
@@ -593,7 +593,7 @@ namespace Avalonia.Collections
         private class LeafEnumerator : IEnumerator
         {
             private object _current;   // current item
-            private DataGridCollectionViewGroupInternal _group; // parent group
+            private readonly DataGridCollectionViewGroupInternal _group; // parent group
             private int _index;     // current index into Items
             private IEnumerator _subEnum;   // enumerator over current subgroup
             private int _version;   // parent group's version at ctor
@@ -1141,7 +1141,7 @@ namespace Avalonia.Collections
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
                 }
             }
-            else if(key is ICollection keyList)
+            else if (key is ICollection keyList)
             {
                 // the item belongs to multiple subgroups
                 foreach (object o in keyList)

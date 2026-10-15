@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -42,15 +42,12 @@ namespace Avalonia.Controls
         {
             get;
             set;
-        } 
+        }
 
         internal override DataGridColumnHeader CreateHeader()
         {
             DataGridColumnHeader headerCell = base.CreateHeader();
-            if (headerCell != null)
-            {
-                headerCell.IsEnabled = false;
-            }
+            headerCell?.IsEnabled = false;
             return headerCell;
         }
 
@@ -63,7 +60,7 @@ namespace Avalonia.Controls
         {
             editBinding = null;
             return null;
-        } 
+        }
 
         protected override object PrepareCellForEdit(Control editingElement, RoutedEventArgs editingEventArgs)
         {

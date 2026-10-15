@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -6,9 +6,9 @@
 #nullable disable
 
 using System;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Avalonia.Controls
 {
@@ -17,7 +17,7 @@ namespace Avalonia.Controls
         private List<object> _oldSelectedItemsCache;
         private IndexToValueTable<bool> _oldSelectedSlotsTable;
         private List<object> _selectedItemsCache;
-        private IndexToValueTable<bool> _selectedSlotsTable;
+        private readonly IndexToValueTable<bool> _selectedSlotsTable;
 
         public DataGridSelectedItemsCollection(DataGrid owningGrid)
         {

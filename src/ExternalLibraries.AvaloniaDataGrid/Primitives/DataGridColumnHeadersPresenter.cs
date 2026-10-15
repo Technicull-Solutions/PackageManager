@@ -1,17 +1,17 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
-using Avalonia.LogicalTree;
-using Avalonia.Media;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls.Automation.Peers;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace Avalonia.Controls.Primitives
 {
@@ -230,10 +230,7 @@ namespace Avalonia.Controls.Primitives
 
             // This needs to be updated after the filler column is configured
             DataGridColumn lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
-            if (lastVisibleColumn != null)
-            {
-                lastVisibleColumn.HeaderCell.UpdateSeparatorVisibility(lastVisibleColumn);
-            }
+            lastVisibleColumn?.HeaderCell.UpdateSeparatorVisibility(lastVisibleColumn);
             return finalSize;
         }
 
@@ -383,7 +380,7 @@ namespace Avalonia.Controls.Primitives
             if (OwningGrid.UsesStarSizing && !OwningGrid.AutoSizingColumns)
             {
                 double adjustment = Double.IsPositiveInfinity(availableSize.Width) ? OwningGrid.CellsWidth : availableSize.Width - totalDisplayWidth;
-                totalDisplayWidth += adjustment - OwningGrid.AdjustColumnWidths(0, adjustment, false);
+                _ = adjustment - OwningGrid.AdjustColumnWidths(0, adjustment, false);
 
                 // Since we didn't know the final widths of the columns until we resized,
                 // we waited until now to measure each header
@@ -413,14 +410,8 @@ namespace Avalonia.Controls.Primitives
             }
             fillerColumn.HeaderCell.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
-            if (DragIndicator != null)
-            {
-                DragIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            }
-            if (DropLocationIndicator != null)
-            {
-                DropLocationIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            }
+            DragIndicator?.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            DropLocationIndicator?.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 
             OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
             return new Size(OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, height);

@@ -5,18 +5,18 @@
 
 #nullable disable
 
-using Avalonia.Collections;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Reflection;
 using System.ComponentModel.DataAnnotations;
-using Avalonia.Utilities;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using Avalonia.Collections;
 using Avalonia.Controls.Utils;
+using Avalonia.Utilities;
 
 namespace Avalonia.Controls
 {
@@ -30,7 +30,7 @@ namespace Avalonia.Controls
         private Type _dataType;
         private bool _expectingCurrentChanged;
         private object _itemToSelectOnCurrentChanged;
-        private DataGrid _owner;
+        private readonly DataGrid _owner;
         private bool _scrollForCurrentChanged;
         private DataGridSelectionAction _selectionActionForCurrentChanged;
 
@@ -328,7 +328,7 @@ namespace Avalonia.Controls
                     else
                     {
                         editableCollectionView.CommitEdit();
-                    }                    
+                    }
                 }
                 finally
                 {
@@ -518,10 +518,7 @@ namespace Avalonia.Controls
                 notifyingDataSource.CollectionChanged -= NotifyingDataSource_CollectionChanged;
             }
 
-            if (SortDescriptions != null)
-            {
-                SortDescriptions.CollectionChanged -= CollectionView_SortDescriptions_CollectionChanged;
-            }
+            SortDescriptions?.CollectionChanged -= CollectionView_SortDescriptions_CollectionChanged;
 
             if (CollectionView != null)
             {
@@ -539,10 +536,7 @@ namespace Avalonia.Controls
                 notifyingDataSource.CollectionChanged += NotifyingDataSource_CollectionChanged;
             }
 
-            if (SortDescriptions != null)
-            {
-                SortDescriptions.CollectionChanged += CollectionView_SortDescriptions_CollectionChanged;
-            }
+            SortDescriptions?.CollectionChanged += CollectionView_SortDescriptions_CollectionChanged;
 
             if (CollectionView != null)
             {

@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -43,9 +43,9 @@ namespace Avalonia.Controls
     struct DataGridClipboardCellContent
     {
 
-        private DataGridColumn _column;
-        private object _content;
-        private object _item;
+        private readonly DataGridColumn _column;
+        private readonly object _content;
+        private readonly object _item;
 
         /// <summary>
         /// Creates a new DataGridClipboardCellValue structure containing information about a DataGrid cell.
@@ -100,7 +100,7 @@ namespace Avalonia.Controls
         /// <returns>True iff this and data are equal</returns>
         public override bool Equals(object? obj)
         {
-            if(obj is DataGridClipboardCellContent content)
+            if (obj is DataGridClipboardCellContent content)
             {
                 return (((_column == content._column) && (_content == content._content)) && (_item == content._item));
             }
@@ -157,8 +157,8 @@ namespace Avalonia.Controls
     {
 
         private List<DataGridClipboardCellContent>? _clipboardRowContent;
-        private bool _isColumnHeadersRow;
-        private object _item;
+        private readonly bool _isColumnHeadersRow;
+        private readonly object _item;
 
         /// <summary>
         /// Creates a DataGridRowClipboardEventArgs object and initializes the properties.

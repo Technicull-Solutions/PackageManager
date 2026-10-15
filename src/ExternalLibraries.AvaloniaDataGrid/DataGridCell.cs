@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -40,7 +40,7 @@ namespace Avalonia.Controls
         static DataGridCell()
         {
             PointerPressedEvent.AddClassHandler<DataGridCell>(
-                (x,e) => x.DataGridCell_PointerPressed(e), handledEventsToo: true);
+                (x, e) => x.DataGridCell_PointerPressed(e), handledEventsToo: true);
             FocusableProperty.OverrideDefaultValue<DataGridCell>(true);
             IsTabStopProperty.OverrideDefaultValue<DataGridCell>(false);
             AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridCell>(IsOffscreenBehavior.FromClip);
@@ -232,7 +232,7 @@ namespace Avalonia.Controls
             PseudoClasses.Set(":edited", IsEdited);
 
             PseudoClasses.Set(":invalid", !IsValid);
-            
+
             PseudoClasses.Set(":focus", OwningGrid.IsFocused && IsCurrent);
         }
 
@@ -271,7 +271,7 @@ namespace Avalonia.Controls
                 {
                     Theme = column.CellTheme;
                 }
-                
+
                 Classes.Replace(column.CellStyleClasses);
             }
         }

@@ -99,7 +99,7 @@ namespace Avalonia.Controls
         protected override Control GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase binding)
         {
             binding = null;
-            if(CellEditingTemplate != null)
+            if (CellEditingTemplate != null)
             {
                 return CellEditingTemplate.Build(dataItem);
             }
@@ -125,14 +125,14 @@ namespace Avalonia.Controls
         protected internal override void RefreshCellContent(Control element, string propertyName)
         {
             var cell = element?.Parent as DataGridCell;
-            if(propertyName == nameof(CellTemplate) && cell is not null)
+            if (propertyName == nameof(CellTemplate) && cell is not null)
             {
                 cell.Content = GenerateElement(cell, cell.DataContext);
             }
 
             base.RefreshCellContent(element, propertyName);
         }
-        
+
         public override bool IsReadOnly
         {
             get

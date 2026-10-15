@@ -1,7 +1,8 @@
 # Evergreen DataGrid compatibility source
 
 This directory contains AvaloniaUI's `Avalonia.Controls.DataGrid` 12.0.0 source
-from https://github.com/AvaloniaUI/Avalonia.Controls.DataGrid/tree/12.0.0.
+from https://github.com/AvaloniaUI/Avalonia.Controls.DataGrid/tree/12.0.0
+(commit `3d2cf024d6f15d4e770f655246185ad417f93f51`).
 The original MIT license and per-file Microsoft notices are retained.
 `Avalonia.public.snk` contains only the upstream public key, used with delay signing
 to retain the assembly identity expected by Consolonia's grid theme.

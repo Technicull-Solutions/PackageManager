@@ -1,15 +1,15 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
+using System;
+using System.Collections.Specialized;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using System;
-using System.Collections.Specialized;
 
 namespace Avalonia.Controls
 {
@@ -124,10 +124,7 @@ namespace Avalonia.Controls
                     cell.ColumnIndex == this.OwningGrid.CurrentColumnIndex)
                 {
                     isEnabled = true;
-                    if (_currentCheckBox != null)
-                    {
-                        _currentCheckBox.IsEnabled = false;
-                    }
+                    _currentCheckBox?.IsEnabled = false;
                     _currentCheckBox = checkBoxElement;
                 }
             }
@@ -194,7 +191,7 @@ namespace Avalonia.Controls
                             EditValue();
                         }
                     }
-                    
+
                     void OnLayoutUpdated(object sender, EventArgs e)
                     {
                         if (editingCheckBox.Bounds.Width != 0 || editingCheckBox.Bounds.Height != 0)
@@ -277,20 +274,14 @@ namespace Avalonia.Controls
 
         private void OwningGrid_CurrentCellChanged(object sender, EventArgs e)
         {
-            if (_currentCheckBox != null)
-            {
-                _currentCheckBox.IsEnabled = false;
-            }
+            _currentCheckBox?.IsEnabled = false;
             if (OwningGrid != null && OwningGrid.CurrentColumn == this
                 && OwningGrid.IsSlotVisible(OwningGrid.CurrentSlot))
             {
                 if (OwningGrid.DisplayData.GetDisplayedElement(OwningGrid.CurrentSlot) is DataGridRow row)
                 {
                     CheckBox checkBox = GetCellContent(row) as CheckBox;
-                    if (checkBox != null)
-                    {
-                        checkBox.IsEnabled = true;
-                    }
+                    checkBox?.IsEnabled = true;
                     _currentCheckBox = checkBox;
                 }
             }
@@ -320,10 +311,7 @@ namespace Avalonia.Controls
                 {
                     if (OwningGrid.CurrentColumnIndex == Index && OwningGrid.CurrentSlot == e.Row.Slot)
                     {
-                        if (_currentCheckBox != null)
-                        {
-                            _currentCheckBox.IsEnabled = false;
-                        }
+                        _currentCheckBox?.IsEnabled = false;
                         checkBox.IsEnabled = true;
                         _currentCheckBox = checkBox;
                     }

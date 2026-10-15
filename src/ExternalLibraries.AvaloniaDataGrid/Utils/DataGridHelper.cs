@@ -1,4 +1,4 @@
-﻿namespace Avalonia.Controls
+namespace Avalonia.Controls
 {
     internal static class DataGridHelper
     {

@@ -1,13 +1,13 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved. 
 
 #nullable disable
 
-using Avalonia.Data;
 using System;
 using Avalonia.Controls.Utils;
+using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Metadata;
 using Avalonia.Reactive;
@@ -23,7 +23,7 @@ namespace Avalonia.Controls
 #endif
     abstract class DataGridBoundColumn : DataGridColumn
     {
-        private BindingBase _binding; 
+        private BindingBase _binding;
 
         /// <summary>
         /// Gets or sets the binding that associates the column with a property in the data source.
@@ -45,13 +45,13 @@ namespace Avalonia.Controls
                     {
                         // Edited value couldn't be committed, so we force a CancelEdit
                         OwningGrid.CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
-                    } 
+                    }
 
-                    _binding = value; 
+                    _binding = value;
 
                     if (_binding != null)
                     {
-                        if(_binding is CompiledBinding compiled)
+                        if (_binding is CompiledBinding compiled)
                         {
                             if (compiled.Mode == BindingMode.OneWayToSource)
                             {
@@ -62,7 +62,7 @@ namespace Avalonia.Controls
                             if (!string.IsNullOrEmpty(path) && compiled.Mode == BindingMode.Default)
                             {
                                 compiled.Mode = BindingMode.TwoWay;
-                            } 
+                            }
 
                             if (compiled.Converter == null && string.IsNullOrEmpty(compiled.StringFormat))
                             {
@@ -89,16 +89,13 @@ namespace Avalonia.Controls
                         }
 
                         // Apply the new Binding to existing rows in the DataGrid
-                        if (OwningGrid != null)
-                        {
-                            OwningGrid.OnColumnBindingChanged(this);
-                        }
-                    } 
+                        OwningGrid?.OnColumnBindingChanged(this);
+                    }
 
                     RemoveEditingElement();
                 }
             }
-        } 
+        }
 
         /// <summary>
         /// The binding that will be used to get or set cell content for the clipboard.
@@ -114,26 +111,26 @@ namespace Avalonia.Controls
             {
                 base.ClipboardContentBinding = value;
             }
-        } 
+        }
 
         //TODO Rename
         //TODO Validation
         protected sealed override Control GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase editBinding)
         {
             Control element = GenerateEditingElementDirect(cell, dataItem);
-            editBinding = null; 
+            editBinding = null;
 
             if (Binding != null)
             {
                 editBinding = element.Bind(BindingTarget, Binding);
-            } 
+            }
 
             return element;
-        } 
+        }
 
-        protected abstract Control GenerateEditingElementDirect(DataGridCell cell, object dataItem); 
+        protected abstract Control GenerateEditingElementDirect(DataGridCell cell, object dataItem);
 
-        protected AvaloniaProperty BindingTarget { get; set; } 
+        protected AvaloniaProperty BindingTarget { get; set; }
 
         internal void SetHeaderFromBinding()
         {
@@ -151,5 +148,5 @@ namespace Avalonia.Controls
                 }
             }
         }
-    } 
+    }
 }

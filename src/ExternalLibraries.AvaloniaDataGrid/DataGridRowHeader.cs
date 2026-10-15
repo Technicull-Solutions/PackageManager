@@ -1,15 +1,15 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
+using System.Diagnostics;
 using Avalonia.Automation;
 using Avalonia.Controls.Metadata;
 using Avalonia.Input;
 using Avalonia.Media;
-using System.Diagnostics;
 
 namespace Avalonia.Controls.Primitives
 {
@@ -113,7 +113,7 @@ namespace Avalonia.Controls.Primitives
             {
                 UpdatePseudoClasses();
             }
-        } 
+        }
 
         /// <summary>
         /// Measures the children of a <see cref="T:Avalonia.Controls.Primitives.DataGridRowHeader" /> to prepare for arranging them during the <see cref="M:System.Windows.FrameworkElement.ArrangeOverride(System.Windows.Size)" /> pass.
@@ -169,19 +169,13 @@ namespace Avalonia.Controls.Primitives
 
         protected override void OnPointerEntered(PointerEventArgs e)
         {
-            if (OwningRow != null)
-            {
-                OwningRow.IsMouseOver = true;
-            }
+            OwningRow?.IsMouseOver = true;
 
             base.OnPointerEntered(e);
         }
         protected override void OnPointerExited(PointerEventArgs e)
         {
-            if (OwningRow != null)
-            {
-                OwningRow.IsMouseOver = false;
-            }
+            OwningRow?.IsMouseOver = false;
 
             base.OnPointerExited(e);
         }
@@ -221,7 +215,7 @@ namespace Avalonia.Controls.Primitives
                     e.Handled = OwningGrid.UpdateStateOnMouseRightButtonDown(e, -1, Slot, false);
                 }
             }
-        } 
+        }
 
     }
 

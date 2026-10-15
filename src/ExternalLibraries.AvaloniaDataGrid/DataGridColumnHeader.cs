@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -55,7 +55,7 @@ namespace Avalonia.Controls
         private static Point? _dragStart;
         private static DataGridColumn _dragColumn;
         private static double _frozenColumnsWidth;
-        private static Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
+        private static readonly Lazy<Cursor> _resizeCursor = new Lazy<Cursor>(() => new Cursor(StandardCursorType.SizeWestEast));
 
         public static readonly StyledProperty<IBrush> SeparatorBrushProperty =
             AvaloniaProperty.Register<DataGridColumnHeader, IBrush>(nameof(SeparatorBrush));
@@ -307,7 +307,6 @@ namespace Avalonia.Controls
                                     DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer, forcedDirection.Value) :
                                     DataGridSortDescription.FromComparer(OwningColumn.CustomSortComparer);
 
-
                                 owningGrid.DataConnection.SortDescriptions.Add(newSort);
                             }
                             else
@@ -376,6 +375,7 @@ namespace Avalonia.Controls
 
         internal void OnMouseLeftButtonDown(ref bool handled, PointerEventArgs args, Point mousePosition)
         {
+            _ = args;
             IsPressed = true;
 
             if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
@@ -607,7 +607,7 @@ namespace Avalonia.Controls
         /// <returns></returns>
         private int GetReorderingTargetDisplayIndex(Point mousePositionHeaders)
         {
-            DataGridColumn targetColumn = GetReorderingTargetColumn(mousePositionHeaders, false /*scroll*/, out double scrollAmount);
+            DataGridColumn targetColumn = GetReorderingTargetColumn(mousePositionHeaders, false /*scroll*/, out _);
             if (targetColumn != null)
             {
                 return targetColumn.DisplayIndex > OwningColumn.DisplayIndex ? targetColumn.DisplayIndex - 1 : targetColumn.DisplayIndex;
@@ -616,24 +616,6 @@ namespace Avalonia.Controls
             {
                 return OwningGrid.Columns.Count - 1;
             }
-        }
-
-        /// <summary>
-        /// Returns true if the mouse is
-        /// - to the left of the element, or within the left half of the element
-        /// and
-        /// - within the vertical range of the element, or ignoreVertical == true
-        /// </summary>
-        /// <param name="mousePosition"></param>
-        /// <param name="element"></param>
-        /// <param name="ignoreVertical"></param>
-        /// <returns></returns>
-        private bool IsReorderTargeted(Point mousePosition, Control element, bool ignoreVertical)
-        {
-            Point position = this.Translate(element, mousePosition);
-
-            return (position.X < 0 || (position.X >= 0 && position.X <= element.Bounds.Width / 2))
-                && (ignoreVertical || (position.Y >= 0 && position.Y <= element.Bounds.Height));
         }
 
         /// <summary>
@@ -750,7 +732,9 @@ namespace Avalonia.Controls
                     Height = control.DesiredSize.Height,
                     Fill = new VisualBrush
                     {
-                        Visual = control, Stretch = Stretch.None, AlignmentX = AlignmentX.Left,
+                        Visual = control,
+                        Stretch = Stretch.None,
+                        AlignmentX = AlignmentX.Left,
                     }
                 };
                 return rect;

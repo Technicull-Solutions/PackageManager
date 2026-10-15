@@ -1,24 +1,24 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
-using Avalonia.Collections;
-using Avalonia.Controls.Utils;
-using Avalonia.LogicalTree;
-using Avalonia.Media;
-using Avalonia.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using Avalonia.Collections;
+using Avalonia.Controls.Utils;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Utilities;
 
 namespace Avalonia.Controls
 {
@@ -949,7 +949,6 @@ namespace Avalonia.Controls
             // Figure out which slots actually need to be expanded since some might already be collapsed
             double currentHeightChange = 0;
             int firstSlot = startSlot;
-            int lastSlot = endSlot;
             while (firstSlot <= endSlot)
             {
                 firstSlot = _collapsedSlotsTable.GetNextIndex(firstSlot - 1);
@@ -957,7 +956,7 @@ namespace Avalonia.Controls
                 {
                     break;
                 }
-                lastSlot = Math.Min(endSlot, _collapsedSlotsTable.GetNextGap(firstSlot) - 1);
+                int lastSlot = Math.Min(endSlot, _collapsedSlotsTable.GetNextGap(firstSlot) - 1);
 
                 if (firstSlot <= lastSlot)
                 {
@@ -1033,7 +1032,7 @@ namespace Avalonia.Controls
                 dataGridRow.Slot = slot;
                 dataGridRow.OwningGrid = this;
                 dataGridRow.DataContext = dataContext;
-                if (RowTheme is {} rowTheme)
+                if (RowTheme is { } rowTheme)
                 {
                     dataGridRow.SetValue(ThemeProperty, rowTheme, BindingPriority.Template);
                 }
@@ -1555,9 +1554,9 @@ namespace Avalonia.Controls
                 OnUnloadingRowGroup(new DataGridRowGroupHeaderEventArgs(groupHeader));
                 DisplayData.AddRecylableRowGroupHeader(groupHeader);
             }
-            else if (_rowsPresenter != null)
+            else
             {
-                _rowsPresenter.Children.Remove(element);
+                _rowsPresenter?.Children.Remove(element);
             }
 
             // Update DisplayData
@@ -1595,7 +1594,7 @@ namespace Avalonia.Controls
             CorrectSlotsAfterDeletion(slot, isRow);
 
             OnRemovedElement(slot, item);
-            
+
             // Synchronize CurrentCellCoordinates, CurrentColumn, CurrentColumnIndex, CurrentItem
             // and CurrentSlot with the currently edited cell, since OnRemovingElement called
             // SetCurrentCellCore(-1, -1) to temporarily reset the current cell.
@@ -2258,10 +2257,7 @@ namespace Avalonia.Controls
                     bool isCollapsed = (parentGroupInfo != null) && (!parentGroupInfo.IsVisible || _collapsedSlotsTable.Contains(parentGroupInfo.Slot));
                     if (group != null)
                     {
-                        if (group.Items != null)
-                        {
-                            group.Items.CollectionChanged += CollectionViewGroup_CollectionChanged;
-                        }
+                        group.Items?.CollectionChanged += CollectionViewGroup_CollectionChanged;
                         var newGroupInfo = new DataGridRowGroupInfo(group, true, parentGroupInfo.Level + 1, insertSlot, insertSlot);
                         InsertElementAt(insertSlot,
                             rowIndex: -1,
@@ -2302,10 +2298,7 @@ namespace Avalonia.Controls
             {
                 if (e.OldItems[0] is DataGridCollectionViewGroup removedGroup)
                 {
-                    if (removedGroup.Items != null)
-                    {
-                        removedGroup.Items.CollectionChanged -= CollectionViewGroup_CollectionChanged;
-                    }
+                    removedGroup.Items?.CollectionChanged -= CollectionViewGroup_CollectionChanged;
                     DataGridRowGroupInfo groupInfo = RowGroupInfoFromCollectionViewGroup(removedGroup);
                     Debug.Assert(groupInfo != null);
                     if ((groupInfo.Level == _rowGroupHeightsByLevel.Length - 1) && (removedGroup.Items != null) && (removedGroup.Items.Count > 0))
@@ -2349,17 +2342,11 @@ namespace Avalonia.Controls
             foreach (int slot in RowGroupHeadersTable.GetIndexes())
             {
                 DataGridRowGroupInfo groupInfo = RowGroupHeadersTable.GetValueAt(slot);
-                if (groupInfo.CollectionViewGroup.Items != null)
-                {
-                    groupInfo.CollectionViewGroup.Items.CollectionChanged -= CollectionViewGroup_CollectionChanged;
-                }
+                groupInfo.CollectionViewGroup.Items?.CollectionChanged -= CollectionViewGroup_CollectionChanged;
             }
-            if (_topLevelGroup != null)
-            {
-                // The PagedCollectionView reuses the top level group so we need to detach any existing or else we'll get duplicate handers here
-                _topLevelGroup.CollectionChanged -= CollectionViewGroup_CollectionChanged;
-                _topLevelGroup = null;
-            }
+            // The PagedCollectionView reuses the top level group so we need to detach any existing or else we'll get duplicate handers here
+            _topLevelGroup?.CollectionChanged -= CollectionViewGroup_CollectionChanged;
+            _topLevelGroup = null;
 
             RowGroupHeadersTable.Clear();
             // Unfortunately PagedCollectionView does not allow us to preserve expanded or collapsed states for RowGroups since
@@ -2672,7 +2659,7 @@ namespace Avalonia.Controls
 
                     for (int i = 0; i < elementsToRemove; i++)
                     {
-                        RemoveDisplayedElement(startSlot, wasDeleted: false , updateSlotInformation: false);
+                        RemoveDisplayedElement(startSlot, wasDeleted: false, updateSlotInformation: false);
                     }
                 }
 
@@ -2764,7 +2751,7 @@ namespace Avalonia.Controls
             groupHeader.RowGroupInfo = rowGroupInfo;
             groupHeader.DataContext = rowGroupInfo.CollectionViewGroup;
             groupHeader.Level = rowGroupInfo.Level;
-            if (RowGroupTheme is {} rowGroupTheme)
+            if (RowGroupTheme is { } rowGroupTheme)
             {
                 groupHeader.SetValue(ThemeProperty, rowGroupTheme, BindingPriority.Template);
             }
@@ -2774,7 +2761,7 @@ namespace Avalonia.Controls
             Debug.Assert(DataConnection.CollectionView != null && groupHeader.Level < DataConnection.CollectionView.GroupingDepth);
             string propertyName = DataConnection.CollectionView.GetGroupingPropertyNameAtDepth(groupHeader.Level);
 
-            if(string.IsNullOrWhiteSpace(propertyName))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
                 groupHeader.PropertyName = null;
             }
@@ -2970,7 +2957,7 @@ namespace Avalonia.Controls
             if (_rowsPresenter != null && _measured && RowDetailsTemplate != null)
             {
                 object dataItem = null;
-                if(VisibleSlotCount > 0)
+                if (VisibleSlotCount > 0)
                     dataItem = DataConnection.GetDataItem(0);
                 var detailsContent = RowDetailsTemplate.Build(dataItem);
                 if (detailsContent != null)

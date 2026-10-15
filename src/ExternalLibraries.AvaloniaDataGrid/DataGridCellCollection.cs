@@ -1,4 +1,4 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
@@ -12,8 +12,8 @@ namespace Avalonia.Controls
 {
     internal class DataGridCellCollection
     {
-        private List<DataGridCell> _cells;
-        private DataGridRow _owningRow;
+        private readonly List<DataGridCell> _cells;
+        private readonly DataGridRow _owningRow;
 
         internal event EventHandler<DataGridCellEventArgs>? CellAdded;
         internal event EventHandler<DataGridCellEventArgs>? CellRemoved;

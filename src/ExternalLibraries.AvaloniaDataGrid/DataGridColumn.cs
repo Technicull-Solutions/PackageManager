@@ -194,7 +194,6 @@ namespace Avalonia.Controls
             get => _editBinding;
         }
 
-
         /// <summary>
         /// Defines the <see cref="IsVisible"/> property.
         /// </summary>
@@ -219,10 +218,7 @@ namespace Avalonia.Controls
                 OwningGrid?.OnColumnVisibleStateChanging(this);
                 var isVisible = change.GetNewValue<bool>();
 
-                if (_headerCell != null)
-                {
-                    _headerCell.IsVisible = isVisible;
-                }
+                _headerCell?.IsVisible = isVisible;
 
                 OwningGrid?.OnColumnVisibleStateChanged(this);
                 NotifyPropertyChanged(change.Property.Name);
@@ -258,7 +254,6 @@ namespace Avalonia.Controls
                 }
             }
         }
-
 
         /// <summary>
         /// Actual visible width after Width, MinWidth, and MaxWidth setting at the Column level and DataGrid level

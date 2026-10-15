@@ -1,20 +1,20 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System;
 using System.Text;
 
 namespace Avalonia.Controls
 {
     internal class IndexToValueTable<T> : IEnumerable<Range<T>>
     {
-        private List<Range<T>> _list;
+        private readonly List<Range<T>> _list;
 
         public IndexToValueTable()
         {
@@ -404,7 +404,7 @@ namespace Avalonia.Controls
         /// <returns>the value at the given index or the default value if index is not in the table</returns>
         public T GetValueAt(int index)
         {
-            return GetValueAt(index, out bool found);
+            return GetValueAt(index, out _);
         }
 
         /// <summary>
@@ -721,7 +721,7 @@ namespace Avalonia.Controls
             // Do a binary search for the index
             int front = 0;
             int end = _list.Count - 1;
-            Range<T> range = null;
+            Range<T> range;
             while (end > front)
             {
                 int median = (front + end) / 2;

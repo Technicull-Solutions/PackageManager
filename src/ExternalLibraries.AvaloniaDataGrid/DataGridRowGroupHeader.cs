@@ -1,27 +1,27 @@
-﻿// (c) Copyright Microsoft Corporation.
+// (c) Copyright Microsoft Corporation.
 // This source is subject to the Microsoft Public License (Ms-PL).
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
 #nullable disable
 
+using System;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Media;
-using System;
 using Avalonia.Controls.Utils;
+using Avalonia.Input;
 using Avalonia.LogicalTree;
+using Avalonia.Media;
 
 namespace Avalonia.Controls
 {
-    [TemplatePart(DATAGRIDROWGROUPHEADER_expanderButton,      typeof(ToggleButton))]
-    [TemplatePart(DATAGRIDROWGROUPHEADER_indentSpacer,        typeof(Control))]
-    [TemplatePart(DATAGRIDROWGROUPHEADER_itemCountElement,    typeof(TextBlock))]
+    [TemplatePart(DATAGRIDROWGROUPHEADER_expanderButton, typeof(ToggleButton))]
+    [TemplatePart(DATAGRIDROWGROUPHEADER_indentSpacer, typeof(Control))]
+    [TemplatePart(DATAGRIDROWGROUPHEADER_itemCountElement, typeof(TextBlock))]
     [TemplatePart(DATAGRIDROWGROUPHEADER_propertyNameElement, typeof(TextBlock))]
-    [TemplatePart(DataGridRow.DATAGRIDROW_elementRoot,        typeof(Panel))]
-    [TemplatePart(DataGridRow.DATAGRIDROW_elementRowHeader,   typeof(DataGridRowHeader))]
+    [TemplatePart(DataGridRow.DATAGRIDROW_elementRoot, typeof(Panel))]
+    [TemplatePart(DataGridRow.DATAGRIDROW_elementRowHeader, typeof(DataGridRowHeader))]
     [PseudoClasses(":pressed", ":current", ":expanded")]
 #if !DATAGRID_INTERNAL
     public
@@ -54,7 +54,6 @@ namespace Avalonia.Controls
             set { SetValue(IsItemCountVisibleProperty, value); }
         }
 
-
         public static readonly StyledProperty<string> ItemCountFormatProperty =
             AvaloniaProperty.Register<DataGridRowGroupHeader, string>(nameof(ItemCountFormat));
 
@@ -66,7 +65,6 @@ namespace Avalonia.Controls
             get { return GetValue(ItemCountFormatProperty); }
             set { SetValue(ItemCountFormatProperty, value); }
         }
-
 
         public static readonly StyledProperty<string> PropertyNameProperty =
             AvaloniaProperty.Register<DataGridRowGroupHeader, string>(nameof(PropertyName));
@@ -115,15 +113,12 @@ namespace Avalonia.Controls
 
         private void OnSublevelIndentChanged(AvaloniaPropertyChangedEventArgs e)
         {
-            if (OwningGrid != null)
-            {
-                OwningGrid.OnSublevelIndentUpdated(this, (double)e.NewValue);
-            }
+            OwningGrid?.OnSublevelIndentUpdated(this, (double)e.NewValue);
         }
 
         static DataGridRowGroupHeader()
         {
-            SublevelIndentProperty.Changed.AddClassHandler<DataGridRowGroupHeader>((x,e) => x.OnSublevelIndentChanged(e));
+            SublevelIndentProperty.Changed.AddClassHandler<DataGridRowGroupHeader>((x, e) => x.OnSublevelIndentChanged(e));
             PressedMixin.Attach<DataGridRowGroupHeader>();
             IsTabStopProperty.OverrideDefaultValue<DataGridRowGroupHeader>(false);
         }
@@ -187,10 +182,7 @@ namespace Avalonia.Controls
             set
             {
                 _totalIndent = value;
-                if (_indentSpacer != null)
-                {
-                    _indentSpacer.Width = _totalIndent;
-                }
+                _indentSpacer?.Width = _totalIndent;
             }
         }
 
@@ -202,27 +194,24 @@ namespace Avalonia.Controls
 
             _expanderButtonSubscription?.Dispose();
             _expanderButton = e.NameScope.Find<ToggleButton>(DATAGRIDROWGROUPHEADER_expanderButton);
-            if(_expanderButton != null)
+            if (_expanderButton != null)
             {
                 EnsureExpanderButtonIsChecked();
                 _expanderButtonSubscription =
                     _expanderButton.GetObservable(ToggleButton.IsCheckedProperty)
                                    .Skip(1)
-                                   .Subscribe(v => OnExpanderButtonIsCheckedChanged(v));
+                                   .Subscribe(OnExpanderButtonIsCheckedChanged);
             }
 
             _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRow.DATAGRIDROW_elementRowHeader);
-            if(_headerElement != null)
+            if (_headerElement != null)
             {
                 _headerElement.Owner = this;
                 EnsureHeaderVisibility();
             }
 
             _indentSpacer = e.NameScope.Find<Control>(DATAGRIDROWGROUPHEADER_indentSpacer);
-            if(_indentSpacer != null)
-            {
-                _indentSpacer.Width = _totalIndent;
-            }
+            _indentSpacer?.Width = _totalIndent;
 
             _itemCountElement = e.NameScope.Find<TextBlock>(DATAGRIDROWGROUPHEADER_itemCountElement);
             _propertyNameElement = e.NameScope.Find<TextBlock>(DATAGRIDROWGROUPHEADER_propertyNameElement);
@@ -376,7 +365,7 @@ namespace Avalonia.Controls
 
         private void OnExpanderButtonIsCheckedChanged(bool? value)
         {
-            if(!_areIsCheckedHandlersSuspended)
+            if (!_areIsCheckedHandlersSuspended)
             {
                 ToggleExpandCollapse(value ?? false, true);
             }
@@ -437,7 +426,7 @@ namespace Avalonia.Controls
                     // Do these even if the OwningGrid is null in case it could improve the Designer experience for a standalone DataGridRowGroupHeader
                     RowGroupInfo.IsVisible = isVisible;
                 }
-                else if(RowGroupInfo.IsVisible != isVisible)
+                else if (RowGroupInfo.IsVisible != isVisible)
                 {
                     OwningGrid.OnRowGroupHeaderToggled(this, isVisible, setCurrent);
                 }
@@ -463,9 +452,9 @@ namespace Avalonia.Controls
             {
                 string formatString;
                 if (RowGroupInfo.CollectionViewGroup.ItemCount == 1)
-                    formatString = (ItemCountFormat == null ? "({0} Item)" : ItemCountFormat);
+                    formatString = (ItemCountFormat ?? "({0} Item)");
                 else
-                    formatString = (ItemCountFormat == null ? "({0} Items)" : ItemCountFormat);
+                    formatString = (ItemCountFormat ?? "({0} Items)");
 
                 _itemCountElement.Text = String.Format(formatString, RowGroupInfo.CollectionViewGroup.ItemCount);
             }

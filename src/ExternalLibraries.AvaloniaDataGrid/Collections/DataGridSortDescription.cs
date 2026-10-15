@@ -1,4 +1,4 @@
-﻿#nullable disable
+#nullable disable
 
 using System;
 using System.Collections;
@@ -57,7 +57,7 @@ namespace Avalonia.Collections
             /// <summary>
             /// Private accessor for the CultureInfo of our comparer
             /// </summary>
-            private CultureInfo _culture;
+            private readonly CultureInfo _culture;
 
             /// <summary>
             /// Creates a comparer which will respect the CultureInfo
@@ -209,15 +209,13 @@ namespace Avalonia.Collections
 
             private int Compare(object x, object y)
             {
-                int result = 0;
-
-                if(_propertyType == null)
+                if (_propertyType == null)
                 {
-                    if(x != null)
+                    if (x != null)
                     {
                         _propertyType = GetPropertyType(x);
                     }
-                    if(_propertyType == null && y != null)
+                    if (_propertyType == null && y != null)
                     {
                         _propertyType = GetPropertyType(y);
                     }
@@ -229,8 +227,7 @@ namespace Avalonia.Collections
                 if (_propertyType != null && _internalComparer == null)
                     _internalComparer = GetComparerForType(_propertyType);
 
-                result = _internalComparer?.Compare(v1, v2) ?? 0;
-
+                int result = _internalComparer?.Compare(v1, v2) ?? 0;
                 if (Direction == ListSortDirection.Descending)
                     return -result;
                 else
@@ -241,7 +238,7 @@ namespace Avalonia.Collections
             {
                 base.Initialize(itemType);
 
-                if(_propertyType == null)
+                if (_propertyType == null)
                     _propertyType = itemType.GetNestedPropertyType(_propertyPath);
                 if (_internalComparer == null && _propertyType != null)
                     _internalComparer = GetComparerForType(_propertyType);
@@ -250,22 +247,22 @@ namespace Avalonia.Collections
             {
                 if (Direction == ListSortDirection.Descending)
                 {
-                    return seq.OrderByDescending(o => GetValue(o), InternalComparer);
+                    return seq.OrderByDescending(GetValue, InternalComparer);
                 }
                 else
                 {
-                    return seq.OrderBy(o => GetValue(o), InternalComparer);
+                    return seq.OrderBy(GetValue, InternalComparer);
                 }
             }
             public override IOrderedEnumerable<object> ThenBy(IOrderedEnumerable<object> seq)
             {
                 if (Direction == ListSortDirection.Descending)
                 {
-                    return seq.ThenByDescending(o => GetValue(o), InternalComparer);
+                    return seq.ThenByDescending(GetValue, InternalComparer);
                 }
                 else
                 {
-                    return seq.ThenBy(o => GetValue(o), InternalComparer);
+                    return seq.ThenBy(GetValue, InternalComparer);
                 }
             }
 
@@ -308,7 +305,7 @@ namespace Avalonia.Collections
         {
             _innerComparer = comparer;
             _direction = direction;
-            _comparer = Comparer<object>.Create((x, y) => Compare(x, y));
+            _comparer = Comparer<object>.Create(Compare);
         }
 
         private int Compare(object x, object y)

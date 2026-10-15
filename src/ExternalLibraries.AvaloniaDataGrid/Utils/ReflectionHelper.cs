@@ -19,64 +19,8 @@ namespace Avalonia.Controls.Utils
         internal const char LeftIndexerToken = '[';
         internal const char PropertyNameSeparator = '.';
         internal const char RightIndexerToken = ']';
-        internal const char LeftParenthesisToken  = '(';
+        internal const char LeftParenthesisToken = '(';
         internal const char RightParenthesisToken = ')';
-
-        private static Type? FindGenericType(Type definition, Type? type)
-        {
-            // No reflective interface discovery: Evergreen supplies explicit columns.
-            return null;
-        }
-
-        /// <summary>
-        /// Finds an int or string indexer in the specified collection of members, where int indexers take priority
-        /// over string indexers.  If found, this method will return the associated PropertyInfo and set the out index
-        /// argument to its appropriate value.  If not found, the return value will be null, as will the index.
-        /// </summary>
-        /// <param name="members">Collection of members to search through for an indexer.</param>
-        /// <param name="stringIndex">String value of indexer argument.</param>
-        /// <param name="index">Resultant index value.</param>
-        /// <returns>Indexer PropertyInfo if found, null otherwise.</returns>
-        private static PropertyInfo? FindIndexerInMembers(MemberInfo?[] members, string stringIndex, out object[]? index)
-        {
-            index = null;
-            ParameterInfo[] parameters;
-            PropertyInfo? stringIndexer = null;
-
-            foreach (var member in members)
-            {
-                if (member is not PropertyInfo pi)
-                {
-                    continue;
-                }
-
-                // Only a single parameter is supported and it must be a string or Int32 value.
-                parameters = pi.GetIndexParameters();
-                if (parameters.Length > 1)
-                {
-                    continue;
-                }
-
-                if (parameters[0].ParameterType == typeof(int))
-                {
-                    int intIndex = -1;
-                    if (Int32.TryParse(stringIndex.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out intIndex))
-                    {
-                        index = new object[] { intIndex };
-                        return pi;
-                    }
-                }
-
-                // If string indexer is found save it, in case there is an int indexer.
-                if (parameters[0].ParameterType == typeof(string))
-                {
-                    index = new object[] { stringIndex };
-                    stringIndexer = pi;
-                }
-            }
-
-            return stringIndexer;
-        }
 
         /// <summary>
         /// Gets the default member name that is used for an indexer (e.g. "Item").
@@ -125,6 +69,7 @@ namespace Avalonia.Controls.Utils
 
         internal static Type GetEnumerableItemType(this Type enumerableType)
         {
+            _ = enumerableType;
             // The display contract is expressed by compiled column bindings, not discovered properties.
             return typeof(object);
         }
@@ -190,7 +135,7 @@ namespace Avalonia.Controls.Utils
         /// <returns>The PropertyInfo.</returns>
         internal static PropertyInfo? GetNestedProperty(this Type parentType, string? propertyPath, ref object? item)
         {
-            return parentType.GetNestedProperty(propertyPath, out Exception? ex, ref item);
+            return parentType.GetNestedProperty(propertyPath, out _, ref item);
         }
 
         internal static PropertyInfo? GetNestedProperty(this Type? parentType, string? propertyPath)
@@ -319,6 +264,8 @@ namespace Avalonia.Controls.Utils
         /// <returns>PropertyInfo for either a property or an indexer.</returns>
         internal static PropertyInfo? GetPropertyOrIndexer(this Type type, string? propertyPath, out object[]? index)
         {
+            _ = propertyPath;
+            _ = type;
             // Name-based property discovery is unavailable in the Evergreen grid.
             // Compiled bindings and explicit sort comparers provide the supported paths.
             index = null;
