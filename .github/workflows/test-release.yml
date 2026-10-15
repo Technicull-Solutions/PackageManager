@@ -22,6 +22,11 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: windows-test-release-nuget-${{ hashFiles('global.json', 'src/**/*.csproj', 'src/**/*.props', 'src/**/*.targets') }}
+          restore-keys: windows-test-release-nuget-
       - name: Install Inno Setup
         shell: pwsh
         run: choco install innosetup -y --no-progress
@@ -36,6 +41,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Test and package NativeAOT Windows x64
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           ./scripts/build.ps1 -Platform x64
           if (-not (Get-ChildItem output/*.Setup.exe)) { throw 'Installer was not produced.' }
@@ -49,6 +56,13 @@ jobs:
           $Launcher = Join-Path $SmokeDir 'uniget.exe'
           & $Launcher tui --help
           if ($LASTEXITCODE -ne 0) { throw 'Packaged terminal UI help check failed.' }
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: Windows-test-reports
+          path: artifacts/test-results/**
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v7
         with:
           name: EvergreenEndpointPackageManager-win-x64

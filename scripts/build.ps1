@@ -70,7 +70,7 @@ Write-Host "Building Evergreen Endpoint Package Manager version: $PackageVersion
 # --- Test ---
 if (-not $SkipTests) {
     Write-Host "`n=== Running tests ===" -ForegroundColor Cyan
-    dotnet test $WindowsSolution --verbosity q --nologo /p:RestoreIgnoreFailedSources=true /p:Platform=$Platform /p:UseSharedCompilation=false /m:1
+    dotnet test $WindowsSolution --verbosity minimal --nologo --logger "console;verbosity=normal" --logger "trx;LogFilePrefix=tests" --results-directory (Join-Path $RepoRoot "artifacts/test-results") /p:RestoreIgnoreFailedSources=true /p:Platform=$Platform /p:UseSharedCompilation=false /m:1
     if ($LASTEXITCODE -ne 0) {
         throw "Tests failed with exit code $LASTEXITCODE"
     }
