@@ -1,0 +1,95 @@
+name: Windows Test Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-test-release
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.x'
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+      - name: Restore
+        run: dotnet restore src/UniGetUI.Windows.slnx
+      - name: Verify formatting
+        shell: pwsh
+        run: |
+          dotnet format whitespace src --folder --verify-no-changes --verbosity minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet format style src/UniGetUI.Windows.slnx --no-restore --verify-no-changes --verbosity minimal
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test and package NativeAOT Windows x64
+        shell: pwsh
+        run: |
+          ./scripts/build.ps1 -Platform x64
+          if (-not (Get-ChildItem output/*.Setup.exe)) { throw 'Installer was not produced.' }
+      - name: Verify packaged application
+        shell: pwsh
+        run: |
+          $Zip = Get-ChildItem output/EvergreenEndpointPackageManager.*.x64.zip
+          $SmokeDir = Join-Path $env:RUNNER_TEMP 'eepm-release-smoke'
+          Expand-Archive -LiteralPath $Zip.FullName -DestinationPath $SmokeDir
+          ./scripts/verify-integrity-tree.ps1 -Path $SmokeDir -FailOnUnexpectedFiles
+          $Launcher = Join-Path $SmokeDir 'uniget.exe'
+          & $Launcher tui --help
+          if ($LASTEXITCODE -ne 0) { throw 'Packaged terminal UI help check failed.' }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: EvergreenEndpointPackageManager-win-x64
+          path: output/*
+          if-no-files-found: error
+
+  release:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: EvergreenEndpointPackageManager-win-x64
+          path: output
+      - name: Publish test prerelease
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          $Info = Get-Content src/SharedAssemblyInfo.cs -Raw
+          $Version = [regex]::Match($Info, 'AssemblyInformationalVersion\("([^"]+)"\)').Groups[1].Value
+          $Build = (Get-Content scripts/BuildNumber -Raw).Trim()
+          if (-not $Version -or $Build -notmatch '^\d+$') { throw 'Invalid release version.' }
+          $Tag = "v$Version-build.$Build"
+          $Notes = @"
+          First device-testing package of Evergreen Endpoint Package Manager: version $Version, Build $Build.
+
+          Download the Windows x64 **.Setup.exe** to install, or extract the application **.x64.zip** into a writable folder and run **Evergreen Endpoint Package Manager.exe**. The application is self-contained; a separate .NET installation is not required.
+
+          SHA-256 hashes are included in **checksums.x64.txt**. The **Policies** ZIP contains optional Group Policy templates.
+
+          This test build is unsigned. Windows may show an unknown-publisher warning. Elevated policy writes require signed binaries and are unavailable in this build. GitHub OAuth credentials and telemetry credentials are not configured. ARM64, Linux, and macOS are not included or validated in this release.
+
+          Please report device details, steps to reproduce, and relevant logs when reporting a problem.
+          "@
+          $Notes | Set-Content release-notes.txt
+          $Assets = (Get-ChildItem output -File).FullName
+          gh release create $Tag --target $env:RELEASE_COMMIT --title "Evergreen Endpoint Package Manager $Version Build $Build" --prerelease --latest=false --notes-file release-notes.txt @Assets
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub prerelease creation failed.' }

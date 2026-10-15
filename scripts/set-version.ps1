@@ -7,12 +7,19 @@
 .PARAMETER Version
     Evergreen release version, e.g. "0.1.0" or a manually selected dated release version.
     A four-part version (X.X.X.X) is derived automatically for assembly info.
+
+.PARAMETER BuildNumber
+    Explicit build number. When omitted, increments scripts/BuildNumber.
 #>
 
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
-    [string] $Version
+    [ValidatePattern('^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$')]
+    [string] $Version,
+
+    [ValidateRange(1, 65535)]
+    [int] $BuildNumber
 )
 
 $ErrorActionPreference = 'Stop'
@@ -30,11 +37,13 @@ Write-Host "Assembly ver  : $FourPartVersion"
 
 # --- Bump build number ---
 $BuildNumberFile = Join-Path $PSScriptRoot "BuildNumber"
-$BuildNumber = 0
-if (Test-Path $BuildNumberFile) {
-    $BuildNumber = [int](Get-Content $BuildNumberFile -Raw).Trim()
+if (-not $PSBoundParameters.ContainsKey('BuildNumber')) {
+    $BuildNumber = 0
+    if (Test-Path $BuildNumberFile) {
+        $BuildNumber = [int](Get-Content $BuildNumberFile -Raw).Trim()
+    }
+    $BuildNumber++
 }
-$BuildNumber++
 Set-Content $BuildNumberFile $BuildNumber
 Write-Host "Build number  : $BuildNumber"
 
