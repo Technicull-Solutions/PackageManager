@@ -4,8 +4,8 @@ The current application exposes two authoritative values from `CoreData`:
 
 | Value | Current source value | Purpose |
 |---|---:|---|
-| Version | `0.1.0` | Evergreen development version shown to users and administrators. |
-| Build | `1` | Evergreen's independent, monotonically increasing build number. |
+| Version | `0.2.0` | Evergreen version shown to users and administrators. |
+| Build | `1` | Build number for the first device-testing release. |
 
 The sidebar, tray tooltip, About page, update metadata, and build-freshness calculation must read these centralized values. Display text must never contain copied version literals.
 
