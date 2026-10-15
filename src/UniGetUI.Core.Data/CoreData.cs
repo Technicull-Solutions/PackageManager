@@ -51,8 +51,8 @@ namespace UniGetUI.Core.Data
         public const string MainBuildNumberUrl =
             "https://raw.githubusercontent.com/Technicull-Solutions/PackageManager/main/scripts/BuildNumber";
 
-        public const string AppIdentifier = "MartiCliment.UniGetUI";
-        public const string MainWindowIdentifier = "MartiCliment.UniGetUI.MainInterface";
+        public const string AppIdentifier = "Technicull.EvergreenEndpointApps";
+        public const string MainWindowIdentifier = "Technicull.EvergreenEndpointApps.MainInterface";
 
         public static string GetGitHubReleaseTag()
         {
