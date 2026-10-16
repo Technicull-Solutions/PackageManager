@@ -33,4 +33,9 @@ Portable exports are unsigned drafts. The existing elevated policy-write protoco
 
 ## Validation and packaging
 
+Read [Windows release trust and package contents](WINDOWS_RELEASE_TRUST.md) for the unsigned
+testing-build limitation and the signing prerequisite. Windows may block an unsigned download
+entirely; this portable utility does not require installation, but its executable still needs
+to satisfy the device's security policy.
+
 The release workflow tests the shared employee/admin document contract and publishes both clients. `scripts/package-admin.ps1` publishes the administrator executable with NativeAOT, runs its published `--self-test` document/export path, and packages the portable application with this guide, policy templates, and manager-configuration example. The release pipeline also verifies that its desktop window starts and exits on a disposable Windows runner. Check the release report for actual tested architecture and GUI coverage.

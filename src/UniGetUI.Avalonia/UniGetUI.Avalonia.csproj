@@ -221,7 +221,7 @@
             <_CliLauncherTargetFramework Condition="'$(RuntimeIdentifier)' == 'linux-x64' or '$(RuntimeIdentifier)' == 'linux-arm64' or '$(RuntimeIdentifier)' == 'osx-x64' or '$(RuntimeIdentifier)' == 'osx-arm64'">$(PortableTargetFramework)</_CliLauncherTargetFramework>
             <_CliLauncherPlatform Condition="'$(RuntimeIdentifier)' == 'win-x64' or '$(RuntimeIdentifier)' == 'linux-x64' or '$(RuntimeIdentifier)' == 'osx-x64'">x64</_CliLauncherPlatform>
             <_CliLauncherPlatform Condition="'$(RuntimeIdentifier)' == 'win-arm64' or '$(RuntimeIdentifier)' == 'linux-arm64' or '$(RuntimeIdentifier)' == 'osx-arm64'">arm64</_CliLauncherPlatform>
-            <_CliLauncherExecutableName Condition="$([MSBuild]::IsOSPlatform('Windows'))">uniget.exe</_CliLauncherExecutableName>
+            <_CliLauncherExecutableName Condition="$([MSBuild]::IsOSPlatform('Windows'))">evergreen.exe</_CliLauncherExecutableName>
             <_CliLauncherExecutableName Condition="!$([MSBuild]::IsOSPlatform('Windows'))">uniget</_CliLauncherExecutableName>
             <_CliLauncherIntermediateDir>$([System.IO.Path]::GetFullPath($([System.IO.Path]::Combine('$(MSBuildThisFileDirectory)', '$(BaseIntermediateOutputPath)', 'cli-launcher', '$(Configuration)', '$(RuntimeIdentifier)'))))</_CliLauncherIntermediateDir>
             <_CliLauncherExecutable>$([System.IO.Path]::Combine('$(_CliLauncherIntermediateDir)', '$(_CliLauncherExecutableName)'))</_CliLauncherExecutable>

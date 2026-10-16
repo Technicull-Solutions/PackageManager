@@ -221,8 +221,8 @@ jobs:
           if (-not (Test-Path "unigetui_bin/UniGetUI.exe")) {
             throw "Windows app host was not produced at unigetui_bin/UniGetUI.exe"
           }
-          if (-not (Test-Path -LiteralPath "unigetui_bin/uniget.exe" -PathType Leaf)) {
-            throw "NativeAOT CLI launcher was not staged for win-$Platform at unigetui_bin/uniget.exe"
+          if (-not (Test-Path -LiteralPath "unigetui_bin/evergreen.exe" -PathType Leaf)) {
+            throw "NativeAOT CLI launcher was not staged for win-$Platform at unigetui_bin/evergreen.exe"
           }
 
           # The elevated policy-write helper is authenticated by exact path at runtime, and it must
@@ -232,16 +232,7 @@ jobs:
             throw "Elevated policy helper was not staged at unigetui_bin/Assets/Utilities/UniGetUI.PolicyElevator.exe"
           }
 
-          $MaxShippedPdbSizeBytes = 1MB
-          $PdbsToRemove = Get-ChildItem "unigetui_bin" -Filter "*.pdb" -File -Recurse | Where-Object {
-            $_.Length -gt $MaxShippedPdbSizeBytes
-          }
-
-          if ($PdbsToRemove.Count -gt 0) {
-            $RemovedPdbBytes = ($PdbsToRemove | Measure-Object -Property Length -Sum).Sum
-            $PdbsToRemove | Remove-Item -Force
-            Write-Host ("Removed {0} oversized PDBs above {1:N2} MiB ({2:N2} MiB total)." -f $PdbsToRemove.Count, ($MaxShippedPdbSizeBytes / 1MB), ($RemovedPdbBytes / 1MB))
-          }
+          ./scripts/remove-package-symbols.ps1 -Path unigetui_bin
 
       - name: Code-sign binaries
         if: ${{ fromJSON(needs.preflight.outputs.dry-run) == false }}

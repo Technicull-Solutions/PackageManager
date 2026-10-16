@@ -28,13 +28,16 @@ if ($Platform -eq 'x64' -and [System.Runtime.InteropServices.RuntimeInformation]
     Write-Warning 'Published administrator execution was not tested on this host architecture.'
 }
 Copy-Item -LiteralPath (Join-Path $RepoRoot 'docs\ADMIN_CLIENT.md') -Destination (Join-Path $Stage 'README.md')
+Copy-Item -LiteralPath (Join-Path $RepoRoot 'docs\WINDOWS_RELEASE_TRUST.md') -Destination $Stage
 $PackagedReadme = Join-Path $Stage 'README.md'
 (Get-Content -LiteralPath $PackagedReadme -Raw).Replace('(../package/Policies/README.md)', '(Policies/README.md)') |
     Set-Content -LiteralPath $PackagedReadme -Encoding utf8
 Copy-Item -LiteralPath (Join-Path $RepoRoot 'LICENSE') -Destination $Stage
 Copy-Item -LiteralPath (Join-Path $RepoRoot 'UPSTREAM.json') -Destination $Stage
 Copy-Item -LiteralPath (Join-Path $RepoRoot 'package\Policies') -Destination $Stage -Recurse
+& (Join-Path $PSScriptRoot 'remove-package-symbols.ps1') -Path $Stage
 New-Item -ItemType Directory -Path $OutputPath -Force | Out-Null
 $Archive = Join-Path $OutputPath "EvergreenEndpointAdmin.$Version-build.$Build.$Platform.zip"
 Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $Archive -CompressionLevel Optimal -Force
+& (Join-Path $PSScriptRoot 'verify-release-package.ps1') -Archive $Archive -Kind Admin
 Write-Host "Portable administrator package: $Archive"

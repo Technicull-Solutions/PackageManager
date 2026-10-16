@@ -55,7 +55,11 @@ function Invoke-Installer([string]$Directory, [string]$Tasks, [string]$Label, [s
         "/DIR=`"$Directory`"", "/TASKS=`"$Tasks`"", "/LOG=`"$Root\$Label.log`""
     )
     if ($Process.ExitCode -ne 0) { throw "$Label failed: $($Process.ExitCode)" }
-    & (Join-Path $Directory 'uniget.exe') tui --help
+    $LauncherName = 'evergreen.exe'
+    if ($InstallerPath -ne $Installer -and -not (Test-Path -LiteralPath (Join-Path $Directory $LauncherName))) {
+        $LauncherName = 'uniget.exe'
+    }
+    & (Join-Path $Directory $LauncherName) tui --help
     if ($LASTEXITCODE -ne 0) { throw "$Label installed CLI failed." }
     Assert-UpstreamIntact
 }
@@ -80,7 +84,7 @@ try {
     } while ($Desktop.MainWindowHandle -eq 0 -and [DateTime]::UtcNow -lt $Deadline)
     if ($Desktop.MainWindowHandle -eq 0) { throw 'Installed desktop did not create a window.' }
     Write-Host 'Verified installed NativeAOT desktop startup.'
-    & (Join-Path $InstallDir 'uniget.exe') 'evergreen-endpoint://show'
+    & (Join-Path $InstallDir 'evergreen.exe') 'evergreen-endpoint://show'
     if ($LASTEXITCODE -ne 0) { throw 'Evergreen protocol activation failed.' }
 } finally {
     if (-not $Desktop.HasExited) {
@@ -110,6 +114,9 @@ Invoke-Uninstall 'uninstall'
 if ($PreviousInstaller) {
     Invoke-Installer $InstallDir 'regularinstall' 'previous-release-install' $PreviousInstaller
     Invoke-Installer $InstallDir 'regularinstall' 'upgrade-from-previous-release'
+    foreach ($Retired in @('uniget.exe', 'Assets\Utilities\unigetui_ps_operation.ps1')) {
+        if (Test-Path -LiteralPath (Join-Path $InstallDir $Retired)) { throw "Upgrade left a retired Evergreen file: $Retired" }
+    }
     if ((Get-FileHash -LiteralPath (Join-Path $InstallDir 'Evergreen Endpoint Package Manager.exe')).Hash -ne $CurrentAppHash) {
         throw 'Upgrade did not replace the previous application with the tested current executable.'
     }

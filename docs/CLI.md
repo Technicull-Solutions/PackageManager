@@ -8,15 +8,16 @@ This file documents the **public command-line surface** exposed by Evergreen End
 
 ## Quick start
 
-The `uniget` console launcher is included beside the GUI executable on Windows, Linux, and
-macOS. It forwards arguments and terminal input/output, waits for each command to finish, and
+The `evergreen` console launcher is included beside the GUI executable on Windows. The
+cross-platform builds retain the internal `uniget` launcher name. The launcher forwards
+arguments and terminal input/output, waits for each command to finish, and
 returns its exit code. Keep it with the rest of the installation; copying only the launcher
 elsewhere will not work.
 
-- **Windows:** Select **Add to PATH** during a regular installation to run `uniget` from any
+- **Windows:** Select **Add to PATH** during a regular installation to run `evergreen` from any
   directory. This option is off by default and uses the user or system `PATH` according to
   the install mode. Open a new terminal after installation. Without this option, run
-  `.\uniget.exe` from the installation directory.
+  `.\evergreen.exe` from the installation directory.
 - **Linux:** The `.deb` and `.rpm` packages expose `uniget` on `PATH`; from an extracted tarball,
   run `./uniget` in the directory containing `UniGetUI`.
 - **macOS:** The launcher is at `/Applications/UniGetUI.app/Contents/MacOS/uniget` after moving
@@ -25,12 +26,12 @@ elsewhere will not work.
 The commands below assume PowerShell is in the installation directory on Windows:
 
 ```powershell
-.\uniget.exe status
-.\uniget.exe tui
-.\uniget.exe app status
-.\uniget.exe package search --manager winget --query PowerToys
-.\uniget.exe package install --manager winget --id Microsoft.PowerToys
-.\uniget.exe operation wait --id 123 --timeout 300
+.\evergreen.exe status
+.\evergreen.exe tui
+.\evergreen.exe app status
+.\evergreen.exe package search --manager winget --query PowerToys
+.\evergreen.exe package install --manager winget --id Microsoft.PowerToys
+.\evergreen.exe operation wait --id 123 --timeout 300
 ```
 
 For a silent Windows installation, include `ADDTOPATH=1` to opt in, or `ADDTOPATH=0` to
@@ -49,14 +50,14 @@ the `PATH` entry added by this installer; a pre-existing entry is left intact.
 
 ## Terminal UI
 
-`unigetui tui` opens the interactive terminal UI inside the main executable.
-On Windows PowerShell, use `.\uniget.exe tui` (or `uniget tui` on PATH): the launcher
+The `tui` command opens the interactive terminal UI inside the main executable.
+On Windows PowerShell, use `.\evergreen.exe tui` (or `evergreen tui` on PATH): the launcher
 forwards to the same command and waits for the session to exit. A direct `.\"Evergreen Endpoint Package Manager.exe" tui`
 launch does not block the PowerShell prompt, which then competes with the TUI for console
 input and can cause a startup failure. To launch the main executable itself, use
 `Start-Process -FilePath ".\Evergreen Endpoint Package Manager.exe" -ArgumentList 'tui' -NoNewWindow -Wait`.
 
-Use `uniget tui --help` for its options, or `uniget tui --fake-data` to try it without
+Use `evergreen tui --help` for its options, or `evergreen tui --fake-data` on Windows to try it without
 calling real package managers. See [TUI.md](TUI.md) for keyboard controls and more options.
 This command runs locally, independently of the desktop window or an IPC daemon, and is
 included in the same application package; no separate TUI executable is installed.

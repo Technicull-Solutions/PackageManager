@@ -5,7 +5,7 @@ The current application exposes two authoritative values from `CoreData`:
 | Value | Current source value | Purpose |
 |---|---:|---|
 | Version | `0.2.0` | Evergreen version shown to users and administrators. |
-| Build | `2` | Follow-up device-testing release with branding and build-status corrections. |
+| Build | `4` | Package separation candidate; public release depends on validation and signing availability. |
 
 The sidebar, tray tooltip, About page, update metadata, and build-freshness calculation must read these centralized values. Display text must never contain copied version literals.
 

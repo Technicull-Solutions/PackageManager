@@ -142,7 +142,7 @@ public static class TuiAppHost
         if (OperatingSystem.IsWindows())
         {
             Console.Error.WriteLine(
-                "In PowerShell, run the adjacent uniget.exe tui instead of launching Evergreen Endpoint Package Manager.exe directly."
+                "In PowerShell, run the adjacent evergreen.exe tui instead of launching Evergreen Endpoint Package Manager.exe directly."
             );
             Console.Error.WriteLine(
                 "To launch Evergreen Endpoint Package Manager.exe itself, use Start-Process with -NoNewWindow -Wait."

@@ -109,7 +109,7 @@ if (-not (Test-Path $WindowsAppHostPath)) {
     throw "Windows app host was not produced at $WindowsAppHostPath"
 }
 
-$CliLauncherPath = Join-Path $BinDir "uniget.exe"
+$CliLauncherPath = Join-Path $BinDir "evergreen.exe"
 if (-not (Test-Path -LiteralPath $CliLauncherPath -PathType Leaf)) {
     throw "NativeAOT CLI launcher was not staged for win-$Platform at $CliLauncherPath"
 }
@@ -121,18 +121,7 @@ if (-not (Test-Path $PolicyElevatorPath)) {
     throw "Elevated policy helper was not staged at $PolicyElevatorPath"
 }
 
-# Keep smaller symbols for useful local crash source information, and prune oversized ones.
-$MaxShippedPdbSizeBytes = 1MB
-
-$PdbsToRemove = Get-ChildItem $BinDir -Filter "*.pdb" -File | Where-Object {
-    $_.Length -gt $MaxShippedPdbSizeBytes
-}
-
-if ($PdbsToRemove.Count -gt 0) {
-    $RemovedPdbBytes = ($PdbsToRemove | Measure-Object -Property Length -Sum).Sum
-    $PdbsToRemove | Remove-Item -Force
-    Write-Host ("Removed {0} oversized PDBs above {1:N2} MiB ({2:N2} MiB total)." -f $PdbsToRemove.Count, ($MaxShippedPdbSizeBytes / 1MB), ($RemovedPdbBytes / 1MB))
-}
+& (Join-Path $PSScriptRoot 'remove-package-symbols.ps1') -Path $BinDir
 
 # --- Package output ---
 if (Test-Path $OutputPath) { Remove-Item $OutputPath -Recurse -Force }
@@ -147,6 +136,7 @@ Write-Host "`n=== Refreshing integrity tree before zip packaging ===" -Foregroun
 
 Write-Host "`n=== Creating zip: $ZipPath ===" -ForegroundColor Cyan
 Compress-Archive -Path (Join-Path $BinDir "*") -DestinationPath $ZipPath -CompressionLevel Optimal
+& (Join-Path $PSScriptRoot 'verify-release-package.ps1') -Archive $ZipPath -Kind Apps
 
 # Package the ADMX/ADML files in the PolicyDefinitions layout expected by local and domain GPO stores.
 $PolicyArtifactPath = Join-Path $OutputPath "EvergreenEndpointPackageManager.Policies.$PackageVersion-build.$BuildNumber.zip"

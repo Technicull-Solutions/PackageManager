@@ -236,7 +236,7 @@ try {
         Get-ChildItem (Join-Path $installerExtras $pattern) -File | Copy-Item -Destination $extras
     }
     Copy-Item (Join-Path $repo 'src\SharedAssets\Assets\Images\icon.ico') $icons
-    foreach ($name in @('UniGetUI.exe', 'uniget.exe', 'IntegrityTree.json')) {
+    foreach ($name in @('UniGetUI.exe', 'evergreen.exe', 'IntegrityTree.json')) {
         [IO.File]::WriteAllText((Join-Path $payload $name), 'isolated compiler fixture, not executable')
     }
     [IO.File]::WriteAllText((Join-Path $extras 'netcorecheck_x64.exe'), 'isolated compiler fixture')

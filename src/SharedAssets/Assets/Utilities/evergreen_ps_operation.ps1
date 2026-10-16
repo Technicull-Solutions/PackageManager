@@ -1,5 +1,5 @@
 #Requires -Version 5
-# Controlled launcher for UniGetUI PowerShell package operations.
+# Controlled launcher for Evergreen PowerShell package operations.
 #
 # Invoked as: powershell.exe -NoProfile -ExecutionPolicy Bypass -File <this> <mode> <command> [args...]
 #
@@ -14,7 +14,7 @@ $ConfirmPreference = 'None'
 
 if ($args.Count -lt 2)
 {
-    [Console]::Error.WriteLine('UniGetUI: the operation launcher requires a mode and a command.')
+    [Console]::Error.WriteLine('Evergreen: the operation launcher requires a mode and a command.')
     exit 2
 }
 
@@ -30,7 +30,7 @@ if ($mode -eq 'tls12')
     }
     catch
     {
-        [Console]::Error.WriteLine('UniGetUI: could not select TLS 1.2.')
+        [Console]::Error.WriteLine('Evergreen: could not select TLS 1.2.')
     }
 }
 

@@ -2,6 +2,11 @@ name: Windows Test Release
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified unsigned device-testing prerelease
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -53,7 +58,7 @@ jobs:
           $SmokeDir = Join-Path $env:RUNNER_TEMP 'eepm-release-smoke'
           Expand-Archive -LiteralPath $Zip.FullName -DestinationPath $SmokeDir
           ./scripts/verify-integrity-tree.ps1 -Path $SmokeDir -FailOnUnexpectedFiles
-          $Launcher = Join-Path $SmokeDir 'uniget.exe'
+          $Launcher = Join-Path $SmokeDir 'evergreen.exe'
           & $Launcher tui --help
           if ($LASTEXITCODE -ne 0) { throw 'Packaged terminal UI help check failed.' }
           python -m pip install --disable-pip-version-check --only-binary=:all: -r testing/automation/native-tui-smoke.requirements.txt
@@ -99,6 +104,7 @@ jobs:
           if-no-files-found: error
 
   release:
+    if: ${{ inputs.publish }}
     needs: package
     runs-on: ubuntu-latest
     permissions:
@@ -133,7 +139,7 @@ jobs:
 
           SHA-256 hashes are included in **checksums.x64.txt**. The **Policies** ZIP contains optional Group Policy templates.
 
-          This test build is unsigned. Windows may show an unknown-publisher warning. Elevated policy writes require signed binaries and are unavailable in this build. GitHub OAuth credentials and telemetry credentials are not configured. ARM64, Linux, and macOS are not included or validated in this release.
+          This test build is unsigned. Windows Smart App Control or organization policy may block it entirely; SmartScreen may display an unknown-publisher warning. Package cleanup does not resolve signing or reputation. Elevated policy writes require signed binaries and are unavailable in this build. GitHub OAuth credentials and telemetry credentials are not configured. ARM64, Linux, and macOS are not included or validated in this release.
 
           Please report device details, steps to reproduce, and relevant logs when reporting a problem.
           "@

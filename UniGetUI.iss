@@ -351,6 +351,9 @@ Root: HKA; Subkey: "Software\Classes\Technicull.EvergreenEndpointApps.PackageBun
 ; WARNING: only add patterns here that the current build does NOT produce — matches are
 ; deleted before the copy, so a live match would blank the install on an interrupted update.
 [InstallDelete]
+; Retire only the old launcher/wrapper inside this Evergreen installation directory.
+Type: files; Name: "{app}\uniget.exe"
+Type: files; Name: "{app}\Assets\Utilities\unigetui_ps_operation.ps1"
 Type: filesandordirs; Name: "{app}\Avalonia"
 Type: files; Name: "{app}\WingetUI.exe"
 Type: files; Name: "{app}\UniGetUI.Avalonia.exe"
@@ -377,7 +380,7 @@ Source: "unigetui_bin\IntegrityTree.json"; DestDir: "{app}"; Flags: createallsub
 ; Deploy executable files (running instances already killed in PrepareToInstall).
 Source: "unigetui_bin\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion;
 ; Require the NativeAOT CLI in the installer input, alongside the GUI executable.
-Source: "unigetui_bin\uniget.exe"; DestDir: "{app}"; Flags: ignoreversion;
+Source: "unigetui_bin\evergreen.exe"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "unigetui_bin\*"; DestDir: "{app}"; Flags: createallsubdirs ignoreversion recursesubdirs;
 ; Make installation portable (if required)
 Source: "InstallerExtras\ForceUniGetUIPortable"; DestDir: "{app}"; Tasks: portableinstall
