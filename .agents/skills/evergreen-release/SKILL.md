@@ -14,6 +14,7 @@ Inspect the working tree, intended commit, version/build, architectures, signing
 Executable sources of truth:
 
 - `scripts/build.ps1`: tests, NativeAOT publishing, staging, Windows installer, policy bundle, and artifact naming. It cleans/stages output; inspect paths before running it.
+- `scripts/package-admin.ps1`: separate portable administrator NativeAOT package, documentation/policy staging, and published document self-test. `testing/automation/native-admin-smoke.ps1` checks the extracted executable's document path, desktop startup, and clean exit.
 - `scripts/publish-nativeaot.ps1`: standalone Windows publish helper; its output directory is removed before publishing. Prefer the direct profile command when existing output must be preserved.
 - `scripts/sign.ps1`, `scripts/generate-integrity-tree.ps1`, and `scripts/verify-integrity-tree.ps1`: inspect their interfaces and the release pipeline's signing/integrity order.
 - `.github/workflows/test-release.yml` and `.github/workflows/build-release.yml`: current packaging and publication behavior. Dispatching a release workflow can publish externally.
@@ -35,6 +36,6 @@ Exercise packaged CLI/help, desktop startup, and the changed behavior from the e
 
 ## Verify update and trust behavior
 
-Use current `AvaloniaAutoUpdater.cs`, `CoreData.cs`, and their tests for product key, metadata source, policy overrides, architecture selection, signature/hash checks, and restart behavior. `testing/UPDATE-TESTING.md` contains inherited UniGetUI identities; confirm every endpoint and registry key before adapting its examples.
+Use current `AvaloniaAutoUpdater.cs`, `CoreData.cs`, and their tests for product key, metadata source, policy overrides, architecture selection, signature/hash checks, and restart behavior. Follow `testing/UPDATE-TESTING.md` for the owned update channel and unsigned-build limitations; confirm endpoints and registry keys against current source before running its examples.
 
 Report artifact paths, checksums, signing status, exact tested upgrade paths, and architecture/runtime gaps. Label unsigned device-testing builds explicitly. Do not claim production readiness from a successful package build alone.

@@ -6,6 +6,8 @@ This is the shared entry point for human contributors and coding agents working 
 
 - [AGENTS.md](../AGENTS.md) defines repository engineering requirements.
 - [Product direction](EVERGREEN_ENDPOINT_PACKAGE_MANAGER.md) defines the intended experience and roadmap. Proposed navigation, policy settings, and acceptance targets are not proof that a feature is implemented.
+- [Expanded vision review](EVERGREEN_EXPANDED_VISION_REVIEW.md) records the inspected implementation gaps and proposed portable administrator boundaries; its architecture and next milestone remain proposals.
+- [Portable administrator client](ADMIN_CLIENT.md) documents the implemented offline authoring/export utility and the employee Apps library deployment path.
 - Source code, tests, and checked-in build workflows establish current behavior. Confirm implementation before documenting it as available.
 - [UPSTREAM.json](../UPSTREAM.json) records inherited source provenance; [LICENSE](../LICENSE) contains the inherited license notice.
 

@@ -11,6 +11,8 @@ Read [the contributor workflow](../../../docs/EVERGREEN_CONTRIBUTOR_WORKFLOW.md)
 
 Work in `src/UniGetUI.Avalonia/Views/`, `ViewModels/`, `Assets/Styles/`, and `Assets/Brand/`. Inspect nearby controls and bindings before adding a new abstraction. Keep the existing Avalonia app; starter templates are for separate experiments, not replacement of the product shell.
 
+The portable administrator shell lives in `src/Evergreen.Admin/`; its offline library contract is shared with the employee client through `src/Evergreen.Configuration/`. Read `docs/ADMIN_CLIENT.md` for the supported authoring/export scope. Keep machine deployment and broker authorization separate from workspace editing. The employee library is enabled under Apps; Search apps remains the package-source search surface.
+
 - Keep package execution and authorization in application/engine services. View models translate state into employee actions and explanations; hidden controls are not policy enforcement.
 - Lead with friendly app names, trust/source and policy status, and one clear action. Show raw package identity and diagnostics in technical/admin views when needed.
 - Use existing theme resources and branding assets. Verify light, dark, and high-contrast behavior, scaling, text overflow, and empty/loading/error/blocked states relevant to the change.

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>$(WindowsTargetFramework)</TargetFramework>
+    <TargetFrameworks />
+    <AssemblyName>Evergreen Endpoint Admin</AssemblyName>
+    <ApplicationIcon>../SharedAssets/icon.ico</ApplicationIcon>
+    <PublishAot>true</PublishAot>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <Authors>Technicull Solutions</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="12.0.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.4" />
+    <ProjectReference Include="../Evergreen.Configuration/Evergreen.Configuration.csproj" />
+    <ProjectReference Include="../UniGetUI.Core.Tools/UniGetUI.Core.Tools.csproj" />
+    <Compile Include="../SharedAssemblyInfo.cs" Link="SharedAssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

@@ -26,6 +26,7 @@ The source retains additional inherited adapters and cross-platform build profil
 ## Documentation
 
 - [Product direction and roadmap](docs/EVERGREEN_ENDPOINT_PACKAGE_MANAGER.md)
+- [Portable administrator client and library deployment](docs/ADMIN_CLIENT.md)
 - [Contributor workflow](docs/EVERGREEN_CONTRIBUTOR_WORKFLOW.md)
 - [Command-line reference](docs/CLI.md)
 - [Terminal interface](docs/TUI.md)

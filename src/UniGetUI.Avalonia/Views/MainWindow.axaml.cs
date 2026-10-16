@@ -341,12 +341,13 @@ public partial class MainWindow : Window
         {
             (ViewModel.CurrentPageContent as IKeyboardShortcutListener)?.SelectAllTriggered();
         }
-        else if (isCtrl && !isShift && e.Key is Key.D1 or Key.D2 or Key.D3 or Key.D4)
+        else if (isCtrl && !isShift && e.Key is Key.D1 or Key.D2 or Key.D3 or Key.D4 or Key.D5)
         {
             _focusSidebarSelectionOnNextPageChange = true;
             ViewModel.NavigateTo(e.Key switch
             {
-                Key.D1 => PageType.Discover,
+                Key.D1 => PageType.Catalog,
+                Key.D5 => PageType.Discover,
                 Key.D2 => PageType.Updates,
                 Key.D3 => PageType.Installed,
                 _ => PageType.OperationHistory,

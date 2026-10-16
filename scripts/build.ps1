@@ -211,6 +211,8 @@ if (-not $SkipInstaller) {
 }
 
 # --- Checksums ---
+& (Join-Path $PSScriptRoot 'package-admin.ps1') -Platform $Platform -OutputPath $OutputPath
+
 Write-Host "`n=== Checksums ===" -ForegroundColor Cyan
 $ChecksumFile = Join-Path $OutputPath "checksums.$Platform.txt"
 Get-ChildItem $OutputPath -File | Where-Object { $_.Name -notlike "checksums.*.txt" } | ForEach-Object {
