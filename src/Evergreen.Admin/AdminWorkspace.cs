@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using Evergreen.Configuration;
 using UniGetUI.Core.SettingsEngine;
 
@@ -17,8 +18,13 @@ public static class AdminWorkspace
     public static string FormatLibrary(string json)
     {
         CatalogDefinition[] catalogs = SoftwareLibrary.Parse(json);
-        return JsonSerializer.Serialize(new CatalogDocument { Version = 1, Catalogs = catalogs },
-            AdminJsonContext.Default.CatalogDocument);
+        return SerializeLibrary(catalogs);
+    }
+
+    private static string SerializeLibrary(CatalogDefinition[] catalogs)
+    {
+        JsonTypeInfo<CatalogDocument> typeInfo = AdminJsonContext.Default.CatalogDocument;
+        return JsonSerializer.Serialize(new CatalogDocument { Version = 1, Catalogs = catalogs }, typeInfo);
     }
 
     public static string FormatManagers(string json)
@@ -28,7 +34,8 @@ public static class AdminWorkspace
         if (!raw.RootElement.TryGetProperty("schemaVersion", out var version) || version.GetInt32() != 1
             || !raw.RootElement.TryGetProperty("managers", out var managers) || managers.ValueKind != JsonValueKind.Object)
             throw new JsonException("A version 1 manager configuration requires schemaVersion and managers.");
-        var document = JsonSerializer.Deserialize(json, AdminJsonContext.Default.ManagedPackageManagerConfigurationDocument)
+        JsonTypeInfo<ManagedPackageManagerConfigurationDocument> typeInfo = AdminJsonContext.Default.ManagedPackageManagerConfigurationDocument;
+        var document = JsonSerializer.Deserialize(json, typeInfo)
             ?? throw new JsonException("A manager configuration is required.");
         foreach (var (name, entry) in document.Managers)
         {
@@ -39,7 +46,7 @@ public static class AdminWorkspace
             if (!string.IsNullOrEmpty(entry.ExecutablePath) && !Path.IsPathFullyQualified(entry.ExecutablePath))
                 throw new JsonException("An executable path must be absolute.");
         }
-        return JsonSerializer.Serialize(document, AdminJsonContext.Default.ManagedPackageManagerConfigurationDocument);
+        return JsonSerializer.Serialize(document, typeInfo);
     }
 
     public static string AddApplication(string json, string catalogId, string catalogName,
@@ -58,8 +65,7 @@ public static class AdminWorkspace
         };
         if (catalog is not null) catalogs[catalogs.IndexOf(catalog)] = replacement;
         else catalogs.Add(replacement);
-        return FormatLibrary(JsonSerializer.Serialize(new CatalogDocument { Version = 1, Catalogs = catalogs.ToArray() },
-            AdminJsonContext.Default.CatalogDocument));
+        return FormatLibrary(SerializeLibrary(catalogs.ToArray()));
     }
 
     public static async Task<string> OpenAsync(string path)
