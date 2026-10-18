@@ -4,6 +4,14 @@ The administrator test client is a separate Windows x64 NativeAOT application. E
 
 ## Author and export a library
 
+The window is branded **Evergreen Endpoint | ADMIN**, with the Evergreen package symbol and
+a gold management-controls badge that distinguishes its executable, window, and taskbar icon
+from APPS. **Appearance** offers **System**, **Light**, and **Dark**. System follows the operating
+system theme; the selected preference is saved in `AdminData/appearance.txt` beside the portable
+executable. The header uses the bundled Lato wordmark font; controls use Segoe UI Variable/Segoe UI.
+Draft editors use a white body in light mode and ink in dark mode. Tab moves out of the JSON
+editor so keyboard navigation does not become trapped.
+
 1. Open **Software library**. The initial draft contains an empty **Apps** library.
 2. Enter the library ID/name, app name, exact package ID, manager, and configured source name; select **Add app**. Use `WinGet`, `PowerShell`, or `PowerShell7`. Microsoft Store applications use WinGet with source `msstore`.
 3. Edit the JSON to remove entries, change versions, or maintain multiple libraries. **Validate and format** checks document structure and duplicate identities. It does not certify publisher identity, package availability, or authorization on a target device.

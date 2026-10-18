@@ -3,6 +3,8 @@ using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Evergreen.Configuration;
 using UniGetUI.Core.SettingsEngine;
@@ -23,17 +25,59 @@ public sealed class AdminWindow : Window
 
     public AdminWindow()
     {
-        Title = CoreTools.Translate("Evergreen Endpoint Package Manager — Admin");
+        Title = CoreTools.Translate("Evergreen Endpoint | ADMIN");
+        Icon = AdminBrandStyles.CreateIcon();
         Width = 1100; Height = 800; MinWidth = 760; MinHeight = 600;
-        RequestedThemeVariant = global::Avalonia.Styling.ThemeVariant.Default;
-        var header = new StackPanel { Spacing = 6, Margin = new Thickness(20, 16) };
-        header.Children.Add(new TextBlock { Text = CoreTools.Translate("Evergreen Endpoint Package Manager"), FontSize = 26, FontWeight = FontWeight.SemiBold });
+        var header = new StackPanel { Spacing = 10, Margin = new Thickness(24, 20) };
+        var identity = new WrapPanel { Orientation = Orientation.Horizontal };
+        using (var stream = AssetLoader.Open(new Uri("avares://Evergreen.Admin/Assets/admin.png")))
+            identity.Children.Add(new Image { Source = new Bitmap(stream), Width = 56, Height = 56, Margin = new Thickness(0, 0, 16, 8) });
+        var brandFont = new FontFamily("avares://Evergreen.Admin/Assets/Fonts#Lato");
+        var wordmark = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12, Margin = new Thickness(0, 0, 0, 8), VerticalAlignment = VerticalAlignment.Center };
+        wordmark.Children.Add(new TextBlock
+        {
+            Text = CoreTools.Translate("EVERGREEN\nENDPOINT"),
+            FontFamily = brandFont,
+            FontSize = 18,
+            FontWeight = FontWeight.Bold,
+            VerticalAlignment = VerticalAlignment.Center,
+        });
+        var separator = new Border { Width = 3, Height = 44 };
+        separator.Bind(Border.BackgroundProperty, separator.GetResourceObservable("AdminGold"));
+        wordmark.Children.Add(separator);
+        wordmark.Children.Add(new TextBlock
+        {
+            Text = CoreTools.Translate("ADMIN"),
+            FontFamily = brandFont,
+            FontSize = 28,
+            VerticalAlignment = VerticalAlignment.Center,
+        });
+        identity.Children.Add(wordmark);
+        header.Children.Add(identity);
         header.Children.Add(new TextBlock { Text = CoreTools.Translate("Portable authoring and local diagnostics"), FontSize = 16 });
         header.Children.Add(new TextBlock
         {
             Text = CoreTools.Translate("Edit and export drafts locally. Deployment, signing, and machine policy changes are separate administrator operations."),
             TextWrapping = TextWrapping.Wrap,
         });
+        var appearanceRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
+        var appearanceLabel = new TextBlock { Text = CoreTools.Translate("Appearance"), VerticalAlignment = VerticalAlignment.Center };
+        var appearance = new ComboBox
+        {
+            ItemsSource = new[] { CoreTools.Translate("System"), CoreTools.Translate("Light"), CoreTools.Translate("Dark") },
+            SelectedIndex = Program.Appearance switch { "Light" => 1, "Dark" => 2, _ => 0 },
+            MinWidth = 140,
+        };
+        AutomationProperties.SetName(appearance, CoreTools.Translate("Appearance"));
+        appearance.SelectionChanged += (_, _) =>
+        {
+            string value = appearance.SelectedIndex switch { 1 => "Light", 2 => "Dark", _ => "System" };
+            if (Application.Current is { } app) app.RequestedThemeVariant = AdminAppearance.ToThemeVariant(value);
+            try { AdminAppearance.Save(Program.DataDirectory, value); }
+            catch (Exception ex) { _status.Text = CoreTools.Translate("Appearance changed but could not be saved: {0}", ex.Message); }
+        };
+        appearanceRow.Children.Add(appearanceLabel);
+        appearanceRow.Children.Add(appearance);
         var tabs = new TabControl
         {
             ItemsSource = new TabItem[]
@@ -43,12 +87,17 @@ public sealed class AdminWindow : Window
                 new() { Header = CoreTools.Translate("Local diagnostics"), Content = DiagnosticsPage() },
             },
         };
-        var layout = new Grid { RowDefinitions = new RowDefinitions("Auto,*,Auto") };
-        layout.Children.Add(header);
-        Grid.SetRow(tabs, 1); layout.Children.Add(tabs);
+        var layout = new Grid { RowDefinitions = new RowDefinitions("Auto,Auto,*,Auto") };
+        var brandHeader = new Border { Child = header };
+        brandHeader.Classes.Add("brandHeader");
+        layout.Children.Add(brandHeader);
+        appearanceRow.Margin = new Thickness(24, 12);
+        Grid.SetRow(appearanceRow, 1); layout.Children.Add(appearanceRow);
+        tabs.Margin = new Thickness(8, 0);
+        Grid.SetRow(tabs, 2); layout.Children.Add(tabs);
         _status.Margin = new Thickness(20, 12);
         AutomationProperties.SetLiveSetting(_status, AutomationLiveSetting.Polite);
-        Grid.SetRow(_status, 2); layout.Children.Add(_status);
+        Grid.SetRow(_status, 3); layout.Children.Add(_status);
         Content = layout;
         _library.TextChanged += (_, _) => MarkDirty();
         _managers.TextChanged += (_, _) => MarkDirty();
@@ -73,7 +122,9 @@ public sealed class AdminWindow : Window
 
     private static TextBox Editor(string text)
     {
-        var editor = new TextBox { Text = text, AcceptsReturn = true, AcceptsTab = true, FontFamily = FontFamily.Default, TextWrapping = TextWrapping.NoWrap };
+        // Tab moves to the next control rather than trapping keyboard users in the draft.
+        var editor = new TextBox { Text = text, AcceptsReturn = true, AcceptsTab = false, TextWrapping = TextWrapping.NoWrap };
+        editor.Classes.Add("jsonEditor");
         AutomationProperties.SetName(editor, CoreTools.Translate("JSON draft"));
         return editor;
     }
@@ -122,13 +173,15 @@ public sealed class AdminWindow : Window
             else _savedManagers = editor.Text ?? "";
             _dirty = _library.Text != _savedLibrary || _managers.Text != _savedManagers;
             _status.Text = CoreTools.Translate("Exported {0}. Deploy this file separately; the endpoint has not been changed.", path);
-        }));
+        }, primary: true));
         var top = new StackPanel { Spacing = 8 };
         top.Children.Add(tools);
         if (library) top.Children.Add(ApplicationForm(editor));
         else top.Children.Add(new TextBlock { Text = CoreTools.Translate("Group Policy overrides machine JSON. Source names must match repositories already provisioned on the device."), TextWrapping = TextWrapping.Wrap });
         var page = new Grid { RowDefinitions = new RowDefinitions("Auto,*"), Margin = new Thickness(16), RowSpacing = 12 };
-        page.Children.Add(top); Grid.SetRow(editor, 1); page.Children.Add(editor);
+        var card = new Border { Child = top };
+        card.Classes.Add("card");
+        page.Children.Add(card); Grid.SetRow(editor, 1); page.Children.Add(editor);
         return page;
     }
 
@@ -189,9 +242,10 @@ public sealed class AdminWindow : Window
         return new ScrollViewer { Content = panel };
     }
 
-    private Button ActionButton(string label, Func<Task> action)
+    private Button ActionButton(string label, Func<Task> action, bool primary = false)
     {
         var button = new Button { Content = label, Margin = new Thickness(0, 4, 8, 4) };
+        if (primary) button.Classes.Add("primary");
         button.Click += async (_, _) =>
         {
             button.IsEnabled = false;
@@ -204,12 +258,14 @@ public sealed class AdminWindow : Window
 
     private async Task<bool> ConfirmAsync(string message)
     {
-        var dialog = new Window { Title = CoreTools.Translate("Review draft changes"), Width = 440, SizeToContent = SizeToContent.Height, CanResize = false, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var dialog = new Window { Title = CoreTools.Translate("Review draft changes"), Icon = AdminBrandStyles.CreateIcon(), Width = 440, SizeToContent = SizeToContent.Height, CanResize = false, WindowStartupLocation = WindowStartupLocation.CenterOwner };
         var panel = new StackPanel { Margin = new Thickness(20), Spacing = 16 };
         panel.Children.Add(new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap });
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
         var cancel = new Button { Content = CoreTools.Translate("Cancel") }; cancel.Click += (_, _) => dialog.Close(false);
         var proceed = new Button { Content = CoreTools.Translate("Continue") }; proceed.Click += (_, _) => dialog.Close(true);
+        proceed.Classes.Add("primary");
+        dialog.Opened += (_, _) => cancel.Focus();
         buttons.Children.Add(cancel); buttons.Children.Add(proceed); panel.Children.Add(buttons); dialog.Content = panel;
         return await dialog.ShowDialog<bool>(this);
     }

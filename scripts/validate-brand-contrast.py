@@ -16,7 +16,8 @@ def contrast(a, b):
     return (light + 0.05) / (dark + 0.05)
 
 
-path = Path(__file__).resolve().parents[1] / 'src/UniGetUI.Avalonia/Assets/Styles/Styles.Common.axaml'
+root = Path(__file__).resolve().parents[1]
+path = root / 'src/UniGetUI.Avalonia/Assets/Styles/Styles.Common.axaml'
 tree = ET.parse(path)
 ns = {'a': 'https://github.com/avaloniaui'}
 key = '{http://schemas.microsoft.com/winfx/2006/xaml}Key'
@@ -36,6 +37,28 @@ for theme in tree.findall('./a:Styles.Resources/a:ResourceDictionary/a:ResourceD
     for foreground, background, minimum in pairs:
         ratio = contrast(colours[foreground], colours[background])
         result = f'{theme.attrib[key]}: {foreground} / {background}: {ratio:.2f}:1 (minimum {minimum}:1)'
+        print(result)
+        if ratio < minimum:
+            failures.append(result)
+# The standalone administrator shell deliberately avoids the employee engine dependency.
+# Check its actual resources too, so independently packaged styles retain the same baseline.
+admin = ET.parse(root / 'src/Evergreen.Admin/AdminBrandStyles.axaml')
+admin_pairs = [
+    ('AdminText', 'AdminPage', 4.5),
+    ('AdminText', 'AdminCard', 4.5),
+    ('AdminText', 'AdminEditor', 4.5),
+    ('AdminSelectedText', 'AdminSelected', 4.5),
+    ('AdminHoverText', 'AdminHover', 4.5),
+    ('AdminHeaderText', 'AdminHeader', 4.5),
+    ('AdminBorder', 'AdminEditor', 3),
+    ('AdminBorder', 'AdminCard', 3),
+    ('AdminBorder', 'AdminPage', 3),
+]
+for theme in admin.findall('./a:Styles.Resources/a:ResourceDictionary/a:ResourceDictionary.ThemeDictionaries/a:ResourceDictionary', ns):
+    colours = {el.attrib.get(key): el.attrib['Color'] for el in theme.findall('a:SolidColorBrush', ns)}
+    for foreground, background, minimum in admin_pairs:
+        ratio = contrast(colours[foreground], colours[background])
+        result = f'Admin {theme.attrib[key]}: {foreground} / {background}: {ratio:.2f}:1 (minimum {minimum}:1)'
         print(result)
         if ratio < minimum:
             failures.append(result)

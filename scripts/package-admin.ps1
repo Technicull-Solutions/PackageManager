@@ -15,6 +15,10 @@ $Project = Join-Path $RepoRoot 'src\Evergreen.Admin\Evergreen.Admin.csproj'
 dotnet publish $Project --configuration Release --runtime "win-$Platform" --self-contained true --nologo /p:Platform=$Platform /p:PublishDir="$Stage\" /p:TrimmerSingleWarn=false /p:ILLinkTreatWarningsAsErrors=true /p:IlcTreatWarningsAsErrors=true
 if ($LASTEXITCODE -ne 0) { throw 'Administrator NativeAOT publish failed.' }
 $Executable = Join-Path $Stage 'Evergreen Endpoint Admin.exe'
+$NativeExecutable = Join-Path $Stage 'Evergreen.Admin.exe'
+if (-not (Test-Path -LiteralPath $NativeExecutable -PathType Leaf)) { throw 'Administrator NativeAOT executable was not published.' }
+# Keep the resource assembly URI safe while giving the portable program its product filename.
+Move-Item -LiteralPath $NativeExecutable -Destination $Executable
 if (-not (Test-Path -LiteralPath $Executable)) { throw 'Administrator executable was not published.' }
 if ($Platform -eq 'x64' -and [System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -eq 'X64') {
     $Workspace = Join-Path $Stage 'self-test'

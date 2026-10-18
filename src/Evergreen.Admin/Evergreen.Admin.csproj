@@ -3,8 +3,9 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>$(WindowsTargetFramework)</TargetFramework>
     <TargetFrameworks />
-    <AssemblyName>Evergreen Endpoint Admin</AssemblyName>
-    <ApplicationIcon>../SharedAssets/icon.ico</ApplicationIcon>
+    <!-- Resource authorities must match a loaded assembly in NativeAOT without URI escaping. -->
+    <AssemblyName>Evergreen.Admin</AssemblyName>
+    <ApplicationIcon>Assets/admin.ico</ApplicationIcon>
     <PublishAot>true</PublishAot>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>full</TrimMode>
@@ -13,6 +14,10 @@
     <Authors>Technicull Solutions</Authors>
   </PropertyGroup>
   <ItemGroup>
+    <AvaloniaResource Include="Assets/admin.ico" />
+    <AvaloniaResource Include="Assets/admin.png" />
+    <AvaloniaResource Include="../UniGetUI.Avalonia/Assets/Fonts/Lato-*.ttf" Link="Assets/Fonts/%(Filename)%(Extension)" />
+    <Content Include="../UniGetUI.Avalonia/Assets/Fonts/OFL.txt" Link="Assets/Licenses/Lato-OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <PackageReference Include="Avalonia.Desktop" Version="12.0.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.4" />
     <ProjectReference Include="../Evergreen.Configuration/Evergreen.Configuration.csproj" />

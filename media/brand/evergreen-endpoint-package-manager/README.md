@@ -55,3 +55,14 @@ python scripts/brand/generate-evergreen-endpoint-package-manager-assets.py
 
 The design-time generator requires Pillow and `resvg-py`. These are not application runtime
 dependencies.
+
+## Portable administrator identity
+
+**Evergreen Endpoint | ADMIN** retains the canonical package symbol and adds a gold
+management-controls badge. This derivative identifies the separate authoring utility;
+it does not replace the APPS symbol. Its forest tile has r8 corners at 256 logical pixels.
+`evergreen-endpoint-admin.svg` is the generated vector, and `src/Evergreen.Admin/Assets/`
+contains the PNG and multi-resolution ICO used for the executable, window, and taskbar.
+Regenerate them with `python scripts/brand/generate-admin-assets.py` (same design dependencies).
+The administrator shell uses the same palette, Lato wordmark, and Segoe UI interface fonts,
+with dedicated standalone styles to avoid loading the employee package engine.

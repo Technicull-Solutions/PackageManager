@@ -9,6 +9,8 @@ namespace Evergreen.Admin;
 internal static class Program
 {
     internal static string? StartupError { get; private set; }
+    internal static string DataDirectory => Path.Combine(AppContext.BaseDirectory, "AdminData");
+    internal static string Appearance { get; private set; } = "System";
 
     [STAThread]
     public static int Main(string[] args)
@@ -22,6 +24,12 @@ internal static class Program
                 AppPaths.InitializePortableApplicationData(dataDirectory);
                 if (!string.Equals(UniGetUI.Core.Data.CoreData.UniGetUIDataDirectory,
                     Path.GetFullPath(dataDirectory), StringComparison.OrdinalIgnoreCase)) return 3;
+                foreach (string appearance in new[] { "System", "Light", "Dark" })
+                {
+                    AdminAppearance.Save(dataDirectory, appearance);
+                    if (AdminAppearance.Load(dataDirectory) != appearance) return 4;
+                }
+                AdminAppearance.Save(dataDirectory, "System");
                 string library = AdminWorkspace.AddApplication(AdminWorkspace.EmptyLibrary,
                     "apps", "Apps", "Example", "Example.App", "WinGet", "winget");
                 string path = Path.Combine(directory, "SoftwareCatalog.json");
@@ -36,7 +44,8 @@ internal static class Program
         }
         try
         {
-            AppPaths.InitializePortableApplicationData(Path.Combine(AppContext.BaseDirectory, "AdminData"));
+            AppPaths.InitializePortableApplicationData(DataDirectory);
+            Appearance = AdminAppearance.Load(DataDirectory);
         }
         catch (Exception ex)
         {
@@ -51,7 +60,12 @@ internal static class Program
 
 public sealed class AdminApplication : Application
 {
-    public override void Initialize() => Styles.Add(new FluentTheme());
+    public override void Initialize()
+    {
+        Styles.Add(new FluentTheme());
+        Styles.Add(new AdminBrandStyles());
+        RequestedThemeVariant = AdminAppearance.ToThemeVariant(Program.Appearance);
+    }
 
     public override void OnFrameworkInitializationCompleted()
     {
@@ -60,6 +74,7 @@ public sealed class AdminApplication : Application
                 ? new Window
                 {
                     Title = "Evergreen Endpoint Admin",
+                    Icon = AdminBrandStyles.CreateIcon(),
                     Width = 540,
                     Height = 240,
                     Content = new TextBlock
