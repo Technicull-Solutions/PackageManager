@@ -73,7 +73,8 @@ do not copy the software catalog over machine manager configuration.
 
 ## 4. Record the pilot results
 
-- Both clients report `0.2.1-rc.1`, Build 5; retain release checksums and source commit.
+- Verify the Apps version/build and the Admin executable's file properties against the
+  selected release; retain release checksums and source commit.
 - The employee library appears under **Apps**, with the expected catalog name and entries.
 - Search/filter behavior works and unavailable entries explain their state.
 - On a disposable test device, choose an approved app and exercise install, update,

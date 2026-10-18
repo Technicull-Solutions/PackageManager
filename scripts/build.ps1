@@ -133,11 +133,14 @@ $BuildNumber = (Get-Content -LiteralPath $BuildNumberPath -Raw).Trim()
 $ArtifactStem = "EvergreenEndpointPackageManager.$PackageVersion-build.$BuildNumber.$Platform"
 $ZipPath = Join-Path $OutputPath "$ArtifactStem.zip"
 Write-Host "`n=== Refreshing integrity tree before zip packaging ===" -ForegroundColor Cyan
+Copy-Item -LiteralPath (Join-Path $RepoRoot 'InstallerExtras\EvergreenEndpoint.portable') -Destination $BinDir
 & (Join-Path $PSScriptRoot "refresh-integrity-tree.ps1") -Path $BinDir -FailOnUnexpectedFiles
 
 Write-Host "`n=== Creating zip: $ZipPath ===" -ForegroundColor Cyan
 Compress-Archive -Path (Join-Path $BinDir "*") -DestinationPath $ZipPath -CompressionLevel Optimal
 & (Join-Path $PSScriptRoot 'verify-release-package.ps1') -Archive $ZipPath -Kind Apps
+# The ZIP is portable; the installer task controls portable mode independently.
+Remove-Item -LiteralPath (Join-Path $BinDir 'EvergreenEndpoint.portable')
 
 # Package the ADMX/ADML files in the PolicyDefinitions layout expected by local and domain GPO stores.
 $PolicyArtifactPath = Join-Path $OutputPath "EvergreenEndpointPackageManager.Policies.$PackageVersion-build.$BuildNumber.zip"

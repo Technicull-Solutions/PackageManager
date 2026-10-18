@@ -9,6 +9,7 @@ This is the shared entry point for human contributors and coding agents working 
 - [Expanded vision review](EVERGREEN_EXPANDED_VISION_REVIEW.md) records the inspected implementation gaps and proposed portable administrator boundaries; its architecture and next milestone remain proposals.
 - [Portable administrator client](ADMIN_CLIENT.md) documents the implemented offline authoring/export utility and the employee Apps library deployment path.
 - [Accessibility baseline](ACCESSIBILITY.md) defines the WCAG 2.2 AA target and the use of WCAG 3 draft guidance.
+- [Windows identity migration](WINDOWS_IDENTITY_MIGRATION.md) records installer/CLI ownership and the remaining runtime-state migration boundaries.
 - [Signed MVP release path](SIGNED_MVP_RELEASE.md) records release gates, publisher setup, and the GitHub-to-WinGet sequence.
 - Source code, tests, and checked-in build workflows establish current behavior. Confirm implementation before documenting it as available.
 - [UPSTREAM.json](../UPSTREAM.json) records inherited source provenance; [LICENSE](../LICENSE) contains the inherited license notice.

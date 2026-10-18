@@ -15,9 +15,11 @@ archives, do not.
 
 ## Enabling portable mode
 
-Portable mode is controlled by a single marker file named `ForceUniGetUIPortable`, placed in
+Portable mode is controlled by a marker file named `EvergreenEndpoint.portable`, placed in
 the installation root next to the Evergreen Endpoint Package Manager executable. The file's contents are ignored (the
-one shipped by the installer is empty); only its presence matters.
+one shipped by the installer is empty); only its presence matters. Earlier
+`ForceUniGetUIPortable` markers remain recognized for compatibility with existing portable
+folders. Remove both marker names if present when turning portable mode off.
 
 ### With the Windows installer
 
@@ -27,7 +29,7 @@ Setup's standard `/TASKS` switch, and point `/DIR` at the location the portable 
 live in:
 
 ```powershell
-UniGetUI.Installer.exe /VERYSILENT /TASKS="portableinstall" /DIR="E:\UniGetUI"
+& ".\Evergreen Endpoint Package Manager Setup.exe" /VERYSILENT /TASKS="portableinstall" /DIR="E:\EvergreenEndpoint"
 ```
 
 `portableinstall` and `regularinstall` are mutually exclusive; `regularinstall` is the default.
@@ -35,22 +37,22 @@ UniGetUI.Installer.exe /VERYSILENT /TASKS="portableinstall" /DIR="E:\UniGetUI"
 The install directory has to be writable by the account that runs Evergreen Endpoint Package Manager, or portable mode
 silently falls back, as [described below](#fallback-when-the-folder-is-not-writable). The
 installer defaults to per-user mode (`PrivilegesRequired=lowest`), so without `/DIR` it lands
-in `%LOCALAPPDATA%\Programs\UniGetUI`, which is writable and works. An all-users install, chosen
-in the dialog or with `/ALLUSERS`, lands in `C:\Program Files\UniGetUI` instead, where a
+in `%LOCALAPPDATA%\Programs\Technicull Solutions\Evergreen Endpoint\Package Manager`, which is writable and works. An all-users install, chosen
+in the dialog or with `/ALLUSERS`, lands in `C:\Program Files\Technicull Solutions\Evergreen Endpoint\Package Manager` instead, where a
 normally launched Evergreen Endpoint Package Manager cannot create `Settings`.
 
 ### By hand
 
-Create an empty file called `ForceUniGetUIPortable` (no extension) beside the executable:
+Create an empty file called `EvergreenEndpoint.portable` beside the executable:
 
 ```powershell
 # Windows
-New-Item -ItemType File -Path "C:\Path\To\UniGetUI\ForceUniGetUIPortable"
+New-Item -ItemType File -Path "C:\Path\To\EvergreenEndpoint\EvergreenEndpoint.portable"
 ```
 
 ```bash
 # macOS / Linux
-touch /path/to/unigetui/ForceUniGetUIPortable
+touch /path/to/evergreen/EvergreenEndpoint.portable
 ```
 
 The Windows `.zip` already ships with the marker, so it is portable out of the box; creating
@@ -64,7 +66,7 @@ check.
 The marker is looked up in the installation root, which is normally the directory holding
 the executable. When the executable sits in an `Avalonia` subdirectory of a recognizable
 install root, the parent directory is used instead, so the marker belongs one level up
-alongside `UniGetUI.exe` and `IntegrityTree.json`.
+alongside the Windows `Evergreen Endpoint Package Manager.exe` and `IntegrityTree.json`.
 
 On macOS the executable lives inside the `.app` bundle, so a marker placed there is discarded
 whenever the bundle is replaced by an update. Re-create it after upgrading.
@@ -183,6 +185,6 @@ the user profile, if you rely on portable mode.
 
 ## Turning portable mode off
 
-Delete the `ForceUniGetUIPortable` file and restart Evergreen Endpoint Package Manager. The app reverts to the per-user
+Delete the `EvergreenEndpoint.portable` file and restart Evergreen Endpoint Package Manager. The app reverts to the per-user
 data directory; the `Settings` folder is left on disk untouched, so copy anything you want to
 keep out of it first. The check runs once per session, so a restart is required either way.

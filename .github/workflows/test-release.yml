@@ -35,6 +35,10 @@ jobs:
       - name: Install Inno Setup
         shell: pwsh
         run: choco install innosetup -y --no-progress
+      - name: Verify isolated installer PATH and compile contracts
+        shell: pwsh
+        run: |
+          ./testing/automation/run-installer-path-tests.ps1 -ArtifactDirectory (Join-Path $env:RUNNER_TEMP 'evergreen-installer-contracts') -Compiler "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
       - name: Restore
         run: dotnet restore src/UniGetUI.Windows.slnx
       - name: Validate brand contrast and version stamping
@@ -43,6 +47,7 @@ jobs:
           python scripts/validate-brand-contrast.py
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           ./testing/automation/test-version-stamping.ps1
+          ./testing/automation/test-portable-integrity.ps1
       - name: Verify formatting
         shell: pwsh
         run: |

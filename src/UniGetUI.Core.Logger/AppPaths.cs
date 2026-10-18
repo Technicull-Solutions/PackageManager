@@ -2,7 +2,8 @@ namespace UniGetUI.Core.Logging
 {
     public static class AppPaths
     {
-        private const string PortableMarkerFileName = "ForceUniGetUIPortable";
+        private const string PortableMarkerFileName = "EvergreenEndpoint.portable";
+        private const string LegacyPortableMarkerFileName = "ForceUniGetUIPortable";
         private const string PortableDataDirectoryName = "Settings";
         private const string PortablePermissionTestFileName = "PermissionTestFile";
         private const string PortableScratchDirectoryName = "Temp";
@@ -163,7 +164,8 @@ namespace UniGetUI.Core.Logging
 
         public static string? ResolvePortableDataDirectory(string installationDirectory)
         {
-            if (!File.Exists(Path.Join(installationDirectory, PortableMarkerFileName)))
+            if (!File.Exists(Path.Join(installationDirectory, PortableMarkerFileName))
+                && !File.Exists(Path.Join(installationDirectory, LegacyPortableMarkerFileName)))
             {
                 return null;
             }

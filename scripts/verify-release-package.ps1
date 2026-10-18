@@ -26,7 +26,7 @@ try {
             throw 'Administrator package contains local workspace data.'
         }
     } else {
-        foreach ($Required in @('Evergreen Endpoint Package Manager.exe', 'evergreen.exe', 'Assets/Utilities/evergreen_ps_operation.ps1', 'IntegrityTree.json')) {
+        foreach ($Required in @('Evergreen Endpoint Package Manager.exe', 'evergreen.exe', 'Assets/Utilities/evergreen_ps_operation.ps1', 'IntegrityTree.json', 'EvergreenEndpoint.portable')) {
             if ($Names -notcontains $Required) { throw "Employee package is missing $Required." }
         }
     }

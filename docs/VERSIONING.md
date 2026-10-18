@@ -6,9 +6,9 @@ number for Windows identity and traceability. Stamp deliberately through
 
 | Value | Current source value | Purpose |
 |---|---:|---|
-| Version | `0.2.1-rc.1` | Next release candidate; not a published stable release. |
-| Build | `5` | Increasing packaged build, including candidates. |
-| Windows version | `0.2.1.5` | Numeric base version plus build; components are at most 65535. |
+| Version | `0.2.1-rc.2` | Next release candidate; not a published stable release. |
+| Build | `6` | Increasing packaged build, including candidates. |
+| Windows version | `0.2.1.6` | Numeric base version plus build; components are at most 65535. |
 
 The sidebar, tray tooltip, About page, update metadata, and build-freshness calculation must read these centralized values. Display text must never contain copied version literals.
 
@@ -27,11 +27,11 @@ each packaging milestone. Use patch versions for fixes, minor versions for featu
 and major versions for breaking contracts; document breaking changes explicitly during
 0.x development. Do not replace assets with different bytes under an existing identity.
 
-Candidate tags retain the test workflow identity (`v0.2.1-rc.1-build.5`). Reserve `v0.2.1`
+Candidate tags retain the test workflow identity (`v0.2.1-rc.2-build.6`). Reserve `v0.2.1`
 for the signed stable release. Artifact filenames may include build and architecture.
 
 ```powershell
-./scripts/set-version.ps1 -Version 0.2.1-rc.1 -BuildNumber 5
+./scripts/set-version.ps1 -Version 0.2.1-rc.2 -BuildNumber 6
 ```
 
 Stamping synchronizes CoreData, assembly/file versions, installer and application manifests,

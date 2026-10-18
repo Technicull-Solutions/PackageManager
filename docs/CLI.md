@@ -18,10 +18,16 @@ elsewhere will not work.
   directory. This option is off by default and uses the user or system `PATH` according to
   the install mode. Open a new terminal after installation. Without this option, run
   `.\evergreen.exe` from the installation directory.
+
 - **Linux:** The `.deb` and `.rpm` packages expose `uniget` on `PATH`; from an extracted tarball,
   run `./uniget` in the directory containing `UniGetUI`.
 - **macOS:** The launcher is at `/Applications/UniGetUI.app/Contents/MacOS/uniget` after moving
   the app to `/Applications`; run it by its full path.
+
+Fresh Windows installations use `Technicull Solutions\Evergreen Endpoint\Package Manager`
+under the selected scope's programs directory. Existing Evergreen installations keep their
+chosen directory during an upgrade. See [Windows identity migration](WINDOWS_IDENTITY_MIGRATION.md)
+for PATH ownership and compatibility behavior.
 
 The commands below assume PowerShell is in the installation directory on Windows:
 

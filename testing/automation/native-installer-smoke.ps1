@@ -17,7 +17,7 @@ $PortableDir = Join-Path $Root 'Portable'
 
 # Seed an upstream installation's registrations, shortcut, and running process.
 # None may be adopted, migrated, deleted, or terminated by Evergreen's installer.
-$UpstreamKeys = @('Software\Classes\unigetui', 'Software\Classes\.ubundle', 'Software\Classes\UniGetUI.PackageBundle')
+$UpstreamKeys = @('Software\Classes\unigetui', 'Software\Classes\.ubundle', 'Software\Classes\UniGetUI.PackageBundle', 'Software\Devolutions\UniGetUI\InstallerPath')
 foreach ($Key in $UpstreamKeys) {
     if (Test-Path "HKCU:\$Key") { throw "Runner already has an upstream registration: $Key" }
     $Registry = [Microsoft.Win32.Registry]::CurrentUser.CreateSubKey($Key)
@@ -65,6 +65,9 @@ function Invoke-Installer([string]$Directory, [string]$Tasks, [string]$Label, [s
 }
 
 Invoke-Installer $InstallDir 'regularinstall' 'fresh-install'
+foreach ($Marker in @('EvergreenEndpoint.portable', 'ForceUniGetUIPortable')) {
+    if (Test-Path -LiteralPath (Join-Path $InstallDir $Marker)) { throw 'Regular installer leaked a portable marker.' }
+}
 $Protocol = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Software\Classes\evergreen-endpoint\shell\open\command')
 try {
     if ($null -eq $Protocol -or $Protocol.GetValue('') -ne "`"$InstallDir\Evergreen Endpoint Package Manager.exe`" `"%1`"") {
@@ -112,8 +115,26 @@ function Invoke-Uninstall([string]$Label) {
 
 Invoke-Uninstall 'uninstall'
 if ($PreviousInstaller) {
-    Invoke-Installer $InstallDir 'regularinstall' 'previous-release-install' $PreviousInstaller
-    Invoke-Installer $InstallDir 'regularinstall' 'upgrade-from-previous-release'
+    $EnvironmentKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Environment')
+    try {
+        $OriginalUserPath = $EnvironmentKey.GetValue('Path', $null, [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames)
+        $OriginalPathKind = if ($null -ne $OriginalUserPath) { $EnvironmentKey.GetValueKind('Path') } else { $null }
+    } finally { $EnvironmentKey.Dispose() }
+    Invoke-Installer $InstallDir 'regularinstall,regularinstall\addtopath' 'previous-release-install' $PreviousInstaller
+    Invoke-Installer $InstallDir 'regularinstall,regularinstall\addtopath' 'upgrade-from-previous-release'
+    $OwnerKeyPath = 'Software\Technicull Solutions\Evergreen Endpoint\Package Manager\InstallerPath'
+    $Owners = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($OwnerKeyPath)
+    try {
+        if ($null -eq $Owners -or -not @($Owners.GetValueNames() | Where-Object { $Owners.GetValue($_) -eq "O$InstallDir" }).Count) {
+            throw 'Upgraded PATH entry does not have Evergreen-owned cleanup metadata.'
+        }
+    } finally { if ($null -ne $Owners) { $Owners.Dispose() } }
+    $LegacyOwners = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Software\Devolutions\UniGetUI\InstallerPath')
+    try {
+        if (@($LegacyOwners.GetValueNames() | Where-Object { $LegacyOwners.GetValue($_) -eq "O$InstallDir" }).Count) {
+            throw 'Upgrade left Evergreen PATH ownership in the legacy product key.'
+        }
+    } finally { $LegacyOwners.Dispose() }
     foreach ($Retired in @('uniget.exe', 'Assets\Utilities\unigetui_ps_operation.ps1')) {
         if (Test-Path -LiteralPath (Join-Path $InstallDir $Retired)) { throw "Upgrade left a retired Evergreen file: $Retired" }
     }
@@ -121,15 +142,41 @@ if ($PreviousInstaller) {
         throw 'Upgrade did not replace the previous application with the tested current executable.'
     }
     Invoke-Uninstall 'uninstall-after-upgrade'
+    $EnvironmentKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Environment')
+    try {
+        $AfterUserPath = $EnvironmentKey.GetValue('Path', $null, [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames)
+        if ($null -ne $OriginalUserPath) {
+            if ($AfterUserPath -cne $OriginalUserPath -or $EnvironmentKey.GetValueKind('Path') -ne $OriginalPathKind) {
+                throw 'Uninstall did not restore the original user PATH and registry type.'
+            }
+        } elseif (-not [string]::IsNullOrEmpty($AfterUserPath)) {
+            throw 'Uninstall left an added user PATH entry.'
+        }
+    } finally { $EnvironmentKey.Dispose() }
     Write-Host 'Verified upgrade from the previous published release and subsequent uninstall.'
 }
 
 Invoke-Installer $PortableDir 'portableinstall' 'portable-install'
-if (-not (Test-Path -LiteralPath (Join-Path $PortableDir 'ForceUniGetUIPortable'))) {
+if (-not (Test-Path -LiteralPath (Join-Path $PortableDir 'EvergreenEndpoint.portable'))) {
     throw 'Portable installation marker was not created.'
 }
 if (Get-ChildItem -LiteralPath $PortableDir -Filter 'unins*.exe') {
     throw 'Portable installation unexpectedly registered an uninstaller.'
+}
+if ($PreviousInstaller) {
+    Invoke-Installer $PortableDir 'portableinstall' 'previous-portable-install' $PreviousInstaller
+    $SettingsDirectory = Join-Path $PortableDir 'Settings'
+    New-Item -ItemType Directory -Path $SettingsDirectory -Force | Out-Null
+    $PortableSentinel = Join-Path $SettingsDirectory 'upgrade-preservation.txt'
+    Set-Content -LiteralPath $PortableSentinel -Value 'portable-settings-preservation'
+    Invoke-Installer $PortableDir 'portableinstall' 'portable-upgrade'
+    if (-not (Test-Path -LiteralPath (Join-Path $PortableDir 'EvergreenEndpoint.portable')) -or
+        (Test-Path -LiteralPath (Join-Path $PortableDir 'ForceUniGetUIPortable'))) {
+        throw 'Portable upgrade did not transition to the Evergreen marker.'
+    }
+    if ((Get-Content -LiteralPath $PortableSentinel -Raw).Trim() -ne 'portable-settings-preservation') {
+        throw 'Portable upgrade changed existing settings.'
+    }
 }
 Write-Host 'Verified fresh install, same-version reinstall, desktop startup, uninstall, and portable install.'
 $UpstreamProcess.Kill()
