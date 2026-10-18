@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using UniGetUI.Avalonia.Infrastructure;
 using UniGetUI.Avalonia.ViewModels.Pages;
 using UniGetUI.Avalonia.Views;
+using UniGetUI.Avalonia.Views.Controls;
 using UniGetUI.Core.Data;
 using UniGetUI.Core.Logging;
 using UniGetUI.Core.SettingsEngine;
@@ -43,8 +44,8 @@ public class SoftwareUpdatesPage : AbstractPackagesPage
         DisableAutomaticPackageLoadOnStart = false,
         DisableFilterOnQueryChange = false,
         DisableReload = false,
-        NoPackages_BackgroundText = CoreTools.Translate("Hooray! No updates were found."),
-        NoPackages_ImagePath = "avares://UniGetUI/Assets/Images/Trophee.png",
+        NoPackages_BackgroundText = CoreTools.Translate("Your apps are up to date"),
+        NoPackages_Content = new UpdatesEmptyState(),
         NoPackages_SourcesText = CoreTools.Translate("Everything is up to date"),
         NoPackages_SubtitleText_Base = CoreTools.Translate("Everything is up to date"),
         MainSubtitle_StillLoading = CoreTools.Translate("Loading packages"),

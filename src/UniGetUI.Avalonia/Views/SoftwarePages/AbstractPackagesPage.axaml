@@ -1218,6 +1218,9 @@
                         <StackPanel VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     Spacing="16">
+                            <ContentControl Content="{Binding NoPackagesContent}"
+                                            HorizontalContentAlignment="Center"
+                                            IsVisible="{Binding NoPackagesContentVisible}"/>
                             <controls:BrodyRunner
                                    MaxWidth="{Binding #PackageListHost.Bounds.Width, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.5|240}"
                                    MaxHeight="{Binding #PackageListHost.Bounds.Height, Converter={StaticResource ScaleClampConverter}, ConverterParameter=0.3|120}"

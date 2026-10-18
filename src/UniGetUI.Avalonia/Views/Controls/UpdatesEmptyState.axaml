@@ -1,0 +1,38 @@
+<UserControl x:Class="UniGetUI.Avalonia.Views.Controls.UpdatesEmptyState"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:t="using:UniGetUI.Avalonia.MarkupExtensions"
+             xmlns:vm="using:UniGetUI.Avalonia.ViewModels.Pages"
+             xmlns:automation="clr-namespace:Avalonia.Automation;assembly=Avalonia.Controls"
+             x:DataType="vm:PackagesPageViewModel">
+    <StackPanel Margin="24" Spacing="24" MaxWidth="480">
+        <!-- Decorative status mark; the text below carries the meaning. -->
+        <Grid Width="128" Height="128" HorizontalAlignment="Center"
+              IsVisible="{Binding ShowPackageIllustrations}"
+              IsHitTestVisible="False" automation:AutomationProperties.AccessibilityView="Raw">
+            <Ellipse Stroke="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                     StrokeThickness="1" Opacity="0.25"/>
+            <Border Width="96" Height="96" CornerRadius="28"
+                    Background="{DynamicResource SettingsCardBackground}"
+                    BorderBrush="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                    BorderThickness="2">
+                <Viewbox Width="44" Height="44">
+                    <Path Data="M 3,23 L 17,37 L 41,7"
+                          Stroke="{DynamicResource AccentTextFillColorPrimaryBrush}"
+                          StrokeThickness="4" StrokeLineCap="Round" StrokeJoin="Round"/>
+                </Viewbox>
+            </Border>
+        </Grid>
+        <StackPanel Spacing="8">
+            <TextBlock Text="{t:Translate Text='Your apps are up to date'}"
+                       FontSize="26" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                       TextAlignment="Center" TextWrapping="Wrap"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="Technicull Solutions" FontSize="13" LetterSpacing="1"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       TextAlignment="Center" TextWrapping="Wrap"
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

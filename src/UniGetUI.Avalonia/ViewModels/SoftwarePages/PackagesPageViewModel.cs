@@ -104,6 +104,7 @@ public struct PackagesPageData
 
     public string NoPackages_BackgroundText;
     public string NoPackages_ImagePath;   // optional avares:// illustration shown when no packages are present
+    public Control? NoPackages_Content;
     public string NoPackages_SourcesText;
     public string NoPackages_SubtitleText_Base;
     public string MainSubtitle_StillLoading;
@@ -234,6 +235,9 @@ public partial class PackagesPageViewModel : ViewModelBase
     [ObservableProperty] private bool _loadingImageVisible;
     [ObservableProperty] private Bitmap? _noPackagesImage;
     [ObservableProperty] private bool _noPackagesImageVisible;
+    [ObservableProperty] private bool _noPackagesContentVisible;
+    public Control? NoPackagesContent { get; }
+    public bool ShowPackageIllustrations => _showPackageIllustrations;
     [ObservableProperty] private string _backgroundText = "";
     [ObservableProperty] private bool _sourcesPlaceholderVisible = true;
     [ObservableProperty] private bool _sourcesTreeVisible;
@@ -312,6 +316,7 @@ public partial class PackagesPageViewModel : ViewModelBase
         _showLastCheckedTime = data.ShowLastLoadTime;
         _showPackageIllustrations = !Settings.Get(Settings.K.DisablePackageIllustrations);
         NoPackagesText = data.NoPackages_BackgroundText;
+        NoPackagesContent = data.NoPackages_Content;
         NoMatchesText = data.NoMatches_BackgroundText;
         if (_showPackageIllustrations && !string.IsNullOrEmpty(data.NoPackages_ImagePath))
         {
@@ -797,20 +802,31 @@ public partial class PackagesPageViewModel : ViewModelBase
             BackgroundTextVisible = true;
             LoadingImageVisible = _showPackageIllustrations;
             NoPackagesImageVisible = false;
+            NoPackagesContentVisible = false;
         }
         else if (FilteredPackages.Count == 0)
         {
             bool noQuery = string.IsNullOrWhiteSpace(query);
-            BackgroundText = noQuery ? NoPackagesText : NoMatchesText;
+            bool noPackages = noQuery && !Loader.Any() && !Loader.LastLoadReportedFailures;
+            BackgroundText = Loader.LastLoadReportedFailures
+                ? CoreTools.Translate("Some sources could not be checked. Try refreshing.")
+                : noPackages ? NoPackagesText : NoMatchesText;
             BackgroundTextVisible = !MegaQueryBoxEnabled || !noQuery;
             LoadingImageVisible = false;
-            NoPackagesImageVisible = noQuery && BackgroundTextVisible && NoPackagesImage is not null;
+            NoPackagesImageVisible = noPackages && BackgroundTextVisible && NoPackagesImage is not null;
+            NoPackagesContentVisible = noPackages && BackgroundTextVisible && NoPackagesContent is not null;
+            if (NoPackagesContentVisible)
+            {
+                BackgroundTextVisible = false;
+                NoPackagesImageVisible = false;
+            }
         }
         else
         {
             BackgroundTextVisible = false;
             LoadingImageVisible = false;
             NoPackagesImageVisible = false;
+            NoPackagesContentVisible = false;
         }
     }
 
@@ -1155,6 +1171,12 @@ public partial class PackagesPageViewModel : ViewModelBase
             || (IsCuratingSimpleView && FilteredPackages.Count == 0))
         {
             Subtitle = _stillLoadingSubtitle;
+            return;
+        }
+
+        if (Loader.LastLoadReportedFailures && !Loader.Any())
+        {
+            Subtitle = CoreTools.Translate("Some sources could not be checked. Try refreshing.");
             return;
         }
 
