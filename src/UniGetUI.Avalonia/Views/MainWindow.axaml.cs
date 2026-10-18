@@ -1907,6 +1907,7 @@ public partial class MainWindow : Window
     private void PresentModal(ImmersiveDialog dialog)
     {
         ModalSurface.Classes.Set("about-dialog", dialog is AboutWindow);
+        ModalSurface.Classes.Set("operation-failed-dialog", dialog is OperationFailedDialog);
         _modalMinimumSizeHistory.TryAdd(dialog, (dialog.MinWidth, dialog.MinHeight));
         _modalTitleSubscription?.Dispose();
         _modalTitleSubscription = dialog.GetObservable(ImmersiveDialog.TitleProperty)

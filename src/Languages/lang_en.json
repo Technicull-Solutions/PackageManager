@@ -544,6 +544,7 @@
   "Please see the Command-line Output or refer to the Operation History for further information about the issue.": "Please see the Command-line Output or refer to the Operation History for further information about the issue.",
   "Retry as administrator": "Retry as administrator",
   "Retry interactively": "Retry interactively",
+  "The installer failed and may need your input. Close the app, including its system tray icon, then retry interactively to see any installer messages.": "The installer failed and may need your input. Close the app, including its system tray icon, then retry interactively to see any installer messages.",
   "Retry skipping integrity checks": "Retry skipping integrity checks",
   "Force-close app and retry": "Force-close app and retry",
   "Installation options": "Installation options",
