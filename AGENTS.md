@@ -215,6 +215,15 @@ Use these rules when changing Avalonia diagnostics/devtools behavior:
 
 ## Key Patterns & Conventions
 
+### Accessibility baseline
+Follow `docs/ACCESSIBILITY.md` for every employee/admin UI change. Target WCAG 2.2 AA
+using WCAG2ICT for desktop software; use the evolving WCAG 3 draft as design guidance,
+not a completed conformance standard. Use shared theme tokens and measurable contrast,
+preserve visible keyboard focus, expose accessible names/states, and verify both themes,
+scaling, narrow layouts, and relevant assistive-technology behavior. Do not claim product-wide
+conformance from token tests alone. Run `python scripts/validate-brand-contrast.py` when
+changing shared colours and record unavailable rendered/runtime checks as gaps.
+
 ### Settings
 File-based settings via `Settings.Get(Settings.K.*)` / `Settings.Set(Settings.K.*, value)` and `Settings.GetValue(Settings.K.*)` / `Settings.SetValue(Settings.K.*, value)`. Setting keys are defined in the `Settings.K` enum in `SettingsEngine_Names.cs`. Boolean settings are stored as file existence; string settings as file content.
 

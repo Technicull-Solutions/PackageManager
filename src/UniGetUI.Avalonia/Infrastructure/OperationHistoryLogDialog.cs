@@ -47,7 +47,7 @@ internal static class OperationHistoryLogDialog
             MinHeight = 300,
             Title = CoreTools.Translate("Operation log") + (target.Length > 0 ? $" — {target}" : ""),
             TitleMargin = new Thickness(24, 0, 0, 0),
-            Background = LookupBrush("AppDialogBackground", theme, Brushes.Transparent),
+            Background = LookupBrush("AppWindowBackground", theme, Brushes.Transparent),
         };
 
         var copyButton = CreateDialogButton(CoreTools.Translate("Copy to clipboard"));
@@ -87,7 +87,7 @@ internal static class OperationHistoryLogDialog
         {
             CornerRadius = new CornerRadius(8),
             ClipToBounds = true,
-            Background = LookupBrush("AppWindowBackground", theme, Brushes.Transparent),
+            Background = LookupBrush("LogBodyBackground", theme, Brushes.Transparent),
             Child = editor,
         };
         Grid.SetRow(editorBorder, 1);

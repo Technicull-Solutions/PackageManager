@@ -69,7 +69,8 @@ Write-Host "Building Evergreen Endpoint Package Manager version: $PackageVersion
 
 $StampedBuild = [int](Get-Content -LiteralPath (Join-Path $PSScriptRoot 'BuildNumber') -Raw).Trim()
 $ProductInfo = Get-Content -LiteralPath (Join-Path $RepoRoot 'update/productinfo.json') -Raw | ConvertFrom-Json
-$Channel = $ProductInfo.'TechnicullSolutions.EvergreenEndpointPackageManager'.Current
+$ChannelName = if ($PackageVersion.Contains('-')) { 'Beta' } else { 'Current' }
+$Channel = $ProductInfo.'TechnicullSolutions.EvergreenEndpointPackageManager'.$ChannelName
 if ($Channel.Version -ne $PackageVersion -or $Channel.BuildNumber -ne $StampedBuild -or $Channel.BuildVersion -ne [string]$StampedBuild) {
     throw 'Release metadata is out of sync. Run scripts/set-version.ps1 with the intended version and build number.'
 }

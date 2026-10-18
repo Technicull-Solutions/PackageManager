@@ -6,6 +6,11 @@
       "BuildNumber": 4,
       "Files": []
     },
-    "Beta": null
+    "Beta": {
+      "Version": "0.2.1-rc.1",
+      "BuildVersion": "5",
+      "BuildNumber": 5,
+      "Files": []
+    }
   }
 }

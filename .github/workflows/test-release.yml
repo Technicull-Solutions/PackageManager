@@ -37,6 +37,12 @@ jobs:
         run: choco install innosetup -y --no-progress
       - name: Restore
         run: dotnet restore src/UniGetUI.Windows.slnx
+      - name: Validate brand contrast and version stamping
+        shell: pwsh
+        run: |
+          python scripts/validate-brand-contrast.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./testing/automation/test-version-stamping.ps1
       - name: Verify formatting
         shell: pwsh
         run: |

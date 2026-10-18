@@ -17,7 +17,7 @@
         <Grid Grid.Row="0"
               VerticalAlignment="Center"
               Margin="0,12,16,8">
-            <Button Command="{Binding BackCommand}"
+            <Button Classes="navigation-back" Command="{Binding BackCommand}"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Margin="4,0,0,0"
@@ -50,7 +50,7 @@
                            FontSize="14"
                            VerticalAlignment="Center"
                            Margin="0,0,16,0"/>
-                <Button Grid.Column="1" Content="{Binding RestartButtonText}"
+                <Button Classes="warning-action" Grid.Column="1" Content="{Binding RestartButtonText}"
                         automation:AutomationProperties.Name="{Binding RestartButtonText}"
                         Command="{Binding RestartAppCommand}"
                         HorizontalAlignment="Right"/>
