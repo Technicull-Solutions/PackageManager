@@ -44,7 +44,7 @@ public class SoftwareUpdatesPage : AbstractPackagesPage
         DisableAutomaticPackageLoadOnStart = false,
         DisableFilterOnQueryChange = false,
         DisableReload = false,
-        NoPackages_BackgroundText = CoreTools.Translate("You’re all up to date"),
+        NoPackages_BackgroundText = CoreTools.Translate("Your apps are up to date!"),
         NoPackages_Content = new UpdatesEmptyState(),
         NoPackages_SourcesText = CoreTools.Translate("Everything is up to date"),
         NoPackages_SubtitleText_Base = CoreTools.Translate("Everything is up to date"),
