@@ -13,6 +13,8 @@ Work in `src/UniGetUI.Avalonia/Views/`, `ViewModels/`, `Assets/Styles/`, and `As
 
 The portable administrator shell lives in `src/Evergreen.Admin/`; its offline library contract is shared with the employee client through `src/Evergreen.Configuration/`. Read `docs/ADMIN_CLIENT.md` for the supported authoring/export scope. Keep machine deployment and broker authorization separate from workspace editing. The employee library is enabled under Apps; Search apps remains the package-source search surface.
 
+For optional administrator catalog retrieval, read `docs/CATALOG_SOURCE_PROFILES.md`. Keep server/repository settings environment-specific and tokens session-only. Opening a profile must not connect or apply configuration. Apps continues consuming a separately deployed protected local catalog.
+
 - Keep package execution and authorization in application/engine services. View models translate state into employee actions and explanations; hidden controls are not policy enforcement.
 - Lead with friendly app names, trust/source and policy status, and one clear action. Show raw package identity and diagnostics in technical/admin views when needed.
 - Use existing theme resources and branding assets. Verify light, dark, and high-contrast behavior, scaling, text overflow, and empty/loading/error/blocked states relevant to the change.

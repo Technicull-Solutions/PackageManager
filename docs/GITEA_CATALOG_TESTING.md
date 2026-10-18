@@ -6,6 +6,11 @@ of the selected catalog revision. It does not yet connect to Gitea, store Gitea 
 poll a remote catalog, or publish Admin edits automatically. Gitea is the configuration
 repository here; WinGet/PowerShell remain the actual package sources.
 
+The portable Admin's **Catalog source** page can now fetch a private Gitea catalog into a
+validated draft using environment-specific settings and a session-only repository read
+token. See [catalog source profiles](CATALOG_SOURCE_PROFILES.md). That workflow replaces
+the manual download step; reviewed local deployment to Apps remains the same.
+
 ## 1. Create a catalog repository
 
 Create a repository such as `endpoint-config` on your Gitea instance. Use your normal
@@ -18,12 +23,12 @@ Suggested layout:
 
 ```text
 endpoint-config/
-  catalogs/SoftwareCatalog.json
+  software-catalog.json
   configuration/package-managers.json    # optional, separate machine configuration
   README.md
 ```
 
-Seed `catalogs/SoftwareCatalog.json` from the included `SoftwareCatalog.example.json`,
+Seed `software-catalog.json` from the included `SoftwareCatalog.example.json`,
 or create a new Apps library in Admin. The sample lists 7-Zip and Visual Studio Code
 from `WinGet` / `winget`; displaying a catalog does not install either application.
 An empty `Version` means no catalog version pin. Package IDs and configured source names
@@ -34,7 +39,7 @@ must match the target device's managers. See [Admin usage](ADMIN_CLIENT.md).
 1. Clone your Gitea repository using your normal Git client.
 2. Extract the portable Admin ZIP into a writable folder and launch
    `Evergreen Endpoint Admin.exe`.
-3. In **Software library**, open `catalogs/SoftwareCatalog.json` from that checkout.
+3. In **Software library**, open `software-catalog.json` from that checkout.
 4. Edit the library or JSON, then **Validate and format** and **Export JSON** back to
    that file. Validation checks document structure, not package availability or trust.
 5. Review the Git diff and commit/push through your normal Gitea workflow. Record the

@@ -2,7 +2,7 @@
 
 The administrator test client is a separate Windows x64 NativeAOT application. Extract the `EvergreenEndpointAdmin.*.x64.zip` release into a writable folder and run `Evergreen Endpoint Admin.exe`. A separate .NET installation is not required. Current test releases are unsigned.
 
-## Author and export a library
+## Appearance and identity
 
 The window is branded **Evergreen Endpoint | ADMIN**, with the Evergreen package symbol and
 a gold management-controls badge that distinguishes its executable, window, and taskbar icon
@@ -11,6 +11,20 @@ system theme; the selected preference is saved in `AdminData/appearance.txt` bes
 executable. The header uses the bundled Lato wordmark font; controls use Segoe UI Variable/Segoe UI.
 Draft editors use a white body in light mode and ink in dark mode. Tab moves out of the JSON
 editor so keyboard navigation does not become trapped.
+
+The portable ZIP's `Brand/` folder includes the alternate administrator icon (ICO),
+light/dark Lato wordmarks (PNG and outlined SVG), and the administrator symbol SVG.
+
+## Configure your catalog repository
+
+Use **Catalog source** to configure your environment's Gitea server, repository, revision,
+and catalog path. Import/export a reusable source profile, enter a session-only read token
+for private access, and **Fetch and validate catalog** into the library draft. Review and
+export that draft for separate administrator deployment. See
+[catalog source profiles](CATALOG_SOURCE_PROFILES.md) for the contract and authentication
+boundaries. The ZIP includes `catalog-source.example.json` with placeholders only.
+
+## Author and export a library
 
 1. Open **Software library**. The initial draft contains an empty **Apps** library.
 2. Enter the library ID/name, app name, exact package ID, manager, and configured source name; select **Add app**. Use `WinGet`, `PowerShell`, or `PowerShell7`. Microsoft Store applications use WinGet with source `msstore`.

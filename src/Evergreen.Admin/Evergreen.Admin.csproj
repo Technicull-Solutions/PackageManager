@@ -16,6 +16,9 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets/admin.ico" />
     <AvaloniaResource Include="Assets/admin.png" />
+    <Content Include="Assets/admin-logo-*.png" Link="Brand/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="Assets/admin.ico" Link="Brand/EvergreenEndpointAdmin.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../media/brand/evergreen-endpoint-package-manager/evergreen-endpoint-admin*.svg" Link="Brand/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <AvaloniaResource Include="../UniGetUI.Avalonia/Assets/Fonts/Lato-*.ttf" Link="Assets/Fonts/%(Filename)%(Extension)" />
     <Content Include="../UniGetUI.Avalonia/Assets/Fonts/OFL.txt" Link="Assets/Licenses/Lato-OFL.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <PackageReference Include="Avalonia.Desktop" Version="12.0.4" />

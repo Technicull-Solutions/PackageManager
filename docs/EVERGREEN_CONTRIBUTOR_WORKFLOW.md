@@ -8,6 +8,7 @@ This is the shared entry point for human contributors and coding agents working 
 - [Product direction](EVERGREEN_ENDPOINT_PACKAGE_MANAGER.md) defines the intended experience and roadmap. Proposed navigation, policy settings, and acceptance targets are not proof that a feature is implemented.
 - [Expanded vision review](EVERGREEN_EXPANDED_VISION_REVIEW.md) records the inspected implementation gaps and proposed portable administrator boundaries; its architecture and next milestone remain proposals.
 - [Portable administrator client](ADMIN_CLIENT.md) documents the implemented offline authoring/export utility and the employee Apps library deployment path.
+- [Catalog source profiles](CATALOG_SOURCE_PROFILES.md) documents optional administrator Gitea retrieval, session-only authentication, and the deployment boundary.
 - [Accessibility baseline](ACCESSIBILITY.md) defines the WCAG 2.2 AA target and the use of WCAG 3 draft guidance.
 - [Windows identity migration](WINDOWS_IDENTITY_MIGRATION.md) records installer/CLI ownership and the remaining runtime-state migration boundaries.
 - [Signed MVP release path](SIGNED_MVP_RELEASE.md) records release gates, publisher setup, and the GitHub-to-WinGet sequence.

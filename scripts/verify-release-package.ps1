@@ -15,7 +15,7 @@ try {
         throw 'Device package contains retired Evergreen launcher names.'
     }
     if ($Kind -eq 'Admin') {
-        foreach ($Required in @('Evergreen Endpoint Admin.exe', 'README.md', 'LICENSE', 'UPSTREAM.json', 'GITEA_CATALOG_TESTING.md', 'SoftwareCatalog.example.json', 'Assets/Licenses/Lato-OFL.txt')) {
+        foreach ($Required in @('Evergreen Endpoint Admin.exe', 'README.md', 'LICENSE', 'UPSTREAM.json', 'GITEA_CATALOG_TESTING.md', 'SoftwareCatalog.example.json', 'Assets/Licenses/Lato-OFL.txt', 'CATALOG_SOURCE_PROFILES.md', 'catalog-source.example.json', 'Brand/EvergreenEndpointAdmin.ico', 'Brand/admin-logo-light.png', 'Brand/admin-logo-dark.png', 'Brand/evergreen-endpoint-admin-logo-light.svg', 'Brand/evergreen-endpoint-admin-logo-dark.svg')) {
             if ($Names -notcontains $Required) { throw "Administrator package is missing $Required." }
         }
         $Executables = @($Names | Where-Object { $_ -like '*.exe' })

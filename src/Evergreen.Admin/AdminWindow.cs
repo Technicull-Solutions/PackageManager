@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -12,7 +13,7 @@ using UniGetUI.Core.Tools;
 
 namespace Evergreen.Admin;
 
-public sealed class AdminWindow : Window
+public sealed partial class AdminWindow : Window
 {
     private readonly TextBox _library = Editor(AdminWorkspace.FormatLibrary(AdminWorkspace.EmptyLibrary));
     private readonly TextBox _managers = Editor(AdminWorkspace.FormatManagers(AdminWorkspace.DefaultManagers));
@@ -80,9 +81,11 @@ public sealed class AdminWindow : Window
         appearanceRow.Children.Add(appearance);
         var tabs = new TabControl
         {
+            ItemsPanel = new FuncTemplate<Panel?>(() => new WrapPanel()),
             ItemsSource = new TabItem[]
             {
                 new() { Header = CoreTools.Translate("Software library"), Content = DocumentPage(_library, true) },
+                new() { Header = CoreTools.Translate("Catalog source"), Content = CatalogSourcePage() },
                 new() { Header = CoreTools.Translate("Package manager configuration"), Content = DocumentPage(_managers, false) },
                 new() { Header = CoreTools.Translate("Local diagnostics"), Content = DiagnosticsPage() },
             },
@@ -115,7 +118,7 @@ public sealed class AdminWindow : Window
 
     private void MarkDirty()
     {
-        _dirty = _library.Text != _savedLibrary || _managers.Text != _savedManagers;
+        _dirty = _library.Text != _savedLibrary || _managers.Text != _savedManagers || _sourceDirty;
         if (!_dirty) return;
         _status.Text = CoreTools.Translate("Draft changed. Export to keep your changes.");
     }
@@ -171,7 +174,7 @@ public sealed class AdminWindow : Window
             await AdminWorkspace.ExportAsync(path, editor.Text ?? "", library);
             if (library) _savedLibrary = editor.Text ?? "";
             else _savedManagers = editor.Text ?? "";
-            _dirty = _library.Text != _savedLibrary || _managers.Text != _savedManagers;
+            _dirty = _library.Text != _savedLibrary || _managers.Text != _savedManagers || _sourceDirty;
             _status.Text = CoreTools.Translate("Exported {0}. Deploy this file separately; the endpoint has not been changed.", path);
         }, primary: true));
         var top = new StackPanel { Spacing = 8 };
@@ -250,7 +253,7 @@ public sealed class AdminWindow : Window
         {
             button.IsEnabled = false;
             try { await action(); }
-            catch (Exception ex) { _status.Text = CoreTools.Translate("Action could not be completed: {0}", ex.Message); }
+            catch (Exception ex) { _status.Text = CoreTools.Translate("Action could not be completed: {0}", CoreTools.Translate(ex.Message)); }
             finally { button.IsEnabled = true; }
         };
         return button;

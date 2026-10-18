@@ -30,6 +30,7 @@ internal static class Program
                     if (AdminAppearance.Load(dataDirectory) != appearance) return 4;
                 }
                 AdminAppearance.Save(dataDirectory, "System");
+                CatalogSourceSelfTest.RunAsync(directory).GetAwaiter().GetResult();
                 string library = AdminWorkspace.AddApplication(AdminWorkspace.EmptyLibrary,
                     "apps", "Apps", "Example", "Example.App", "WinGet", "winget");
                 string path = Path.Combine(directory, "SoftwareCatalog.json");

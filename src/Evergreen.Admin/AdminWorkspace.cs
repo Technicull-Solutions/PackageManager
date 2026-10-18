@@ -68,16 +68,17 @@ public static class AdminWorkspace
         return FormatLibrary(SerializeLibrary(catalogs.ToArray()));
     }
 
-    public static async Task<string> OpenAsync(string path)
+    public static async Task<string> OpenAsync(string path, int maximumBytes = SoftwareLibrary.MaximumDocumentBytes)
     {
+        if (maximumBytes is <= 0 or > SoftwareLibrary.MaximumDocumentBytes) throw new ArgumentOutOfRangeException(nameof(maximumBytes));
         await using var file = File.OpenRead(path);
-        if (file.Length > SoftwareLibrary.MaximumDocumentBytes) throw new IOException("Document exceeds the 4 MiB limit.");
+        if (file.Length > maximumBytes) throw new IOException("Document exceeds the supported size limit.");
         using var buffer = new MemoryStream();
         byte[] chunk = new byte[8192];
         int count;
         while ((count = await file.ReadAsync(chunk)) > 0)
         {
-            if (buffer.Length + count > SoftwareLibrary.MaximumDocumentBytes) throw new IOException("Document exceeds the 4 MiB limit.");
+            if (buffer.Length + count > maximumBytes) throw new IOException("Document exceeds the supported size limit.");
             buffer.Write(chunk, 0, count);
         }
         return Encoding.UTF8.GetString(buffer.ToArray()).TrimStart('\uFEFF');
@@ -86,6 +87,14 @@ public static class AdminWorkspace
     public static async Task ExportAsync(string path, string json, bool library)
     {
         string formatted = library ? FormatLibrary(json) : FormatManagers(json);
+        await ExportWorkspaceAsync(path, formatted);
+    }
+
+    public static Task ExportCatalogSourceAsync(string path, CatalogSourceProfile profile) =>
+        ExportWorkspaceAsync(path, CatalogSourceProfiles.Serialize(profile));
+
+    private static async Task ExportWorkspaceAsync(string path, string formatted)
+    {
         string destination = Path.GetFullPath(path);
         if (string.Equals(destination, SoftwareLibrary.FilePath, StringComparison.OrdinalIgnoreCase)
             || string.Equals(destination, ManagedPackageManagerConfiguration.DefaultConfigurationPath, StringComparison.OrdinalIgnoreCase))

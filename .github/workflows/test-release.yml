@@ -148,7 +148,7 @@ jobs:
 
           The employee client enables the software library by default under **Apps**. Use **Search apps** to browse configured sources. The separate **EvergreenEndpointAdmin** ZIP contains the portable administrator client: extract it and run **Evergreen Endpoint Admin.exe** to author, validate, and export library and manager-configuration drafts. See its included README for deploying the library to the employee client. The portable utility does not apply machine policy or manage remote devices.
 
-          For a self-hosted Gitea pilot, the Admin ZIP includes **GITEA_CATALOG_TESTING.md** and **SoftwareCatalog.example.json**. Export and commit the catalog to Gitea, then deploy a reviewed revision to the protected local catalog path on each Apps device. Direct remote retrieval, repository authentication in the employee client, and automatic catalog synchronization are not implemented.
+          For a self-hosted Gitea pilot, use Admin's **Catalog source** page to configure your environment's server/repository and fetch a catalog with a session-only repository read token. Source profiles contain no credentials. The ZIP includes **CATALOG_SOURCE_PROFILES.md**, **catalog-source.example.json**, and **SoftwareCatalog.example.json**, plus alternate Admin logos/icons in **Brand/**. Review and export the library, then deploy it to the protected local catalog path on each Apps device. Direct retrieval/authentication in the employee client and automatic catalog synchronization are not implemented.
 
           SHA-256 hashes are included in **checksums.x64.txt**. The **Policies** ZIP contains optional Group Policy templates.
 

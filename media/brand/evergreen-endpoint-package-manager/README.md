@@ -63,6 +63,10 @@ management-controls badge. This derivative identifies the separate authoring uti
 it does not replace the APPS symbol. Its forest tile has r8 corners at 256 logical pixels.
 `evergreen-endpoint-admin.svg` is the generated vector, and `src/Evergreen.Admin/Assets/`
 contains the PNG and multi-resolution ICO used for the executable, window, and taskbar.
-Regenerate them with `python scripts/brand/generate-admin-assets.py` (same design dependencies).
+Regenerate them with `python scripts/brand/generate-admin-assets.py` (Pillow, `resvg-py`, and
+`fonttools`). The same generator produces `evergreen-endpoint-admin-logo-light.svg` and
+`evergreen-endpoint-admin-logo-dark.svg` plus PNGs in the Admin assets folder. The SVG
+wordmarks outline the bundled Lato glyphs so they do not require an installed font.
+The portable Admin ZIP includes these alternate logos and the ICO in its `Brand/` folder.
 The administrator shell uses the same palette, Lato wordmark, and Segoe UI interface fonts,
 with dedicated standalone styles to avoid loading the employee package engine.
