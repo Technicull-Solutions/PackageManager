@@ -29,6 +29,11 @@ if ($Platform -eq 'x64' -and [System.Runtime.InteropServices.RuntimeInformation]
 }
 Copy-Item -LiteralPath (Join-Path $RepoRoot 'docs\ADMIN_CLIENT.md') -Destination (Join-Path $Stage 'README.md')
 Copy-Item -LiteralPath (Join-Path $RepoRoot 'docs\WINDOWS_RELEASE_TRUST.md') -Destination $Stage
+Copy-Item -LiteralPath (Join-Path $RepoRoot 'docs\GITEA_CATALOG_TESTING.md') -Destination $Stage
+Copy-Item -LiteralPath (Join-Path $RepoRoot 'package\Catalog\SoftwareCatalog.example.json') -Destination $Stage
+$PackagedGiteaGuide = Join-Path $Stage 'GITEA_CATALOG_TESTING.md'
+(Get-Content -LiteralPath $PackagedGiteaGuide -Raw).Replace('(ADMIN_CLIENT.md)', '(README.md)') |
+    Set-Content -LiteralPath $PackagedGiteaGuide -Encoding utf8
 $PackagedReadme = Join-Path $Stage 'README.md'
 (Get-Content -LiteralPath $PackagedReadme -Raw).Replace('(../package/Policies/README.md)', '(Policies/README.md)') |
     Set-Content -LiteralPath $PackagedReadme -Encoding utf8

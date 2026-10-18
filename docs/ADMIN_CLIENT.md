@@ -23,6 +23,10 @@ Create that directory with standard-user read access and administrator/deploymen
 
 The library is a discovery document, not an authorization grant. Existing manager/source policy and package-operation authorization still apply. Unavailable sources are filtered by default; users can inspect unavailable entries through the library filters. Signed organization catalogs and remote catalog retrieval remain future capabilities.
 
+For a self-hosted configuration repository, follow [Gitea catalog testing](GITEA_CATALOG_TESTING.md).
+The portable ZIP includes that guide and a `SoftwareCatalog.example.json` seed. This pilot
+uses reviewed Git revisions and local deployment; it does not require a Gitea token in Apps.
+
 ## Manager configuration and diagnostics
 
 **Package manager configuration** opens, validates, and exports the current version 1 machine-JSON format. Only supported manager names are accepted; explicit executable paths must be absolute. Sources must already be provisioned by device deployment. Read [the deployment guide](../package/Policies/README.md) for Group Policy precedence, exact registry paths, and JSON deployment.

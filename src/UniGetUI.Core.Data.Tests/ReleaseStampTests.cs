@@ -14,9 +14,10 @@ public class ReleaseStampTests
 
         using JsonDocument document = JsonDocument.Parse(
             File.ReadAllText(Path.Combine(root.FullName, "update", "productinfo.json")));
+        string channel = CoreData.VersionName.Contains('-') ? "Beta" : "Current";
         JsonElement current = document.RootElement
             .GetProperty("TechnicullSolutions.EvergreenEndpointPackageManager")
-            .GetProperty("Current");
+            .GetProperty(channel);
         Assert.Equal(CoreData.VersionName, current.GetProperty("Version").GetString());
         Assert.Equal(CoreData.BuildNumber, current.GetProperty("BuildNumber").GetInt32());
         Assert.Equal(CoreData.BuildNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
