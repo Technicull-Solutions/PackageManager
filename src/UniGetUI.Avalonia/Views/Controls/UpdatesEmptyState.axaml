@@ -13,11 +13,9 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="CompletionHeadingBrush" Color="#176B4D"/>
-                    <SolidColorBrush x:Key="CompletionSignatureBrush" Color="#0D3F30"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="CompletionHeadingBrush" Color="#79CDB0"/>
-                    <SolidColorBrush x:Key="CompletionSignatureBrush" Color="#DCE5DF"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -50,19 +48,10 @@
             <Ellipse Canvas.Left="8" Canvas.Top="120" Width="5" Height="5"
                      Fill="{DynamicResource CompletionHeadingBrush}" Opacity="0.6"/>
         </Canvas>
-        <StackPanel Spacing="12">
-            <TextBlock x:Name="CompletionMessage" Text="{t:Translate Text='Your apps are up to date!'}"
-                       FontFamily="{StaticResource CompletionBrandFont}" FontSize="30" FontWeight="Bold"
-                       Foreground="{DynamicResource CompletionHeadingBrush}"
-                       TextAlignment="Center" TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
-            <Border Width="36" Height="3" CornerRadius="1.5" HorizontalAlignment="Center"
-                    Background="{StaticResource CompletionGoldBrush}"/>
-            <TextBlock Text="Technicull Solutions" FontFamily="{StaticResource CompletionBrandFont}"
-                       FontSize="15" LetterSpacing="1.5"
-                       Foreground="{DynamicResource CompletionSignatureBrush}"
-                       TextAlignment="Center" TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
-        </StackPanel>
+        <TextBlock x:Name="CompletionMessage" Text="{t:Translate Text='Your apps are up to date!'}"
+                   FontFamily="{StaticResource CompletionBrandFont}" FontSize="30" FontWeight="Bold"
+                   Foreground="{DynamicResource CompletionHeadingBrush}"
+                   TextAlignment="Center" TextWrapping="Wrap"
+                   HorizontalAlignment="Center"/>
     </StackPanel>
 </UserControl>
