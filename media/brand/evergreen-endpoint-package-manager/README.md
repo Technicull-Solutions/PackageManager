@@ -39,6 +39,13 @@ shield, check, monogram, or a newly drawn variant.
 
 Use Lato for supplied wordmarks and Segoe UI Variable/Segoe UI for the Windows interface.
 
+The Updates completion message uses bundled, unmodified Lato Regular and Bold from
+`src/UniGetUI.Avalonia/Assets/Fonts/`, including its SIL Open Font License. Its message is
+“You’re all up to date,” using Evergreen in light mode and the mark's mint (`#79CDB0`)
+in dark mode, with gold (`#D69B2D`) accents. The interim completion illustration combines
+the canonical package mark with a small status badge; it does not replace the application
+icon. Replace the illustration in `UpdatesEmptyState.axaml` when final artwork is supplied.
+
 Regenerate the raster, ICO, Windows tile, and installer assets with:
 
 ```powershell
