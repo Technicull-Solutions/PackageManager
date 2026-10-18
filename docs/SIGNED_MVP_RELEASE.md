@@ -7,15 +7,32 @@ legacy upstream release workflow is disabled for this repository and must not be
 
 ## P0: publisher identity and signing
 
-Recommended path: Microsoft Artifact Signing Public Trust, subject to publisher eligibility
-and successful identity validation. Set up an Azure subscription, signing account,
-verified Technicull publisher identity, and Public Trust certificate profile. Use a
-repository-scoped GitHub Actions OIDC identity with the certificate-profile signer role.
-Keep credentials and private keys out of the repository and chat. An existing publicly
-trusted certificate in Key Vault is an alternative supported by `scripts/sign.ps1`;
-that script is not an Artifact Signing integration.
+Budget constraint: no Azure tenant and no paid signing service. First option is to apply
+to SignPath Foundation for free open-source signing. Its GitHub integration verifies
+Actions artifact origin and requires GitHub-hosted runners for the relevant build jobs.
+Evergreen is a public MIT-licensed GitHub fork; that is a starting point, not approval.
+Review the full dependency licensing, fork/upstream-signing conditions, reputation,
+maintainer MFA, signing roles, privacy disclosures, and published code-signing policy.
+Each signed release requires manual approval. Do not claim sponsorship before acceptance.
 
-Publisher setup is external work and remains blocked until the account/profile exists.
+The certificate is issued to SignPath Foundation, so its certificate publisher identity
+does not become Technicull Solutions. Product branding can remain Evergreen/Technicull.
+Respect provider restrictions: sign owned/approved fork binaries, not arbitrary bundled
+third-party executables. The earlier suggestion to sign all dependencies is not applicable
+to a Foundation subscription.
+
+An open-source signing tool or a self-hosted CA cannot by itself provide public Windows
+trust. GitHub hosting and WinGet manifest submission are separate from Authenticode:
+publishing is possible without an Azure tenant, but neither service signs our EXE for us
+or guarantees that Windows application-control policies allow it. Store-distributed MSIX
+is another route to free Store signing, requiring separate packaging/compatibility review;
+it does not sign our existing portable EXE/ZIP or Inno installer.
+
+Keep credentials and private keys out of the repository and chat. Existing
+`scripts/sign.ps1` supports a separately provisioned Key Vault certificate; it is not a
+SignPath integration. Azure is not a prerequisite for this project's release plan.
+
+Trusted signing remains dependent on provider approval and configuration.
 Do not call unsigned test artifacts a production release or promise that signing eliminates
 all SmartScreen or organizational policy prompts. A malware detection needs separate investigation.
 
@@ -76,6 +93,11 @@ the employee installer; decide separately whether the authoring-only admin needs
 Never invent installer hashes or submit a manifest pointing at an unsigned/stale candidate.
 
 Sources reviewed 2026-10-18:
+[SignPath Foundation](https://signpath.org/),
+[Foundation conditions](https://signpath.org/terms),
+[application](https://signpath.org/apply),
+[GitHub integration](https://docs.signpath.io/trusted-build-systems/github),
+[Windows signing options](https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/code-signing-options),
 [Artifact Signing setup](https://learn.microsoft.com/en-us/azure/artifact-signing/quickstart),
 [trust models](https://learn.microsoft.com/en-us/azure/artifact-signing/concept-trust-models),
 [WinGet manifests](https://learn.microsoft.com/en-us/windows/package-manager/package/manifest),
