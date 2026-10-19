@@ -70,6 +70,10 @@ public static class AdminLibraryDraft
         return index >= 0 ? index : throw new JsonException("The library is no longer in this draft.");
     }
 
-    private static string Save(List<CatalogDefinition> catalogs) => AdminWorkspace.FormatLibrary(
-        JsonSerializer.Serialize(new CatalogDocument { Version = 1, Catalogs = catalogs.ToArray() }, AdminJsonContext.Default.CatalogDocument));
+    private static string Save(List<CatalogDefinition> catalogs)
+    {
+        var typeInfo = AdminJsonContext.Default.CatalogDocument;
+        var document = new CatalogDocument { Version = 1, Catalogs = catalogs.ToArray() };
+        return AdminWorkspace.FormatLibrary(JsonSerializer.Serialize(document, typeInfo));
+    }
 }
