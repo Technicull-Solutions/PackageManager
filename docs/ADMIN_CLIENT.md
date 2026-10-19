@@ -4,7 +4,9 @@ The administrator test client is a separate Windows x64 NativeAOT application. E
 
 ## Appearance and identity
 
-The window is branded **Evergreen Endpoint | ADMIN**, with the Evergreen package symbol and
+The window is branded **Evergreen Endpoint | ADMIN**, using the APPS forest sidebar/header,
+page and card colours, gold navigation marker, Lato wordmark, and segmented view selector.
+It retains the Evergreen package symbol and
 a gold management-controls badge that distinguishes its executable, window, and taskbar icon
 from APPS. **Appearance** offers **System**, **Light**, and **Dark**. System follows the operating
 system theme; the selected preference is saved in `AdminData/appearance.txt` beside the portable
@@ -26,9 +28,9 @@ boundaries. The ZIP includes `catalog-source.example.json` with placeholders onl
 
 ## Author and export a library
 
-1. Open **Software library**. The initial draft contains an empty **Apps** library.
-2. Enter the library ID/name, app name, exact package ID, manager, and configured source name; select **Add app**. Use `WinGet`, `PowerShell`, or `PowerShell7`. Microsoft Store applications use WinGet with source `msstore`.
-3. Edit the JSON to remove entries, change versions, or maintain multiple libraries. **Validate and format** checks document structure and duplicate identities. It does not certify publisher identity, package availability, or authorization on a target device.
+1. Open **Software libraries**. The initial draft contains an empty **Apps** library. **Cards** is the default; the selector offers **List**, **Cards**, **Icons**, and **JSON**, in that order.
+2. Use **New library** to create a library, or open an existing library to **Add app**, **Edit library**, or remove draft entries. App forms include friendly name, exact package ID, manager, source, and optional version. Use `WinGet`, `PowerShell`, or `PowerShell7`; Microsoft Store applications use WinGet with source `msstore`. Editing preserves version pins. Removing an entry changes the draft, not installed software.
+3. All four views share the same document, including imports from Catalog source. **JSON** is optional. Invalid JSON stays in the editor with an explanation when switching to a graphical view is blocked. Graphical forms validate required fields and duplicate identities before saving; a form cannot overwrite a draft replaced while it was open. **Validate and format** checks document structure and duplicate identities. It does not certify publisher identity, package availability, or authorization on a target device.
 4. Select **Export JSON** and save `SoftwareCatalog.json` in your workspace. Exports replace only the explicitly chosen workspace file after the save dialog's overwrite confirmation. Opening another draft or closing the app prompts before discarding edits.
 
 No broker or package-manager process is required for authoring. The utility does not install software, register sources, sign documents, connect to remote devices, or apply machine policy. It starts with in-memory drafts; save the files you want to carry between devices. Private settings and logs stay in `AdminData` beside the administrator executable, separately from the employee client and UniGetUI. An unwritable application folder or export destination reports an error and does not silently select another folder.
@@ -53,11 +55,24 @@ uses reviewed Git revisions and local deployment; it does not require a Gitea to
 
 **Package manager configuration** opens, validates, and exports the current version 1 machine-JSON format. Only supported manager names are accepted; explicit executable paths must be absolute. Sources must already be provisioned by device deployment. Read [the deployment guide](../package/Policies/README.md) for Group Policy precedence, exact registry paths, and JSON deployment.
 
+**Maximum concurrent uninstalls** defaults to **3** (range 1–100). Use **Set uninstall limit
+in draft**, then export the JSON and deploy it separately. Opening or editing a draft does
+not apply policy. This value also caps the number of apps in a desktop uninstall selection;
+selections above it show an administrator-limit explanation rather than uninstalling a subset.
+Group Policy takes precedence. Local diagnostics displays the effective value on this device.
+
 **Local diagnostics** reads the local effective manager enablement and executable selection through the same provider as the employee client. It displays the machine configuration and library locations. It does not connect to a broker or prove that a manager executable/source is usable. Configuration-provider errors may fall back to its built-in defaults and are not a successful validation of the target configuration file.
 
 Portable exports are unsigned drafts. The existing elevated policy-write protocol still requires signed binaries and a protected installation; this utility does not weaken that boundary.
 
 ## Validation and packaging
+
+`src/Evergreen.Admin.UiTests` exercises the actual Avalonia control tree on its in-memory
+headless backend: all four views, light/dark appearance, narrow layouts, graphical forms,
+invalid JSON, removal confirmation, and stale-draft protection. Set
+`EVERGREEN_ADMIN_UI_ARTIFACTS` to an output directory before `dotnet test` to save rendered
+previews. See [Avalonia headless testing](https://docs.avaloniaui.net/docs/testing/setting-up-the-headless-platform).
+These tests do not replace native Windows, Narrator, high-contrast, or published NativeAOT checks.
 
 Read [Windows release trust and package contents](WINDOWS_RELEASE_TRUST.md) for the unsigned
 testing-build limitation and the signing prerequisite. Windows may block an unsigned download

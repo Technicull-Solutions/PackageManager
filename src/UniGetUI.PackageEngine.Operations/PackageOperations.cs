@@ -327,6 +327,29 @@ namespace UniGetUI.PackageEngine.Operations
         /// </summary>
         protected override async Task<OperationVeredict> PerformOperation()
         {
+            IDisposable? uninstallSlot = null;
+            try
+            {
+                if (Role is OperationType.Uninstall)
+                {
+                    Line(CoreTools.Translate("Waiting for an available uninstall slot (administrator limit: {0})...",
+                        ManagedPackageManagerConfiguration.MaximumConcurrentUninstalls), LineType.ProgressIndicator);
+                    uninstallSlot = await UninstallConcurrencyLimiter.Shared.AcquireAsync(CancellationToken);
+                }
+                return await PerformLimitedOperation();
+            }
+            catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
+            {
+                return OperationVeredict.Canceled;
+            }
+            finally
+            {
+                uninstallSlot?.Dispose();
+            }
+        }
+
+        private async Task<OperationVeredict> PerformLimitedOperation()
+        {
             // Observational stage marker only: structured progress starts as indeterminate
             // with the role's stage label (e.g. "Installing..."). Re-reported on every
             // attempt, so AutoRetry restarts also reset any previous speed. This changes

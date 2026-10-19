@@ -971,7 +971,7 @@
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                     <Border Name="SelectionPill"
                             Width="16" Height="3" CornerRadius="1.5"
-                            Background="{DynamicResource AccentFillColorDefaultBrush}"
+                            Background="{DynamicResource BrandSelectionBackground}"
                             HorizontalAlignment="Center" VerticalAlignment="Bottom"
                             Margin="0,0,0,2"
                             Opacity="0">
@@ -1257,20 +1257,47 @@
 
     <!-- Brand interaction states shared by toolbars, settings and dropdowns. -->
     <Style Selector="Button.navigation-back:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource BrandSelectionBackground}"/>
-        <Setter Property="Foreground" Value="{DynamicResource BrandSelectionForeground}"/>
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+    </Style>
+    <Style Selector="Button.navigation-back:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
     </Style>
     <Style Selector="Button.navigation-back:pointerover controls|SvgIcon,
-                     Button:not(.accent):not(.warning-action):pressed controls|SvgIcon">
+                     Button.navigation-back:pressed controls|SvgIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+    </Style>
+    <!-- Avoid competing Fluent and control-level fills, and the interpolated flash when
+         moving between hover and press on package actions. Keep keyboard focus adorners. -->
+    <Style Selector="Button.package-primary-action:not(.package-install-action), Button.package-options-action">
+        <Setter Property="Transitions" Value="{x:Null}"/>
+    </Style>
+    <Style Selector="Button.package-primary-action:not(.package-install-action) /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.package-options-action /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Transitions" Value="{x:Null}"/>
+    </Style>
+    <Style Selector="Button.package-primary-action:not(.package-install-action):pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.package-primary-action:not(.package-install-action):pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource PackageActionHoverBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccessibleControlBorderBrush}"/>
+    </Style>
+    <Style Selector="Button.package-options-action:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                     Button.package-options-action:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource BrandHoverBackground}"/>
+        <Setter Property="Foreground" Value="{DynamicResource BrandHoverForeground}"/>
+    </Style>
+    <Style Selector="Button:not(.accent):not(.warning-action):not(.navigation-back):pressed controls|SvgIcon">
         <Setter Property="Foreground" Value="{DynamicResource BrandSelectionForeground}"/>
     </Style>
-    <Style Selector="Button:not(.accent):not(.warning-action):not(.navigation-back):pointerover /template/ ContentPresenter#PART_ContentPresenter,
+    <Style Selector="Button:not(.accent):not(.warning-action):not(.navigation-back):not(.package-primary-action):not(.package-options-action):pointerover /template/ ContentPresenter#PART_ContentPresenter,
                      Button.dropdown-trigger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource BrandHoverBackground}"/>
         <Setter Property="Foreground" Value="{DynamicResource BrandHoverForeground}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource AccessibleControlBorderBrush}"/>
     </Style>
-    <Style Selector="Button:not(.accent):not(.warning-action):pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="Button:not(.accent):not(.warning-action):not(.navigation-back):not(.package-primary-action):not(.package-options-action):pressed /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource BrandSelectionBackground}"/>
         <Setter Property="Foreground" Value="{DynamicResource BrandSelectionForeground}"/>
     </Style>

@@ -16,7 +16,8 @@ public sealed partial class AdminWindow
 
     private Control CatalogSourcePage()
     {
-        var panel = new StackPanel { Margin = new Thickness(16), Spacing = 16 };
+        var panel = new StackPanel { Margin = new Thickness(32, 24), Spacing = 16 };
+        panel.Children.Add(new TextBlock { Text = CoreTools.Translate("Catalog source"), FontSize = 32, FontWeight = FontWeight.Bold });
         panel.Children.Add(new TextBlock
         {
             Text = CoreTools.Translate("Configure your environment's Gitea catalog. Fetch into a draft, review it, then export for separate deployment to Apps."),
@@ -140,7 +141,7 @@ public sealed partial class AdminWindow
                 if (_library.Text != AdminWorkspace.FormatLibrary(AdminWorkspace.EmptyLibrary)
                     && !await ConfirmAsync(CoreTools.Translate("Replace the software library draft with the validated download? Export any changes you want to keep first."))) return;
                 _library.Text = result.Json;
-                _status.Text = CoreTools.Translate("Fetched and validated {0} libraries and {1} apps. Review Software library and export for deployment. SHA-256 (download fingerprint, not publisher approval): {2}",
+                _status.Text = CoreTools.Translate("Fetched and validated {0} libraries and {1} apps. Review Software libraries and export for deployment. SHA-256 (download fingerprint, not publisher approval): {2}",
                     result.LibraryCount, result.AppCount, result.Sha256);
                 downloadSummary.Text = CoreTools.Translate("Last validated download: {0}, revision {1}. {2}", profile.Name, profile.Revision, _status.Text);
             }

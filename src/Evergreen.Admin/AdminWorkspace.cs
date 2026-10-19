@@ -12,7 +12,7 @@ public static class AdminWorkspace
 {
     public const string EmptyLibrary = "{\"version\":1,\"catalogs\":[{\"id\":\"apps\",\"name\":\"Apps\",\"packages\":[]}]}";
     public const string DefaultManagers = """
-        {"schemaVersion":1,"managers":{"WinGet":{"enabled":true,"allowedSources":["winget","msstore"]},"PowerShell":{"enabled":true,"allowedSources":["PSGallery"]},"PowerShell7":{"enabled":true,"allowedSources":["PSGallery"]}}}
+        {"schemaVersion":1,"maximumConcurrentUninstalls":3,"managers":{"WinGet":{"enabled":true,"allowedSources":["winget","msstore"]},"PowerShell":{"enabled":true,"allowedSources":["PSGallery"]},"PowerShell7":{"enabled":true,"allowedSources":["PSGallery"]}}}
         """;
 
     public static string FormatLibrary(string json)
@@ -37,6 +37,8 @@ public static class AdminWorkspace
         JsonTypeInfo<ManagedPackageManagerConfigurationDocument> typeInfo = AdminJsonContext.Default.ManagedPackageManagerConfigurationDocument;
         var document = JsonSerializer.Deserialize(json, typeInfo)
             ?? throw new JsonException("A manager configuration is required.");
+        if (document.MaximumConcurrentUninstalls is < 1 or > ManagedPackageManagerConfiguration.MaximumSupportedConcurrentUninstalls)
+            throw new JsonException("Maximum concurrent uninstalls must be between 1 and 100.");
         foreach (var (name, entry) in document.Managers)
         {
             if (name is not ("WinGet" or "PowerShell" or "PowerShell7") || entry is null)
@@ -48,6 +50,19 @@ public static class AdminWorkspace
         }
         return JsonSerializer.Serialize(document, typeInfo);
     }
+
+    public static string SetUninstallLimit(string json, int maximum)
+    {
+        string formatted = FormatManagers(json);
+        var typeInfo = AdminJsonContext.Default.ManagedPackageManagerConfigurationDocument;
+        var document = JsonSerializer.Deserialize(formatted, typeInfo)!;
+        document.MaximumConcurrentUninstalls = maximum;
+        return FormatManagers(JsonSerializer.Serialize(document, typeInfo));
+    }
+
+    public static int GetUninstallLimit(string json) => JsonSerializer.Deserialize(
+        FormatManagers(json), AdminJsonContext.Default.ManagedPackageManagerConfigurationDocument)!
+        .MaximumConcurrentUninstalls ?? ManagedPackageManagerConfiguration.DefaultMaximumConcurrentUninstalls;
 
     public static string AddApplication(string json, string catalogId, string catalogName,
         string name, string packageId, string manager, string source)

@@ -55,8 +55,28 @@ public sealed class AdminWorkspaceTests
         using var json = JsonDocument.Parse(AdminWorkspace.FormatManagers(AdminWorkspace.DefaultManagers));
         var managers = json.RootElement.GetProperty("managers");
         Assert.Equal(3, managers.EnumerateObject().Count());
+        Assert.Equal(3, json.RootElement.GetProperty("maximumConcurrentUninstalls").GetInt32());
         Assert.Equal(new[] { "winget", "msstore" }, managers.GetProperty("WinGet").GetProperty("allowedSources").EnumerateArray().Select(s => s.GetString()));
     }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(5)]
+    [InlineData(100)]
+    public void UninstallLimitSurvivesDraftRoundTripWithoutChangingManagers(int maximum)
+    {
+        string draft = AdminWorkspace.SetUninstallLimit(AdminWorkspace.DefaultManagers, maximum);
+        Assert.Equal(maximum, AdminWorkspace.GetUninstallLimit(AdminWorkspace.FormatManagers(draft)));
+        using var json = JsonDocument.Parse(draft);
+        Assert.Equal(3, json.RootElement.GetProperty("managers").EnumerateObject().Count());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(101)]
+    public void InvalidUninstallLimitCannotBeExported(int maximum) =>
+        Assert.Throws<JsonException>(() => AdminWorkspace.SetUninstallLimit(AdminWorkspace.DefaultManagers, maximum));
 
     [Fact]
     public async Task ExportDoesNotApplyMachineConfiguration()

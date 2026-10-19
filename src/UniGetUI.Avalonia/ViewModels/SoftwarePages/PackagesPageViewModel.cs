@@ -192,10 +192,12 @@ public partial class PackagesPageViewModel : ViewModelBase
     public readonly bool DisableReload;
     public readonly bool LoadsOnStart;
     public bool RoleIsInstall { get; }
+    public bool RoleIsUninstall { get; }
     public readonly bool RoleIsUpdateLike;
     public bool UsesUserFriendlyDefaultView { get; }
     public bool ShowAdvancedViewToggle => UsesUserFriendlyDefaultView;
-    public bool ShowSelectAllControl => !UsesUserFriendlyDefaultView;
+    public bool ShowSelectAllControl => !RoleIsUninstall && !UsesUserFriendlyDefaultView;
+    public bool ShowUninstallAppsButton => RoleIsUninstall && FilteredPackages.GetCheckedPackages().Count > 1;
     public bool ShowPackageIdColumn => !UsesUserFriendlyDefaultView || AdvancedView;
     public bool ShowPackageSource => !UsesUserFriendlyDefaultView || AdvancedView;
     public string PrimaryActionLabel { get; }
@@ -327,6 +329,7 @@ public partial class PackagesPageViewModel : ViewModelBase
         _stillLoadingSubtitle = data.MainSubtitle_StillLoading;
         SimilarSearchEnabled = !data.DisableSuggestedResultsRadio;
         RoleIsInstall = data.PageRole == OperationType.Install;
+        RoleIsUninstall = data.PageRole == OperationType.Uninstall;
         RoleIsUpdateLike = data.PageRole == OperationType.Update;
         UsesUserFriendlyDefaultView = data.EnableUserFriendlyDefaultView;
         _advancedView = !UsesUserFriendlyDefaultView;
@@ -923,6 +926,7 @@ public partial class PackagesPageViewModel : ViewModelBase
     private bool _suppressSelectionRecompute;
     partial void OnAllPackagesCheckedChanged(bool? value)
     {
+        if (RoleIsUninstall) return;
         _suppressSelectionRecompute = true;
         try
         {
@@ -1159,6 +1163,7 @@ public partial class PackagesPageViewModel : ViewModelBase
     {
         UpdateSubtitle();
         OnPropertyChanged(nameof(ShowTopBulkActionButton));
+        OnPropertyChanged(nameof(ShowUninstallAppsButton));
         OnPropertyChanged(nameof(TopBulkActionLabel));
         PackageCountUpdated?.Invoke();
     }

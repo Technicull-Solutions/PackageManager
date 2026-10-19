@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="Evergreen.Configuration/Evergreen.Configuration.csproj" />
   <Project Path="Evergreen.Admin/Evergreen.Admin.csproj" />
+  <Project Path="Evergreen.Admin.UiTests/Evergreen.Admin.UiTests.csproj" />
   <Configurations>
     <Platform Name="x64" />
     <Platform Name="arm64" />

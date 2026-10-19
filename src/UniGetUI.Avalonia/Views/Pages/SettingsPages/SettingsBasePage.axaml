@@ -41,7 +41,7 @@
                 Grid.Row="1"
                 Classes="warning-banner"
                 CornerRadius="8"
-                Margin="16,0,16,8"
+                Margin="40,0,40,8"
                 Padding="4"
                 IsVisible="{Binding IsRestartBannerVisible}">
             <Grid ColumnDefinitions="*,Auto"

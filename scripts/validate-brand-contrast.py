@@ -16,6 +16,16 @@ def contrast(a, b):
     return (light + 0.05) / (dark + 0.05)
 
 
+def composite(foreground, background):
+    if len(foreground) == 7:
+        return foreground
+    alpha = int(foreground[1:3], 16) / 255
+    channels = [round(int(foreground[i:i + 2], 16) * alpha
+                      + int(background[i - 2:i], 16) * (1 - alpha))
+                for i in (3, 5, 7)]
+    return '#' + ''.join(f'{value:02X}' for value in channels)
+
+
 root = Path(__file__).resolve().parents[1]
 path = root / 'src/UniGetUI.Avalonia/Assets/Styles/Styles.Common.axaml'
 tree = ET.parse(path)
@@ -25,6 +35,7 @@ pairs = [
     ('TextFillColorPrimaryBrush', 'LogBodyBackground', 4.5),
     ('BrandSelectionForeground', 'BrandSelectionBackground', 4.5),
     ('BrandHoverForeground', 'BrandHoverBackground', 4.5),
+    ('TextOnAccentFillColorPrimaryBrush', 'PackageActionHoverBackground', 4.5),
     ('WarningActionForeground', 'WarningActionBackground', 4.5),
     ('WarningActionForeground', 'WarningActionHoverBackground', 4.5),
     ('AccessibleControlBorderBrush', 'SettingsCardBackground', 3),
@@ -40,6 +51,16 @@ for theme in tree.findall('./a:Styles.Resources/a:ResourceDictionary/a:ResourceD
         print(result)
         if ratio < minimum:
             failures.append(result)
+    # View-selector underline against its selected, hovered and pressed fills.
+    # Dark fills are translucent, so measure their final colour over the page.
+    for surface in ('ControlFillColorDefaultBrush', 'ControlFillColorSecondaryBrush',
+                    'ControlFillColorTertiaryBrush'):
+        background = composite(colours[surface], colours['AppWindowBackground'])
+        ratio = contrast(colours['BrandSelectionBackground'], background)
+        result = f'{theme.attrib[key]}: view indicator / {surface}: {ratio:.2f}:1 (minimum 3:1)'
+        print(result)
+        if ratio < 3:
+            failures.append(result)
 # The standalone administrator shell deliberately avoids the employee engine dependency.
 # Check its actual resources too, so independently packaged styles retain the same baseline.
 admin = ET.parse(root / 'src/Evergreen.Admin/AdminBrandStyles.axaml')
@@ -50,6 +71,8 @@ admin_pairs = [
     ('AdminSelectedText', 'AdminSelected', 4.5),
     ('AdminHoverText', 'AdminHover', 4.5),
     ('AdminHeaderText', 'AdminHeader', 4.5),
+    ('AdminPrimaryText', 'AdminPrimary', 4.5),
+    ('AdminPrimaryText', 'AdminPrimaryHover', 4.5),
     ('AdminBorder', 'AdminEditor', 3),
     ('AdminBorder', 'AdminCard', 3),
     ('AdminBorder', 'AdminPage', 3),
@@ -59,6 +82,15 @@ for theme in admin.findall('./a:Styles.Resources/a:ResourceDictionary/a:Resource
     for foreground, background, minimum in admin_pairs:
         ratio = contrast(colours[foreground], colours[background])
         result = f'Admin {theme.attrib[key]}: {foreground} / {background}: {ratio:.2f}:1 (minimum {minimum}:1)'
+        print(result)
+        if ratio < minimum:
+            failures.append(result)
+    for foreground, overlay, background, minimum in [
+        ('AdminSelected', 'AdminSelectorFill', 'AdminPage', 3),
+        ('AdminHeaderText', 'AdminSubtleHover', 'AdminHeader', 4.5),
+    ]:
+        ratio = contrast(colours[foreground], composite(colours[overlay], colours[background]))
+        result = f'Admin {theme.attrib[key]}: {foreground} / {overlay} over {background}: {ratio:.2f}:1 (minimum {minimum}:1)'
         print(result)
         if ratio < minimum:
             failures.append(result)

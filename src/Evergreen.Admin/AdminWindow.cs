@@ -29,38 +29,32 @@ public sealed partial class AdminWindow : Window
         Title = CoreTools.Translate("Evergreen Endpoint | ADMIN");
         Icon = AdminBrandStyles.CreateIcon();
         Width = 1100; Height = 800; MinWidth = 760; MinHeight = 600;
-        var header = new StackPanel { Spacing = 10, Margin = new Thickness(24, 20) };
+        var header = new StackPanel { Margin = new Thickness(20, 8) };
         var identity = new WrapPanel { Orientation = Orientation.Horizontal };
         using (var stream = AssetLoader.Open(new Uri("avares://Evergreen.Admin/Assets/admin.png")))
-            identity.Children.Add(new Image { Source = new Bitmap(stream), Width = 56, Height = 56, Margin = new Thickness(0, 0, 16, 8) });
+            identity.Children.Add(new Image { Source = new Bitmap(stream), Width = 40, Height = 40, Margin = new Thickness(0, 0, 12, 0) });
         var brandFont = new FontFamily("avares://Evergreen.Admin/Assets/Fonts#Lato");
-        var wordmark = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12, Margin = new Thickness(0, 0, 0, 8), VerticalAlignment = VerticalAlignment.Center };
+        var wordmark = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, VerticalAlignment = VerticalAlignment.Center };
         wordmark.Children.Add(new TextBlock
         {
             Text = CoreTools.Translate("EVERGREEN\nENDPOINT"),
             FontFamily = brandFont,
-            FontSize = 18,
+            FontSize = 14,
             FontWeight = FontWeight.Bold,
             VerticalAlignment = VerticalAlignment.Center,
         });
-        var separator = new Border { Width = 3, Height = 44 };
+        var separator = new Border { Width = 2, Height = 34 };
         separator.Bind(Border.BackgroundProperty, separator.GetResourceObservable("AdminGold"));
         wordmark.Children.Add(separator);
         wordmark.Children.Add(new TextBlock
         {
             Text = CoreTools.Translate("ADMIN"),
             FontFamily = brandFont,
-            FontSize = 28,
+            FontSize = 24,
             VerticalAlignment = VerticalAlignment.Center,
         });
         identity.Children.Add(wordmark);
         header.Children.Add(identity);
-        header.Children.Add(new TextBlock { Text = CoreTools.Translate("Portable authoring and local diagnostics"), FontSize = 16 });
-        header.Children.Add(new TextBlock
-        {
-            Text = CoreTools.Translate("Edit and export drafts locally. Deployment, signing, and machine policy changes are separate administrator operations."),
-            TextWrapping = TextWrapping.Wrap,
-        });
         var appearanceRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12 };
         var appearanceLabel = new TextBlock { Text = CoreTools.Translate("Appearance"), VerticalAlignment = VerticalAlignment.Center };
         var appearance = new ComboBox
@@ -79,28 +73,47 @@ public sealed partial class AdminWindow : Window
         };
         appearanceRow.Children.Add(appearanceLabel);
         appearanceRow.Children.Add(appearance);
-        var tabs = new TabControl
+        var pages = new (string Label, string Symbol, Control Page)[]
         {
-            ItemsPanel = new FuncTemplate<Panel?>(() => new WrapPanel()),
-            ItemsSource = new TabItem[]
-            {
-                new() { Header = CoreTools.Translate("Software library"), Content = DocumentPage(_library, true) },
-                new() { Header = CoreTools.Translate("Catalog source"), Content = CatalogSourcePage() },
-                new() { Header = CoreTools.Translate("Package manager configuration"), Content = DocumentPage(_managers, false) },
-                new() { Header = CoreTools.Translate("Local diagnostics"), Content = DiagnosticsPage() },
-            },
+            (CoreTools.Translate("Software libraries"), "M2,3 H8 L10,5 H18 V17 H2 Z M2,7 H18", LibraryPage()),
+            (CoreTools.Translate("Catalog source"), "M10,1 A9,9 0 1,0 10,19 A9,9 0 1,0 10,1 M1,10 H19 M10,1 C5,6 5,14 10,19 C15,14 15,6 10,1", CatalogSourcePage()),
+            (CoreTools.Translate("Package manager configuration"), "M3,2 V18 M10,2 V18 M17,2 V18 M0,6 H6 M7,14 H13 M14,8 H20", DocumentPage(_managers, false)),
+            (CoreTools.Translate("Local diagnostics"), "M0,10 H4 L7,3 L12,17 L15,10 H20", DiagnosticsPage()),
         };
-        var layout = new Grid { RowDefinitions = new RowDefinitions("Auto,Auto,*,Auto") };
+        var navigation = new ListBox { Padding = new Thickness(8, 16), BorderThickness = new Thickness(0) };
+        navigation.Classes.Add("adminNavigation");
+        AutomationProperties.SetName(navigation, CoreTools.Translate("Admin navigation"));
+        navigation.ItemsSource = pages.Select(p =>
+        {
+            var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*"), ColumnSpacing = 12 };
+            var symbol = Symbol(p.Symbol, 22);
+            symbol.Bind(Avalonia.Controls.Shapes.Path.StrokeProperty, symbol.GetResourceObservable("AdminHeaderText"));
+            row.Children.Add(symbol);
+            var text = new TextBlock { Text = p.Label, TextWrapping = TextWrapping.Wrap, VerticalAlignment = VerticalAlignment.Center };
+            Grid.SetColumn(text, 1); row.Children.Add(text);
+            var item = new ListBoxItem { Content = row, Tag = p.Page };
+            AutomationProperties.SetName(item, p.Label);
+            return item;
+        }).ToArray();
+        var content = new ContentControl { HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
+        navigation.SelectionChanged += (_, _) =>
+        {
+            if (navigation.SelectedItem is ListBoxItem { Tag: Control selected }) content.Content = selected;
+        };
+        navigation.SelectedIndex = 0;
+        var layout = new Grid { RowDefinitions = new RowDefinitions("Auto,*,Auto"), ColumnDefinitions = new ColumnDefinitions("220,*") };
         var brandHeader = new Border { Child = header };
         brandHeader.Classes.Add("brandHeader");
-        layout.Children.Add(brandHeader);
-        appearanceRow.Margin = new Thickness(24, 12);
-        Grid.SetRow(appearanceRow, 1); layout.Children.Add(appearanceRow);
-        tabs.Margin = new Thickness(8, 0);
-        Grid.SetRow(tabs, 2); layout.Children.Add(tabs);
+        Grid.SetColumnSpan(brandHeader, 2); layout.Children.Add(brandHeader);
+        appearanceRow.Margin = new Thickness(12, 8);
+        appearanceRow.HorizontalAlignment = HorizontalAlignment.Right;
+        appearanceLabel.Bind(TextBlock.ForegroundProperty, appearanceLabel.GetResourceObservable("AdminHeaderText"));
+        Grid.SetColumn(appearanceRow, 1); layout.Children.Add(appearanceRow);
+        Grid.SetRow(navigation, 1); Grid.SetRowSpan(navigation, 2); layout.Children.Add(navigation);
+        Grid.SetRow(content, 1); Grid.SetColumn(content, 1); layout.Children.Add(content);
         _status.Margin = new Thickness(20, 12);
         AutomationProperties.SetLiveSetting(_status, AutomationLiveSetting.Polite);
-        Grid.SetRow(_status, 3); layout.Children.Add(_status);
+        Grid.SetRow(_status, 2); Grid.SetColumn(_status, 1); layout.Children.Add(_status);
         Content = layout;
         _library.TextChanged += (_, _) => MarkDirty();
         _managers.TextChanged += (_, _) => MarkDirty();
@@ -132,7 +145,7 @@ public sealed partial class AdminWindow : Window
         return editor;
     }
 
-    private Control DocumentPage(TextBox editor, bool library)
+    private WrapPanel DocumentTools(TextBox editor, bool library)
     {
         var tools = new WrapPanel { Orientation = Orientation.Horizontal };
         tools.Children.Add(ActionButton(CoreTools.Translate("New draft"), async () =>
@@ -177,49 +190,69 @@ public sealed partial class AdminWindow : Window
             _dirty = _library.Text != _savedLibrary || _managers.Text != _savedManagers || _sourceDirty;
             _status.Text = CoreTools.Translate("Exported {0}. Deploy this file separately; the endpoint has not been changed.", path);
         }, primary: true));
+        return tools;
+    }
+
+    private Control DocumentPage(TextBox editor, bool library)
+    {
         var top = new StackPanel { Spacing = 8 };
-        top.Children.Add(tools);
-        if (library) top.Children.Add(ApplicationForm(editor));
-        else top.Children.Add(new TextBlock { Text = CoreTools.Translate("Group Policy overrides machine JSON. Source names must match repositories already provisioned on the device."), TextWrapping = TextWrapping.Wrap });
-        var page = new Grid { RowDefinitions = new RowDefinitions("Auto,*"), Margin = new Thickness(16), RowSpacing = 12 };
+        top.Children.Add(DocumentTools(editor, library));
+        if (!library)
+        {
+            top.Children.Add(new TextBlock { Text = CoreTools.Translate("Group Policy overrides machine JSON. Source names must match repositories already provisioned on the device."), TextWrapping = TextWrapping.Wrap });
+            top.Children.Add(UninstallPolicyForm(editor));
+        }
+        var page = new Grid { RowDefinitions = new RowDefinitions("Auto,Auto,*"), Margin = new Thickness(32, 24), RowSpacing = 12 };
+        page.Children.Add(new TextBlock { Text = CoreTools.Translate("Package manager configuration"), FontSize = 32, FontWeight = FontWeight.Bold, TextWrapping = TextWrapping.Wrap });
         var card = new Border { Child = top };
         card.Classes.Add("card");
-        page.Children.Add(card); Grid.SetRow(editor, 1); page.Children.Add(editor);
+        Grid.SetRow(card, 1); page.Children.Add(card); Grid.SetRow(editor, 2); page.Children.Add(editor);
         return page;
     }
 
-    private Control ApplicationForm(TextBox editor)
+    private Control UninstallPolicyForm(TextBox editor)
     {
-        var form = new WrapPanel();
-        TextBox Field(string label, string value)
+        string label = CoreTools.Translate("Maximum concurrent uninstalls");
+        var maximum = new NumericUpDown
         {
-            var input = new TextBox { Text = value, MinWidth = 150, Margin = new Thickness(0, 0, 8, 8) };
-            AutomationProperties.SetName(input, CoreTools.Translate(label));
-            var group = new StackPanel();
-            group.Children.Add(new TextBlock { Text = CoreTools.Translate(label) }); group.Children.Add(input); form.Children.Add(group);
-            return input;
-        }
-        var catalogId = Field(CoreTools.Translate("Library ID"), "apps");
-        var catalogName = Field(CoreTools.Translate("Library name"), "Apps");
-        var name = Field(CoreTools.Translate("App name"), "");
-        var id = Field(CoreTools.Translate("Package ID"), "");
-        var source = Field(CoreTools.Translate("Source"), "winget");
-        var manager = new ComboBox { ItemsSource = new[] { "WinGet", "PowerShell", "PowerShell7" }, SelectedIndex = 0, Margin = new Thickness(0, 18, 8, 8) };
-        AutomationProperties.SetName(manager, CoreTools.Translate("Package manager"));
-        manager.SelectionChanged += (_, _) => source.Text = manager.SelectedIndex == 0 ? "winget" : "PSGallery";
-        form.Children.Add(manager);
-        form.Children.Add(ActionButton(CoreTools.Translate("Add app"), () =>
+            Minimum = 1,
+            Maximum = ManagedPackageManagerConfiguration.MaximumSupportedConcurrentUninstalls,
+            Value = AdminWorkspace.GetUninstallLimit(editor.Text ?? ""),
+            Increment = 1,
+            FormatString = "0",
+            Width = 120,
+        };
+        AutomationProperties.SetName(maximum, label);
+        var panel = new StackPanel { Spacing = 6 };
+        panel.Children.Add(new TextBlock { Text = label });
+        var row = new WrapPanel();
+        row.Children.Add(maximum);
+        row.Children.Add(ActionButton(CoreTools.Translate("Set uninstall limit in draft"), () =>
         {
-            editor.Text = AdminWorkspace.AddApplication(editor.Text ?? "", catalogId.Text ?? "", catalogName.Text ?? "",
-                name.Text ?? "", id.Text ?? "", (string?)manager.SelectedItem ?? "", source.Text ?? "");
+            if (maximum.Value is not { } value || decimal.Truncate(value) != value)
+                throw new InvalidOperationException(CoreTools.Translate("Enter a whole number between 1 and 100."));
+            editor.Text = AdminWorkspace.SetUninstallLimit(editor.Text ?? "", checked((int)value));
             return Task.CompletedTask;
         }));
-        return form;
+        panel.Children.Add(row);
+        panel.Children.Add(new TextBlock
+        {
+            Text = CoreTools.Translate("Default: 3 apps. Also limits each uninstall selection. Export and deploy this draft separately; Group Policy takes precedence."),
+            TextWrapping = TextWrapping.Wrap,
+        });
+        editor.TextChanged += (_, _) =>
+        {
+            try { maximum.Value = AdminWorkspace.GetUninstallLimit(editor.Text ?? ""); }
+            catch (Exception ex) when (ex is System.Text.Json.JsonException or InvalidOperationException or FormatException or OverflowException)
+            { /* Keep the current control value while the draft is incomplete. */ }
+        };
+        return panel;
     }
 
     private Control DiagnosticsPage()
     {
-        var panel = new StackPanel { Spacing = 16, Margin = new Thickness(20) };
+        var panel = new StackPanel { Spacing = 16, Margin = new Thickness(32, 24) };
+        panel.Children.Add(new TextBlock { Text = CoreTools.Translate("Local diagnostics"), FontSize = 32, FontWeight = FontWeight.Bold, TextWrapping = TextWrapping.Wrap });
         panel.Children.Add(ActionButton(CoreTools.Translate("Refresh local configuration"), () =>
         {
             ManagedPackageManagerConfiguration.Reload();
@@ -229,6 +262,7 @@ public sealed partial class AdminWindow : Window
                 "", CoreTools.Translate("Software library") + ": " + SoftwareLibrary.FilePath,
                 CoreTools.Translate("Library file exists") + ": " + File.Exists(SoftwareLibrary.FilePath),
                 CoreTools.Translate("Machine configuration") + ": " + ManagedPackageManagerConfiguration.DefaultConfigurationPath,
+                CoreTools.Translate("Maximum concurrent uninstalls") + ": " + ManagedPackageManagerConfiguration.MaximumConcurrentUninstalls,
                 "HKLM\\" + ManagedPackageManagerConfiguration.PolicyRegistryPath,
             };
             foreach (string manager in new[] { "WinGet", "PowerShell", "PowerShell7" })

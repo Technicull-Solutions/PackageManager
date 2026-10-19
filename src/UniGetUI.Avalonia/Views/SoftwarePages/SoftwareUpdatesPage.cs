@@ -359,7 +359,10 @@ public class SoftwareUpdatesPage : AbstractPackagesPage
 
     private static async Task LaunchUninstallFromUpdates(IEnumerable<IPackage> packages)
     {
-        foreach (var pkg in packages)
+        var list = packages.ToList();
+        if (MainWindow.Instance is not { } owner
+            || !await UninstallConfirmationDialog.ConfirmAsync(owner, list)) return;
+        foreach (var pkg in list)
         {
             var opts = await InstallOptionsFactory.LoadApplicableAsync(pkg);
             if (PackageOperation.HasPendingOperation(pkg, OperationType.Uninstall)) continue;
@@ -374,6 +377,8 @@ public class SoftwareUpdatesPage : AbstractPackagesPage
     private static async Task LaunchUninstallThenUpdate(IPackage? package)
     {
         if (package is null || package.Source.IsVirtualManager) return;
+        if (MainWindow.Instance is not { } owner
+            || !await UninstallConfirmationDialog.ConfirmAsync(owner, package)) return;
         var uninstallOpts = await InstallOptionsFactory.LoadApplicableAsync(package);
         var updateOpts = await InstallOptionsFactory.LoadApplicableAsync(package);
         if (PackageOperation.HasPendingOperation(package, OperationType.Update)) return;

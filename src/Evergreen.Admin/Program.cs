@@ -36,7 +36,23 @@ internal static class Program
                 string path = Path.Combine(directory, "SoftwareCatalog.json");
                 AdminWorkspace.ExportAsync(path, library, true).GetAwaiter().GetResult();
                 AdminWorkspace.FormatLibrary(AdminWorkspace.OpenAsync(path).GetAwaiter().GetResult());
-                AdminWorkspace.ExportAsync(Path.Combine(directory, "package-managers.json"), AdminWorkspace.DefaultManagers, false).GetAwaiter().GetResult();
+                string graphical = AdminLibraryDraft.SaveLibrary(library, "apps", "managed", "Managed apps");
+                graphical = AdminLibraryDraft.SaveApp(graphical, "managed", 0, new Evergreen.Configuration.CatalogEntry
+                {
+                    Name = "Example renamed",
+                    Id = "Example.App",
+                    ManagerName = "WinGet",
+                    Source = "winget",
+                    Version = "2.1.0",
+                });
+                AdminWorkspace.ExportAsync(path, graphical, true).GetAwaiter().GetResult();
+                var graphicalResult = Evergreen.Configuration.SoftwareLibrary.Parse(AdminWorkspace.OpenAsync(path).GetAwaiter().GetResult());
+                if (graphicalResult[0].Packages[0].Version != "2.1.0") return 6;
+                AdminLibraryDraft.RemoveApp(graphical, "managed", 0);
+                string managerPath = Path.Combine(directory, "package-managers.json");
+                string managerDraft = AdminWorkspace.SetUninstallLimit(AdminWorkspace.DefaultManagers, 2);
+                AdminWorkspace.ExportAsync(managerPath, managerDraft, false).GetAwaiter().GetResult();
+                if (AdminWorkspace.GetUninstallLimit(AdminWorkspace.OpenAsync(managerPath).GetAwaiter().GetResult()) != 2) return 5;
                 try { AdminWorkspace.FormatLibrary("{\"version\":99,\"catalogs\":[]}"); return 2; }
                 catch (System.Text.Json.JsonException) { }
                 return 0;
