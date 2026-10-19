@@ -9,9 +9,9 @@ using System.Runtime.Versioning;
 [assembly: AssemblyDefaultAlias("Evergreen Endpoint Package Manager")]
 [assembly: AssemblyCompany("Technicull Solutions")]
 [assembly: AssemblyCopyright("Copyright 2026 Technicull Solutions")]
-[assembly: AssemblyVersion("0.2.1.7")]
-[assembly: AssemblyFileVersion("0.2.1.7")]
-[assembly: AssemblyInformationalVersion("0.2.1-rc.3")]
+[assembly: AssemblyVersion("0.2.1.8")]
+[assembly: AssemblyFileVersion("0.2.1.8")]
+[assembly: AssemblyInformationalVersion("0.2.1-rc.4")]
 #if WINDOWS
 [assembly: SupportedOSPlatform("windows10.0.19041")]
 #endif

@@ -144,6 +144,8 @@ jobs:
 
           Changes: $ChangeSummary.
 
+          This iteration adds the branded Admin library editor with **List, Cards, Icons, and JSON** views, light/dark/system appearance, and graphical library/app forms. APPS includes clearer dark-mode view indicators and button states, aligned settings warnings, and a confirmed **Uninstall Apps** action in place of Installed-page Select all. The administrator-configurable concurrent uninstall limit defaults to **3**.
+
           Download the Windows x64 **.Setup.exe** to install, or extract the application **.x64.zip** into a writable folder and run **Evergreen Endpoint Package Manager.exe**. The application is self-contained; a separate .NET installation is not required.
 
           The employee client enables the software library by default under **Apps**. Use **Search apps** to browse configured sources. The separate **EvergreenEndpointAdmin** ZIP contains the portable administrator client: extract it and run **Evergreen Endpoint Admin.exe** to author, validate, and export library and manager-configuration drafts. See its included README for deploying the library to the employee client. The portable utility does not apply machine policy or manage remote devices.
